@@ -19,7 +19,7 @@ does [versions](https://getcomposer.org/doc/01-basic-usage.md#package-versions).
 ```
 {
 	"require" : {
-		"henderjon/redis": "dev-0.1.0"
+		"henderjon/redis": "dev-0.1.0-dev"
 	}
 }
 ```
