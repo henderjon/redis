@@ -1,0 +1,4 @@
+
+/vendor/*
+/conf/*
+/composer.lock

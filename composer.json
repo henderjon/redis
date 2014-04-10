@@ -1,0 +1,28 @@
+{
+	"name"        : "henderjon/redis",
+	"type"        : "library",
+	"description" : "an incomplete redis library",
+	"homepage"    : "http://github.com/henderjon/redis",
+	"license"     : "BSD-3-Clause",
+	"authors"     : [
+		{
+			"name"     : "Jon Henderson",
+			"role"     : "Developer",
+			"homepage" : "http://github.com/henderjon"
+		}
+	],
+	"support" : {
+		"irc" : "irc://irc.freenode.org/henderjon"
+	},
+	"require": {
+		"php"     : ">=5.4.0"
+	},
+	"require-dev": {
+		"funkatron/funit" : "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"Redis\\": "src/"
+		}
+	}
+}
