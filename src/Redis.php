@@ -92,5 +92,16 @@ class Redis {
 
 		return count( $response ) == 1 ? reset( $response ) : $response;
 	}
+	/**
+	 * method to take an indexed array and transform it to an associatvie array.
+	 * @param $array The indexed array
+	 * @return array
+	 */
+	function index2assoc( array $array ){
+		while( $key = array_shift( $array ) ){
+			$final[ $key ] = array_shift( $array );
+		}
+		return $final;
+	}
 
 }
