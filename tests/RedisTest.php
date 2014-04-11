@@ -36,7 +36,7 @@ FUnit::test("Redis::__call() simple", function(){
 
 	$expected = "*3\r\n$4\r\nsadd\r\n$3\r\nkey\r\n$5\r\nvalue\r\n";
 
-	FUnit::equal($expected, $result, "Redis::__call (simple) failed to return the proper value");
+	FUnit::equal($expected, $result);
 
 });
 
@@ -55,7 +55,7 @@ FUnit::test("Redis::__call() complex", function(){
 
 	$expected = "*3\r\n$4\r\nsadd\r\n$3\r\nkey\r\n$5\r\nvalue\r\n";
 
-	FUnit::equal($expected, $result, "Redis::__call (complex) failed to return the proper value");
+	FUnit::equal($expected, $result);
 
 });
 
@@ -79,7 +79,7 @@ FUnit::test("Redis::pipe() simple", function(){
 
 	$expected = "*3\r\n$4\r\nsadd\r\n$8\r\ntestkey1\r\n$10\r\ntestvalue1\r\n\r\n*3\r\n$4\r\nsadd\r\n$8\r\ntestkey2\r\n$10\r\ntestvalue2\r\n\r\n";
 
-	FUnit::equal($expected, $result, "Redis::pipe (simple) failed to return the proper value");
+	FUnit::equal($expected, $result);
 
 });
 
@@ -104,7 +104,7 @@ FUnit::test("Redis::pipe() complex", function(){
 
 	$expected = "*3\r\n$4\r\nsadd\r\n$8\r\ntestkey1\r\n$10\r\ntestvalue1\r\n\r\n*3\r\n$4\r\nsadd\r\n$8\r\ntestkey2\r\n$10\r\ntestvalue2\r\n\r\n";
 
-	FUnit::equal($expected, $result, "Redis::pipe (complex) failed to return the proper value");
+	FUnit::equal($expected, $result);
 
 });
 
