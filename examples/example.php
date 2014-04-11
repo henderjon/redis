@@ -25,6 +25,7 @@ $redis->hmset("hash:one", "key:one", "value:one");
 $redis->hmset("hash:one", "key:two", "value:two");
 $redis->hmset("hash:two", "key:two", "value:two");
 
+//NOT AN ASSOCIATIVE ARRAY
 $redis->hmset("hash:three", array(
 	"key:one", 1, "key:two", 2
 ));
