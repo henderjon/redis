@@ -28,6 +28,9 @@ does [versions](https://getcomposer.org/doc/01-basic-usage.md#package-versions).
 
 See LICENSE.md for the [BSD-3-Clause](http://opensource.org/licenses/BSD-3-Clause) license.
 
+# travis-ci
+
+[![Build Status](https://travis-ci.org/henderjon/gooseberry.svg?branch=master)](https://travis-ci.org/henderjon/gooseberry)
 
 
 
