@@ -7,7 +7,7 @@ namespace Redis;
  */
 class Redis {
 
-	use Traits\RedisProtocolTrait;
+	use RedisProtocolTrait;
 
 	/***/
 	private $handle;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Redis\Traits;
+namespace Redis;
 
 trait RedisProtocolTrait {
 	/**
@@ -34,7 +34,7 @@ trait RedisProtocolTrait {
 
 			switch( $type ){
 				case( '-' ): //error
-					throw new \RedisException($bytes);
+					throw new RedisException($bytes);
 				break;
 				case( '+' ): //single line
 				case( ':' ): //integer
