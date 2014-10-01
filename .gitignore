@@ -2,3 +2,5 @@
 /vendor/*
 /conf/*
 /composer.lock
+/output/*
+/clover.xml

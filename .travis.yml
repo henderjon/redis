@@ -5,10 +5,20 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - hhvm
+
+matrix:
+  allow_failures:
+    - php: hhvm
 
 install:
   - composer --self-update
   - composer install
 
-script: ./vendor/bin/fu -r tests/
+script:
+  - ./vendor/bin/phpunit --coverage-clover=clover.xml
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover clover.xml
 

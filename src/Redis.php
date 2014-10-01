@@ -11,7 +11,9 @@ class Redis {
 
 	/***/
 	private $handle;
+
 	public  $db = 0;
+
 	/**
 	 * Connect to a Redis instance. This isn't in the constructor so
 	 * that the tests can instantiate this object and replace the
@@ -21,19 +23,15 @@ class Redis {
 	 * @return
 	 */
 	function connect( $ip, $port ){
-		try {
-			$errno = $errstr = "";
-			$sock = "tcp://{$ip}:{$port}";
-			$this->handle = stream_socket_client($sock, $errno, $errstr);
-			// $this->handle = fsockopen($host, $port, $errno, $error);
-		} catch (Exception $e) {
-			trigger_error($e->getMessage());
-		}
+		$errno = $error = "";
+		$sock = "tcp://{$ip}:{$port}";
+		$this->handle = @stream_socket_client($sock, $errno, $error);
 
-		if( !$this->handle ){
-			trigger_error("Connection Error: {$errno} / {$error}");
+		if( !$this->handle || $errno ){
+			throw new RedisException($error, $errno);
 		}
 	}
+
 	/**
 	 * Catch all calls to Redis functions and pass them to the underlying
 	 * connection
@@ -51,6 +49,7 @@ class Redis {
 		$command = $this->protocol( $func, $args );
 		return $this->exec( $command, 1 );
 	}
+
 	/**
 	 * Take an array of arrays of mixed string/arrays and pipe them all
 	 * to Redis. Since Protocol::protocol takes strings and arrays and
@@ -66,16 +65,16 @@ class Redis {
 			$args = reset($args);
 		}
 
-		$iter1 = new \ArrayIterator( $args );
-
-		for($iter1->rewind(); $iter1->valid(); $iter1->next()){
-			$commands[] = $this->protocol($iter1->current());
+		$commands = [];
+		foreach($args as $arg){
+			$commands[] = $this->protocol($arg);
 		}
 
 		$command = implode("\r\n", $commands). "\r\n";
 
 		return $this->exec( $command, count($commands) );
 	}
+
 	/**
 	 * Both __call() and pipe() do the filtering work of creating a single
 	 * string of our command(s), this function simply writes and reads
@@ -92,12 +91,14 @@ class Redis {
 
 		return count( $response ) == 1 ? reset( $response ) : $response;
 	}
+
 	/**
 	 * method to take an indexed array and transform it to an associatvie array.
 	 * @param $array The indexed array
 	 * @return array
 	 */
 	function index2assoc( array $array ){
+		$final = [];
 		while( $key = array_shift( $array ) ){
 			$final[ $key ] = array_shift( $array );
 		}

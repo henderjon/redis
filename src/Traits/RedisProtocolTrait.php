@@ -26,7 +26,7 @@ trait RedisProtocolTrait {
 	 * @return array
 	 */
 	protected function read( $handle, $count ){
-		$response = array();
+		$response = [];
 		for( $n = 0; $n < $count; $n++ ){
 
 			$type  = fgetc($handle);
@@ -34,7 +34,7 @@ trait RedisProtocolTrait {
 
 			switch( $type ){
 				case( '-' ): //error
-					throw new \Exception($bytes);
+					throw new \RedisException($bytes);
 				break;
 				case( '+' ): //single line
 				case( ':' ): //integer
