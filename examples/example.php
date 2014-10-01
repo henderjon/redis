@@ -10,28 +10,20 @@ $config = array(
 );
 
 //overwrite our examples
-if(file_exists("conf/config.ini")){
-	$config = parse_ini_file("conf/config.ini");
+$conf = dirname(__DIR__) . "/conf/config.ini";
+if(file_exists($conf)){
+	$config = parse_ini_file($conf);
 }
 
 $redis = new \Redis\Redis;
 
 $redis->connect($config["hostname"], $config["hostport"]);
 
-$redis->auth($config["password"]);
-$redis->select($config["database"]);
+// $redis->auth($config["password"]);
+// $redis->select($config["database"]);
 
-$redis->hmset("hash:one", "key:one", "value:one");
-$redis->hmset("hash:one", "key:two", "value:two");
-$redis->hmset("hash:two", "key:two", "value:two");
+$hmset = require(__DIR__ . "/hmset.php");
+$hmset($redis);
 
-//NOT AN ASSOCIATIVE ARRAY
-$redis->hmset("hash:three", array(
-	"key:one", 1, "key:two", 2
-));
-
-$keys   = $redis->hkeys("hash:three");
-$values = $redis->hvals("hash:three");
-
-print_r($keys);
-print_r($values);
+$sscan = require(__DIR__ . "/sscan.php");
+$sscan($redis);
