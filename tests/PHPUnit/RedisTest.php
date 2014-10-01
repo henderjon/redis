@@ -68,37 +68,6 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, $result);
 	}
 
-	function test___call_hmset(){
-		$memory = fopen("php://memory", "rw+");
-		$inst = $this->getInst($memory);
-
-		$inst->hmset("testkey1", "one", "two", "three", "four");
-
-		$expected = "*6\r\n$5\r\nhmset\r\n$8\r\ntestkey1\r\n$3\r\none\r\n$3\r\ntwo\r\n$5\r\nthree\r\n$4\r\nfour\r\n";
-
-		rewind($memory);
-		$result = fread($memory, strlen($expected));
-
-		$this->assertEquals($expected, $result);
-	}
-
-	function test___call_hmget(){
-		$memory = fopen("php://memory", "rw+");
-		$inst = $this->getInst($memory);
-
-		$inst->hmset("testkey1", "one", "two", "three", "four");
-
-		// $expected = "*6\r\n$5\r\nhmset\r\n$8\r\ntestkey1\r\n$3\r\none\r\n$3\r\ntwo\r\n$5\r\nthree\r\n$4\r\nfour\r\n";
-
-		rewind($memory);
-
-		$result = $inst->hgetall("testkey1");
-
-		$expected = ["one" => "two", "three" => "four"];
-
-		$this->assertEquals($expected, $result);
-	}
-
 }
 
 
