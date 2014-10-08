@@ -1,7 +1,12 @@
 <?php
 
 namespace Redis;
-
+/**
+ * Class to talk to redis at a low level ... http://redis.io/topics/protocol
+ *
+ * @package henderjon/redis
+ * @author @henderjon
+ */
 trait RedisProtocolTrait {
 	/**
 	 * Constant line ending according to Redis protocol

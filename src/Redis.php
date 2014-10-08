@@ -1,9 +1,11 @@
 <?php
 
 namespace Redis;
-
 /**
- * Class to talk to redis at a low level ... http://redis.io/topics/protocol
+ * public API to interact with redis
+ *
+ * @package henderjon/redis
+ * @author @henderjon
  */
 class Redis {
 
@@ -25,7 +27,8 @@ class Redis {
 	 * socket handle.
 	 * @param string $ip The IP of the Redis instance
 	 * @param string $port The port of the Redis instance
-	 * @return
+	 * @param int $timeout The number of seconds to wait when connecting
+	 * @return Redis
 	 */
 	function connect( $ip, $port, $timeout = 0 ){
 		$errno = $error = "";
