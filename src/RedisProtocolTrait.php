@@ -52,6 +52,20 @@ trait RedisProtocolTrait {
 		return $response;
 	}
 	/**
+	 * the open ended listener for the SUB of pub/sub
+	 * @param Resource $handle The resouce, usually a socket connection
+	 * @return array
+	 */
+	protected function sub( $handle ){
+
+		// these values don't change and need to be read out of the stream
+		// before we parse out the response
+		$type  = fgetc($handle); // always "*"
+		$bytes = trim( fgets($handle) ); // always 3
+
+		return $this->read($handle, $bytes);
+	}
+	/**
 	 * Read a specific number of bytes out of the handle
 	 * @param Resource $handle The resouce, usually a socket connection
 	 * @param int $size The number of bytes to read
