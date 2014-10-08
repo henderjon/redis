@@ -18,6 +18,13 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 		$inst = (new \Redis\Redis)->connect("123.123.123.123", "12345", 2);
 	}
 
+	function test_select(){
+		$memory = fopen("php://memory", "rw+");
+		$inst = $this->getInst($memory);
+		$inst->select(4);
+		$this->assertEquals(4, $inst->db);
+	}
+
 	function test_pipe(){
 		$memory = fopen("php://memory", "rw+");
 		$inst = $this->getInst($memory);
@@ -64,6 +71,21 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 		$result = $inst->get("testkey1");
 
 		$expected = "testvalue1";
+
+		$this->assertEquals($expected, $result);
+	}
+
+	function test_index2assoc(){
+		$inst = new \Redis\Redis;
+
+		$expected = [
+			"one" => "qwer",
+			"two" => "asdf",
+		];
+
+		$result = $inst->index2assoc([
+			"one", "qwer", "two", "asdf"
+		]);
 
 		$this->assertEquals($expected, $result);
 	}
