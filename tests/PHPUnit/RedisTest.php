@@ -15,7 +15,7 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 	 * @expectedException Redis\RedisException
 	 */
 	function test_connect_exception(){
-		$inst = (new \Redis\Redis)->connect("123.123.123.123", "12345");
+		$inst = (new \Redis\Redis)->connect("123.123.123.123", "12345", 2);
 	}
 
 	function test_pipe(){

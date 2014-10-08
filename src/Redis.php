@@ -9,9 +9,14 @@ class Redis {
 
 	use RedisProtocolTrait;
 
-	/***/
-	private $handle;
+	/**
+	 * the socket handle
+	 */
+	protected $handle;
 
+	/**
+	 * the db to use
+	 */
 	public  $db = 0;
 
 	/**
@@ -22,14 +27,17 @@ class Redis {
 	 * @param string $port The port of the Redis instance
 	 * @return
 	 */
-	function connect( $ip, $port ){
+	function connect( $ip, $port, $timeout = 0 ){
 		$errno = $error = "";
 		$sock = "tcp://{$ip}:{$port}";
-		$this->handle = @stream_socket_client($sock, $errno, $error);
+		$timeout = $timeout ?: ini_get("default_socket_timeout");
+		$this->handle = @stream_socket_client($sock, $errno, $error, $timeout);
 
 		if( !$this->handle || $errno ){
 			throw new RedisException($error, $errno);
 		}
+
+		return $this;
 	}
 
 	/**
