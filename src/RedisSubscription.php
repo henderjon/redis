@@ -21,9 +21,8 @@ class RedisSubscription extends Redis {
 		$command = $this->protocol( ($p ? "psubscribe" : "subscribe"), $channels );
 		$details = $this->exec( $command, count($channels) );
 
-		$that = $this; // hhvm
-		return [$details, function()use($that){
-			return $that->sub($that->handle);
+		return [$details, function(){
+			return $this->sub($this->handle);
 		}];
 	}
 
