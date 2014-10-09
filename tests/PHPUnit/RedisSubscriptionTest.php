@@ -49,7 +49,7 @@ class RedisSubscriptionTest extends PHPUnit_Framework_TestCase {
 		fwrite($memory, $raw_message);
 		rewind($memory);
 
-		$result = $looper();
+		$result = call_user_func($looper);
 
 		$expected = ["message", "channel", "Hello World!"];
 
