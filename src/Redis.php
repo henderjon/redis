@@ -7,9 +7,7 @@ namespace Redis;
  * @package henderjon/redis
  * @author @henderjon
  */
-class Redis {
-
-	use RedisProtocolTrait;
+class Redis extends RedisProtocol {
 
 	/**
 	 * the socket handle
@@ -76,7 +74,7 @@ class Redis {
 			$args = reset($args);
 		}
 
-		$commands = [];
+		$commands = array();
 		foreach($args as $arg){
 			$commands[] = $this->protocol($arg);
 		}
@@ -108,7 +106,7 @@ class Redis {
 	 * @return array
 	 */
 	function index2assoc( array $array ){
-		$final = [];
+		$final = array();
 		while( $key = array_shift( $array ) ){
 			$final[ $key ] = array_shift( $array );
 		}
