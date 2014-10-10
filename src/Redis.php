@@ -19,7 +19,7 @@ class Redis {
 	/**
 	 * the db to use
 	 */
-	public  $db = 0;
+	public $db = 0;
 
 	/**
 	 * Connect to a Redis instance. This isn't in the constructor so
@@ -96,7 +96,6 @@ class Redis {
 	 */
 	protected function exec( $string, $count ){
 
-		// list( $count, $string ) = $this->protocol( $commands );
 		$length   = $this->write( $this->handle, $string );
 		$response = $this->read( $this->handle, $count );
 

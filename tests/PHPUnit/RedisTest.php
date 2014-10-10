@@ -29,10 +29,10 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 		$memory = fopen("php://memory", "rw+");
 		$inst = $this->getInst($memory);
 
-		$base = [
-			["sadd", "testkey1", "testvalue1"],
-			["sadd", "testkey2", "testvalue2"],
-		];
+		$base = array(
+			array("sadd", "testkey1", "testvalue1"),
+			array("sadd", "testkey2", "testvalue2"),
+		);
 
 		$inst->pipe($base);
 
@@ -78,14 +78,14 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 	function test_index2assoc(){
 		$inst = new \Redis\Redis;
 
-		$expected = [
+		$expected = array(
 			"one" => "qwer",
 			"two" => "asdf",
-		];
+		);
 
-		$result = $inst->index2assoc([
+		$result = $inst->index2assoc(array(
 			"one", "qwer", "two", "asdf"
-		]);
+		));
 
 		$this->assertEquals($expected, $result);
 	}

@@ -8,12 +8,17 @@ namespace Redis;
  * @author @henderjon
  */
 trait RedisProtocolTrait {
+
 	/**
 	 * Constant line ending according to Redis protocol
 	 */
 	protected $DELIM = "\r\n";
-	/***/
-	protected $PACKSIZE = 1024;
+
+	/**
+	 * the chunk size (in bytes) to read out of the stream at a time
+	 */
+	protected $CHUNK = 1024;
+
 	/**
 	 * Write a string to the handle
 	 * @param Resource $handle The resouce, usually a socket connection
@@ -24,6 +29,7 @@ trait RedisProtocolTrait {
 		$write = fwrite( $handle, $str );
 		return strlen( $str );
 	}
+
 	/**
 	 * Read/Parse a given number of responses out of the given handle
 	 * @param Resource $handle The resouce, usually a socket connection
@@ -56,6 +62,7 @@ trait RedisProtocolTrait {
 		}
 		return $response;
 	}
+
 	/**
 	 * the open ended listener for the SUB of pub/sub
 	 * @param Resource $handle The resouce, usually a socket connection
@@ -63,13 +70,14 @@ trait RedisProtocolTrait {
 	 */
 	protected function sub( $handle ){
 
-		// these values don't change and need to be read out of the stream
-		// before we parse out the response
+		// these values don't change and need to be read
+		// out of the stream before we parse out the response
 		$type  = fgetc($handle); // always "*"
 		$bytes = trim( fgets($handle) ); // always 3
 
 		return $this->read($handle, $bytes);
 	}
+
 	/**
 	 * Read a specific number of bytes out of the handle
 	 * @param Resource $handle The resouce, usually a socket connection
@@ -83,7 +91,7 @@ trait RedisProtocolTrait {
 		$response = "";
 
 		while( $size ){
-			$chunk = $size > $this->PACKSIZE ? $this->PACKSIZE : $size;
+			$chunk = $size > $this->CHUNK ? $this->CHUNK : $size;
 			$response .= fread( $handle, $chunk );
 			$size -= $chunk;
 		}
@@ -92,6 +100,7 @@ trait RedisProtocolTrait {
 		return $response;
 
 	}
+
 	/**
 	 * Take a mixed number of strings and arrays, assuming that they are all
 	 * relevant to ONE command and create a string that conforms to the Redis
