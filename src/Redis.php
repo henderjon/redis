@@ -7,9 +7,7 @@ namespace Redis;
  * @package henderjon/redis
  * @author @henderjon
  */
-class Redis {
-
-	use RedisProtocolTrait;
+class Redis extends RedisProtocol {
 
 	/**
 	 * the socket handle

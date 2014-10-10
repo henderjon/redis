@@ -7,7 +7,7 @@ namespace Redis;
  * @package henderjon/redis
  * @author @henderjon
  */
-trait RedisProtocolTrait {
+class RedisProtocol {
 
 	/**
 	 * Constant line ending according to Redis protocol
