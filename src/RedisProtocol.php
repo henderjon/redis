@@ -37,7 +37,7 @@ class RedisProtocol {
 	 * @return array
 	 */
 	protected function read( $handle, $count ){
-		$response = [];
+		$response = array();
 		for( $n = 0; $n < $count; $n++ ){
 
 			$type  = fgetc($handle);
