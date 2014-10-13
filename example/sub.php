@@ -20,7 +20,6 @@ $redis = (new \Redis\RedisSubscription)->connect($config["hostname"], $config["h
 list($details, $listener) = $redis->subscribe(["channel-one", "channel-two"]);
 
 foreach($details as $info){
-	// print_r($channel);
 	list($type, $channel, $message) = $info;
 	echo "Type:    {$type}\n";
 	echo "Channel: {$channel}\n";
