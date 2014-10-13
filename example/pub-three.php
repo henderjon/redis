@@ -20,15 +20,14 @@ $redis = new \Redis\Redis;
 $redis->connect($config["hostname"], $config["hostport"]);
 
 $messages = [
-	"first message"  => 1,
-	"second message" => 3,
-	"SUBSCRIBE"  => 2,
-	"third message"  => 2,
-	"fourth message" => 2,
-	"fifth message"  => 2,
+	"first message"  => 9,
+	"second message" => 8,
+	"third message"  => 7,
+	"fourth message" => 6,
+	"fifth message"  => 5,
 ];
 
-$channel = "channel-two";
+$channel = "channel-three";
 
 foreach($messages as $message => $sleep){
 	$redis->publish($channel, "{$message} -- {$sleep}");

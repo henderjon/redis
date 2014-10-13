@@ -10,17 +10,33 @@ namespace Redis;
 class RedisSubscription extends Redis {
 
 	/**
+	 * to avoid strings in checking response type
+	 */
+	const TYPE_SUBSCRIBE   = "subscribe";
+
+	/**
+	 * to avoid strings in checking response type
+	 */
+	const TYPE_UNSUBSCRIBE = "unsubscribe";
+
+	/**
+	 * to avoid strings in checking response type
+	 */
+	const TYPE_MESSAGE     = "message";
+
+	/**
 	 * subscribe to channel(s)
 	 *
 	 * @param array $channels An array of channels to subscribe to
-	 * @param bool $p Whether to use a pattern (psubscribe)
+	 * @param bool $pattern Whether to use a pattern (psubscribe)
 	 * @return array
 	 */
-	function subscribe(array $channels, $p = false){
+	function subscribe(array $channels, $pattern = false){
 
-		$command = $this->protocol( ($p ? "psubscribe" : "subscribe"), $channels );
+		$command = $this->protocol( ($pattern ? "psubscribe" : "subscribe"), $channels );
 		$details = $this->exec( $command, count($channels) );
 
+		// all returns: list($type, $channel, $message) = $details;
 		return [$details, function(){
 			return $this->sub($this->handle);
 		}];
