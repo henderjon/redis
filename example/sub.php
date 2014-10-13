@@ -1,21 +1,6 @@
 <?php
 
-require "vendor/autoload.php";
-
-$config = array(
-	"hostname" => "",
-	"hostport" => "",
-	"password" => "",
-	"database" => "",
-);
-
-//overwrite our examples
-$conf = dirname(__DIR__) . "/conf/config.ini";
-if(file_exists($conf)){
-	$config = parse_ini_file($conf);
-}
-
-$redis = (new \Redis\RedisSubscription)->connect($config["hostname"], $config["hostport"]);
+$redis = require(__DIR__ . "/bootstrap.php");
 
 list($details, $listener) = $redis->subscribe(["channel-one", "channel-two"]);
 

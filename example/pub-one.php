@@ -1,23 +1,6 @@
 <?php
 
-require "vendor/autoload.php";
-
-$config = array(
-	"hostname" => "",
-	"hostport" => "",
-	"password" => "",
-	"database" => "",
-);
-
-//overwrite our examples
-$conf = dirname(__DIR__) . "/conf/config.ini";
-if(file_exists($conf)){
-	$config = parse_ini_file($conf);
-}
-
-$redis = new \Redis\Redis;
-
-$redis->connect($config["hostname"], $config["hostport"]);
+$redis = require(__DIR__ . "/bootstrap.php");
 
 $messages = [
 	"first message"  => 2,
