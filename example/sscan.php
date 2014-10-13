@@ -7,7 +7,7 @@ $label = "==== SSCAN =====";
 echo "\n\n{$label}\n\n";
 
 $i = 1;
-while(($i += 1) < 10000){
+while(($i += 1) < 2000){
 	$redis->sadd("testkey", $i);
 }
 
