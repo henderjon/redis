@@ -81,7 +81,7 @@ class Redis {
 			$commands[] = $this->protocol($arg);
 		}
 
-		$command = implode("\r\n", $commands). "\r\n";
+		$command = implode($this->DELIM, $commands). $this->DELIM;
 
 		return $this->exec( $command, count($commands) );
 	}

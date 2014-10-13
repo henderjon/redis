@@ -114,7 +114,7 @@ trait RedisProtocolTrait {
 			$cmd .= $this->DELIM;
 		}
 
-		$command = sprintf("*%d%s%s", $i, $this->DELIM, $cmd);
+		$command = "*{$i}{$this->DELIM}{$cmd}";
 		return $command;
 
 	}
