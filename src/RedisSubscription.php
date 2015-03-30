@@ -16,9 +16,33 @@ class RedisSubscription extends Redis {
 	 * @param bool $p Whether to use a pattern (psubscribe)
 	 * @return array
 	 */
+<<<<<<< Updated upstream
 	function subscribe(array $channels, $p = false){
 
 		$command = $this->protocol( ($p ? "psubscribe" : "subscribe"), $channels );
+=======
+	function subscribeTo(array $channels){
+
+		$command = $this->protocol( "subscribe", $channels );
+		$details = $this->exec( $command, count($channels) );
+
+		// all returns: list($type, $channel, $message) = $details;
+		return [$details, function(){
+			return $this->sub($this->handle);
+		}];
+	}
+
+	/**
+	 * subscribe to channel(s)
+	 *
+	 * @param array $channels An array of channels to subscribe to
+	 * @param bool $pattern Whether to use a pattern (psubscribe)
+	 * @return array
+	 */
+	function pSubscribeTo(array $channels){
+
+		$command = $this->protocol( "psubscribe", $channels );
+>>>>>>> Stashed changes
 		$details = $this->exec( $command, count($channels) );
 
 		$that = $this;

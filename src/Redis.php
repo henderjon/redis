@@ -92,7 +92,7 @@ class Redis extends RedisProtocol {
 	 * @param int $count The number of commands sent/expected responses
 	 * @return mixed
 	 */
-	protected function exec( $string, $count ){
+	protected function exec( $string, $count = 1 ){
 
 		$length   = $this->write( $this->handle, $string );
 		$response = $this->read( $this->handle, $count );
@@ -105,10 +105,29 @@ class Redis extends RedisProtocol {
 	 * @param $array The indexed array
 	 * @return array
 	 */
+<<<<<<< Updated upstream
 	function index2assoc( array $array ){
 		$final = array();
+=======
+	function marshal( array $array ){
+		$final = [];
+>>>>>>> Stashed changes
 		while( $key = array_shift( $array ) ){
 			$final[ $key ] = array_shift( $array );
+		}
+		return $final;
+	}
+
+	/**
+	 * method to take an associatvie array and transform it to an indexed array.
+	 * @param $array The indexed array
+	 * @return array
+	 */
+	function unmarshal( array $array ){
+		$final = [];
+		foreach($array as $k => $v){
+			$final[] = $k;
+			$final[] = $v;
 		}
 		return $final;
 	}
