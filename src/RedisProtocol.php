@@ -8,26 +8,17 @@ namespace Redis;
  * @package henderjon/redis
  * @author @henderjon
  */
-<<<<<<< Updated upstream:src/RedisProtocol.php
 class RedisProtocol {
-=======
-trait RedisProtocolTrait {
->>>>>>> Stashed changes:src/RedisProtocolTrait.php
 
 	/**
 	 * Constant line ending according to Redis protocol
 	 */
 	protected $DELIM = "\r\n";
 
-<<<<<<< Updated upstream:src/RedisProtocol.php
 	/**
 	 * the chunk size (in bytes) to read out of the stream at a time
 	 */
 	protected $CHUNK = 1024;
-=======
-	/***/
-	protected $PACKSIZE = 1024;
->>>>>>> Stashed changes:src/RedisProtocolTrait.php
 
 	/**
 	 * Write a string to the handle
@@ -126,6 +117,8 @@ trait RedisProtocolTrait {
 		$i     = 0;
 
 		for($iter2->rewind(); $iter2->valid(); $iter2->next()){
+			if(is_null($iter2->current())){ continue; }
+
 			++$i;
 			$cmd .= "$" . strlen($iter2->current());
 			$cmd .= $this->DELIM;

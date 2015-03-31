@@ -1,126 +1,291 @@
 <?php
 
+namespace Redis\Traits;
+
+use Redis\RedisException;
+
 trait ServerMethodsTrait {
 
-    function bgrewriteaof() {
-        //  Asynchronously rewrite the append-only file
-    }
+	const KILL_TYPE_NORMAL = 101;
+	const KILL_TYPE_SLAVE  = 102;
+	const KILL_TYPE_PUBSUB = 103;
 
-    function bgsave() {
-        //  Asynchronously save the dataset to disk
-    }
+	protected $kill_types = [
+		101 => "normal",
+		102 => "slave",
+		103 => "pubsub",
+	];
 
-    function clientKill($ip, $id, $type, $addr, $skipme) {
-        //  KILL [ip:port] [ID client-id] [TYPE normal|slave|pubsub] [ADDR ip:port] [SKIPME yes/no] Kill the connection of a client
-    }
+	/**
+	 * Asynchronously rewrite the append-only file
+	 */
+	function bgrewriteaof() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function clientList() {
-        //  LIST Get the list of client connections
-    }
+	/**
+	 * Asynchronously save the dataset to disk
+	 */
+	function bgsave() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function clientGetName() {
-        //  GETNAME Get the current connection name
-    }
+	/**
+	 * Kill the connection of a client
+	 * @params KILL [ip:port] [ID client-id] [TYPE normal|slave|pubsub] [ADDR ip:port] [SKIPME yes/no]
+	 */
+	function clientKillAddr($ip, $skipme = true) {
+		$skipme = $skipme ? "yes" : "no";
+		return $this->exec( $this->protocol( "CLIENT", "KILL", "ADDR", $ip, "SKIPME", $skipme ) );
+	}
 
-    function clientPause($timeout) {
-        //  PAUSE timeout Stop processing commands from clients for some time
-    }
+	/**
+	 * Kill the connection of a client
+	 * @params KILL [ip:port] [ID client-id] [TYPE normal|slave|pubsub] [ADDR ip:port] [SKIPME yes/no]
+	 */
+	function clientKillId($id, $skipme = true) {
+		$skipme = $skipme ? "yes" : "no";
+		return $this->exec( $this->protocol( "CLIENT", "KILL", "ID", $id, "SKIPME", $skipme ) );
+	}
 
-    function clientSetName($name) {
-        //  SETNAME connection-name Set the current connection name
-    }
+	/**
+	 * Kill the connection of a client
+	 * @params KILL [ip:port] [ID client-id] [TYPE normal|slave|pubsub] [ADDR ip:port] [SKIPME yes/no]
+	 */
+	function clientKillType($type, $skipme = true) {
+		if(!array_key_exists($type, $this->kill_types)){
+			throw new RedisException("(" . __FUNCTION__ . ") A valid type is required (e.g. normal|slave|pubsub).");
+		}
 
-    function command() {
-        //  Get array of Redis command details
-    }
+		$type   = $this->kill_types[$type];
+		$skipme = $skipme ? "yes" : "no";
+		return $this->exec( $this->protocol( "CLIENT", "KILL", "TYPE", $type, "SKIPME", $skipme ) );
+	}
 
-    function commandCount() {
-        //  COUNT Get total number of Redis commands
-    }
+	/**
+	 * Get the list of client connections
+	 * @params LIST
+	 */
+	function clientList() {
+		return $this->exec( $this->protocol( "CLIENT", "LIST" ) );
+	}
 
-    function commandGetKeys() {
-        //  GETKEYS Extract keys given a full Redis command
-    }
+	/**
+	 * Get the current connection name
+	 * @params GETNAME
+	 */
+	function clientGetName() {
+		return $this->exec( $this->protocol( "CLIENT", "GETNAME" ) );
+	}
 
-    function commandInfo(array $commands) {
-        //  INFO command-name [command-name ...] Get array of specific Redis command details
-    }
+	/**
+	 * Stop processing commands from clients for some time
+	 * @params PAUSE timeout
+	 */
+	function clientPause($timeout) {
+		return $this->exec( $this->protocol( "CLIENT", "PAUSE", $timeout ) );
+	}
 
-    function configGet($param) {
-        //  GET parameter Get the value of a configuration parameter
-    }
+	/**
+	 * Set the current connection name
+	 * @params SETNAME connection-name
+	 */
+	function clientSetName($name) {
+		return $this->exec( $this->protocol( "CLIENT", "SETNAME", $name ) );
+	}
 
-    function configRewrite() {
-        //  REWRITE Rewrite the configuration file with the in memory configuration
-    }
+	/**
+	 * Get array of Redis command details
+	 */
+	function command() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function configSet($param, $value) {
-        //  SET parameter value Set a configuration parameter to the given value
-    }
+	/**
+	 * Get total number of Redis commands
+	 * @params COUNT
+	 */
+	function commandCount() {
+		return $this->exec( $this->protocol( "COMMAND", "COUNT" ) );
+	}
 
-    function configResetStat() {
-        //  RESETSTAT Reset the stats returned by INFO
-    }
+	/**
+	 * Extract keys given a full Redis command
+	 * @params GETKEYS
+	 */
+	function commandGetKeys() {
+		return $this->exec( $this->protocol( "COMMAND", "GETKEYS" ) );
+	}
 
-    function dbsize() {
-        //  Return the number of keys in the selected database
-    }
+	/**
+	 * Get array of specific Redis command details
+	 * @params INFO command-name [command-name ...]
+	 */
+	function commandInfo(array $commands) {
+		if(count($commands) < 1 ){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one command is required.");
+		}
+		return $this->exec( $this->protocol( "COMMAND", "INFO", $commands ) );
+	}
 
-    function debugObject($key) {
-        //  OBJECT key Get debugging information about a key
-    }
+	/**
+	 * Get the value of a configuration parameter
+	 * @params GET parameter
+	 */
+	function configGet($param) {
+		return $this->exec( $this->protocol( "CONFIG", "GET", $param ) );
+	}
 
-    function debugSegFault() {
-        //  SEGFAULT Make the server crash
-    }
+	/**
+	 * Rewrite the configuration file with the in memory configuration
+	 * @params REWRITE
+	 */
+	function configRewrite() {
+		return $this->exec( $this->protocol( "CONFIG", "REWRITE" ) );
+	}
 
-    function flushall() {
-        //  Remove all keys from all databases
-    }
+	/**
+	 * Set a configuration parameter to the given value
+	 * @params SET parameter value
+	 */
+	function configSet($param, $value) {
+		return $this->exec( $this->protocol( "CONFIG", "SET", $param, $value ) );
+	}
 
-    function flushdb() {
-        //  Remove all keys from the current database
-    }
+	/**
+	 * Reset the stats returned by INFO
+	 * @params RESETSTAT
+	 */
+	function configResetStat() {
+		return $this->exec( $this->protocol( "CONFIG", "RESETSTAT" ) );
+	}
 
-    function info($section = "") {
-        //  [section] Get information and statistics about the server
-    }
+	/**
+	 * Return the number of keys in the selected database
+	 */
+	function dbsize() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function lastsave() {
-        //  Get the UNIX time stamp of the last successful save to disk
-    }
+	/**
+	 * Get debugging information about a key
+	 * @params OBJECT key
+	 */
+	function debugObject($key) {
+		return $this->exec( $this->protocol( "DEBUG", "OBJECT", $key ) );
+	}
 
-    function monitor() {
-        //  Listen for all requests received by the server in real time
-    }
+	/**
+	 * Make the server crash
+	 * @params SEGFAULT
+	 */
+	function debugSegFault() {
+		return $this->exec( $this->protocol( "DEBUG", "SEGFAULT" ) );
+	}
 
-    function role() {
-        //  Return the role of the instance in the context of replication
-    }
+	/**
+	 * Remove all keys from all databases
+	 */
+	function flushall() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function save() {
-        //  Synchronously save the dataset to disk
-    }
+	/**
+	 * Remove all keys from the current database
+	 */
+	function flushdb() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function shutdown($save) {
-        //  [NOSAVE] [SAVE] Synchronously save the dataset to disk and then shut down the server
-    }
+	/**
+	 * Get information and statistics about the server
+	 * @params [section]
+	 */
+	function info($section = "") {
+		return $this->exec( $this->protocol( __FUNCTION__, $section ) );
+	}
 
-    function slaveof($host, $port) {
-        //  host port Make the server a slave of another instance, or promote it as master
-    }
+	/**
+	 * Get the UNIX time stamp of the last successful save to disk
+	 */
+	function lastsave() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function slowlog($subcommand, $arg = "") {
-        //  subcommand [argument] Manages the Redis slow queries log
-    }
+	/**
+	 * Listen for all requests received by the server in real time
+	 */
+	function monitor() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function sync() {
-        //  Internal command used for replication
-    }
+	/**
+	 * Return the role of the instance in the context of replication
+	 */
+	function role() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
-    function time() {
-        //  Return the current server time
-    }
+	/**
+	 * Synchronously save the dataset to disk
+	 */
+	function save() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
+
+	/**
+	 * Synchronously save the dataset to disk and then shut down the server
+	 * @params [NOSAVE] [SAVE]
+	 */
+	function shutdown() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
+
+	/**
+	 * Synchronously save the dataset to disk and then shut down the server
+	 * @params [NOSAVE] [SAVE]
+	 */
+	function shutdownSave() {
+		return $this->exec( $this->protocol( "SHUTDOWN", "SAVE" ) );
+	}
+
+	/**
+	 * Synchronously save the dataset to disk and then shut down the server
+	 * @params [NOSAVE] [SAVE]
+	 */
+	function shutdownNoSave() {
+		return $this->exec( $this->protocol( "SHUTDOWN", "NOSAVE" ) );
+	}
+
+	/**
+	 * Make the server a slave of another instance, or promote it as master
+	 * @params host port
+	 */
+	function slaveof($host, $port) {
+		return $this->exec( $this->protocol( __FUNCTION__, $host, $port ) );
+	}
+
+	/**
+	 * Manages the Redis slow queries log
+	 * @params subcommand [argument]
+	 */
+	function slowlog($subcommand, $arg = "") {
+		return $this->exec( $this->protocol( __FUNCTION__, $subcommand, $arg ) );
+	}
+
+	/**
+	 * Internal command used for replication
+	 */
+	function sync() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
+
+	/**
+	 * Return the current server time
+	 */
+	function time() {
+		return $this->exec( $this->protocol( __FUNCTION__ ) );
+	}
 
 
 }

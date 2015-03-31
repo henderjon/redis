@@ -56,7 +56,7 @@ class Redis extends RedisProtocol {
 		}
 
 		$command = $this->protocol( $func, $args );
-		return $this->exec( $command, 1 );
+		return $this->exe( $command, 1 );
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Redis extends RedisProtocol {
 
 		$command = implode("\r\n", $commands). "\r\n";
 
-		return $this->exec( $command, count($commands) );
+		return $this->exe( $command, count($commands) );
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Redis extends RedisProtocol {
 	 * @param int $count The number of commands sent/expected responses
 	 * @return mixed
 	 */
-	protected function exec( $string, $count = 1 ){
+	protected function exe( $string, $count = 1 ){
 
 		$length   = $this->write( $this->handle, $string );
 		$response = $this->read( $this->handle, $count );
@@ -105,13 +105,9 @@ class Redis extends RedisProtocol {
 	 * @param $array The indexed array
 	 * @return array
 	 */
-<<<<<<< Updated upstream
 	function index2assoc( array $array ){
 		$final = array();
-=======
-	function marshal( array $array ){
-		$final = [];
->>>>>>> Stashed changes
+
 		while( $key = array_shift( $array ) ){
 			$final[ $key ] = array_shift( $array );
 		}

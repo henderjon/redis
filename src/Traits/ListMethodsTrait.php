@@ -1,73 +1,159 @@
 <?php
 
+namespace Redis\Traits;
+
+use Redis\RedisException;
+
 trait ListMethodsTrait {
 
-    function blpop($key, array $key, $timeout) {
-        //  key [key ...] timeout Remove and get the first element in a list, or block until one is available
-    }
+	/**
+	 * Remove and get the first element in a list, or block until one is available
+	 * @params key [key ...] timeout
+	 */
+	function blpop($key, array $keys, $timeout = 0) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $keys, $timeout ) );
+	}
 
-    function brpop($key, array $key, $timeout) {
-        //  key [key ...] timeout Remove and get the last element in a list, or block until one is available
-    }
+	/**
+	 * Remove and get the last element in a list, or block until one is available
+	 * @params key [key ...] timeout
+	 */
+	function brpop($key, array $keys, $timeout = 0) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $keys, $timeout ) );
+	}
 
-    function brpoplpush($source, $destination, $timeout) {
-        //  source destination timeout Pop a value from a list, push it to another list and return it; or block until one is available
-    }
+	/**
+	 * Pop a value from a list, push it to another list and return it; or block until one is available
+	 * @params source destination timeout
+	 */
+	function brpoplpush($source, $destination, $timeout = 0) {
+		return $this->exec( $this->protocol( __FUNCTION__, $source, $destination, $timeout ) );
+	}
 
-    function lindex($key, $index) {
-        //  key index Get an element from a list by its index
-    }
+	/**
+	 * Get an element from a list by its index
+	 * @params key index
+	 */
+	function lindex($key, $index) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $index ) );
+	}
 
-    function linsert($key, $position, $pivot, $value) {
-        //  key BEFORE|AFTER pivot value Insert an element before or after another element in a list
-    }
+	/**
+	 * Insert an element before or after another element in a list
+	 * @params key BEFORE|AFTER pivot value
+	 */
+	function linsert($key, $before = true, $pivot, $value) {
+		$position = $before ? "BEFORE" : "AFTER";
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $before, $pivot, $value ) );
+	}
 
-    function llen($key) {
-        //  key Get the length of a list
-    }
+	/**
+	 * Get the length of a list
+	 * @params key
+	 */
+	function llen($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function lpop($key) {
-        //  key Remove and get the first element in a list
-    }
+	/**
+	 * Remove and get the first element in a list
+	 * @params key
+	 */
+	function lpop($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function lpush($key, array $values) {
-        //  key value [value ...] Prepend one or multiple values to a list
-    }
+	/**
+	 * Prepend one or multiple values to a list
+	 * @params key value [value ...]
+	 */
+	function lpush($key, array $values) {
+		if(count($values) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one value is required.");
+		}
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $values ) );
+	}
 
-    function lpushx($key, $value) {
-        //  key value Prepend a value to a list, only if the list exists
-    }
+	/**
+	 * Prepend a value to a list, only if the list exists
+	 * @params key value
+	 */
+	function lpushx($key, $value) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $value ) );
+	}
 
-    function lrange($key, $start, $stop) {
-        //  key start stop Get a range of elements from a list
-    }
+	/**
+	 * Get a range of elements from a list
+	 * @params key start stop
+	 */
+	function lrange($key, $start, $stop) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $start, $stop ) );
+	}
 
-    function lrem($key, $count, $value) {
-        //  key count value Remove elements from a list
-    }
+	/**
+	 * Remove elements from a list
+	 * @params key count value
+	 */
+	function lrem($key, $count, $value) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $count, $value ) );
+	}
 
-    function lset($key, $index, $value) {
-        //  key index value Set the value of an element in a list by its index
-    }
+	/**
+	 * Set the value of an element in a list by its index
+	 * @params key index value
+	 */
+	function lset($key, $index, $value) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $index, $value ) );
+	}
 
-    function ltrim($key, $start, $stop) {
-        //  key start stop Trim a list to the specified range
-    }
+	/**
+	 * Trim a list to the specified range
+	 * @params key start stop
+	 */
+	function ltrim($key, $start, $stop) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $start, $stop ) );
+	}
 
-    function rpop($key) {
-        //  key Remove and get the last element in a list
-    }
+	/**
+	 * Remove and get the last element in a list
+	 * @params key
+	 */
+	function rpop($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function rpoplpush($source, $destination) {
-        //  source destination Remove the last element in a list, prepend it to another list and return it
-    }
+	/**
+	 * Remove the last element in a list, prepend it to another list and return it
+	 * @params source destination
+	 */
+	function rpoplpush($source, $destination) {
+		return $this->exec( $this->protocol( __FUNCTION__, $source, $destination ) );
+	}
 
-    function rpush($key, array $values) {
-        //  key value [value ...] Append one or multiple values to a list
-    }
+	/**
+	 * Append one or multiple values to a list
+	 * @params key value [value ...]
+	 */
+	function rpush($key, array $values) {
+		if(count($values) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one value is required.");
+		}
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $values ) );
+	}
 
-    function rpushx($key, $value) {
-        //  key value Append a value to a list, only if the list exists
-    }
+	/**
+	 * Append a value to a list, only if the list exists
+	 * @params key value
+	 */
+	function rpushx($key, $value) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $value ) );
+	}
 
 }
+

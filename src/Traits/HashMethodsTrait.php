@@ -1,65 +1,142 @@
 <?php
 
+namespace Redis\Traits;
+
+use Redis\RedisException;
+
 trait HashMethodsTrait {
 
-    function hdel($key, array $fields) {
-        //  key field [field ...] Delete one or more hash fields
-    }
+	/**
+	 * Delete one or more hash fields
+	 * key field [field ...]
+	 */
+	function hdel($key, array $fields) {
+		if(count($fields) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one field is required.");
+		}
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $fields ) );
+	}
 
-    function hexists($key, $field) {
-        //  key field Determine if a hash field exists
-    }
+	/**
+	 * Determine if a hash field exists
+	 * key field
+	 */
+	function hexists($key, $field) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field ) );
+	}
 
-    function hget($key, $field) {
-        //  key field Get the value of a hash field
-    }
+	/**
+	 * Get the value of a hash field
+	 * key field
+	 */
+	function hget($key, $field) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field ) );
+	}
 
-    function hgetall($key) {
-        //  key Get all the fields and values in a hash
-    }
+	/**
+	 * Get all the fields and values in a hash
+	 * key
+	 */
+	function hgetall($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function hincrby($key, $field, $inrc) {
-        //  key field increment Increment the integer value of a hash field by the given number
-    }
+	/**
+	 * Increment the integer value of a hash field by the given number
+	 * key field increment
+	 */
+	function hincrby($key, $field, $inrc) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $inrc ) );
+	}
 
-    function hincrbyfloat($key, $field, $incr) {
-        //  key field increment Increment the float value of a hash field by the given amount
-    }
+	/**
+	 * Increment the float value of a hash field by the given amount
+	 * key field increment
+	 */
+	function hincrbyfloat($key, $field, $incr) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $inrc ) );
+	}
 
-    function hkeys($key) {
-        //  key Get all the fields in a hash
-    }
+	/**
+	 * Get all the fields in a hash
+	 * key
+	 */
+	function hkeys($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function hlen($key) {
-        //  key Get the number of fields in a hash
-    }
+	/**
+	 * Get the number of fields in a hash
+	 * key
+	 */
+	function hlen($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function hmget($key, array $fields) {
-        //  key field [field ...] Get the values of all the given hash fields
-    }
+	/**
+	 * Get the values of all the given hash fields
+	 * key field [field ...]
+	 */
+	function hmget($key, array $fields) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function hmset($key, array $map) {
-        //  key field value [field value ...] Set multiple hash fields to multiple values
-    }
+	/**
+	 * Set multiple hash fields to multiple values
+	 * key field value [field value ...]
+	 */
+	function hmset($key, array $map) {
+        if(count($map) < 2 && (count($map) % 2 != 0)){
+            throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
+        }
+        return $this->exec( $this->protocol( __FUNCTION__, $key, $map ) );
+	}
 
-    function hset($key, $field, $value) {
-        //  key field value Set the string value of a hash field
-    }
+	/**
+	 * Set the string value of a hash field
+	 * key field value
+	 */
+	function hset($key, $field, $value) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $value ) );
+	}
 
-    function hsetnx($key, $field, $value) {
-        //  key field value Set the value of a hash field, only if the field does not exist
-    }
+	/**
+	 * Set the value of a hash field, only if the field does not exist
+	 * key field value
+	 */
+	function hsetnx($key, $field, $value) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $value ) );
+	}
 
-    function hstrlen($key, $field) {
-        //  key field Get the length of the value of a hash field
-    }
+	/**
+	 * Get the length of the value of a hash field
+	 * key field
+	 */
+	function hstrlen($key, $field) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $field ) );
+	}
 
-    function hvals($key) {
-        //  key Get all the values in a hash
-    }
+	/**
+	 * Get all the values in a hash
+	 * key
+	 */
+	function hvals($key) {
+		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    function hscan($key, $cursor, $pattern, $count) {
-        //  key cursor [MATCH pattern] [COUNT count] Incrementally iterate hash fields and associated values
-    }
+	/**
+	 * Incrementally iterate hash fields and associated values
+	 * key cursor [MATCH pattern] [COUNT count]
+	 */
+	function hscan($key, $cursor, $pattern = "", $count = 10) {
+		if($pattern){
+			$pattern = "MATCH {$pattern}";
+		}
+		if($count){
+			$count = "COUNT {$count}";
+		}
+
+		return $this->exec( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count ) );
+	}
 
 }

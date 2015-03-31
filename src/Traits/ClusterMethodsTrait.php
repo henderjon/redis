@@ -1,78 +1,177 @@
 <?php
 
+namespace Redis\Traits;
+
+use Redis\RedisException;
+
 trait ClusterMethodsTrait {
 
-    function clusterAddSlots(array $slots) {
-        //  ADDSLOTS slot [slot ...] Assign new hash slots to receiving node
-    }
+	/**
+	 * Assign new hash slots to receiving node
+	 * ADDSLOTS slot [slot ...]
+	 */
+	function clusterAddSlots(array $slots) {
+		if(count($slots) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one slot is required.");
+		}
+		return $this->exec( $this->protocol( "CLUSTER", "GETNAME", $slots ) );
+	}
 
-    function clusterCountFailureReports($node_id) {
-        //  COUNT-FAILURE-REPORTS node-id Return the number of failure reports active for a given node
-    }
+	/**
+	 * Return the number of failure reports active for a given node
+	 * COUNT-FAILURE-REPORTS node-id
+	 */
+	function clusterCountFailureReports($node_id) {
+		return $this->exec( $this->protocol( "CLUSTER", "COUNT-FAILURE-REPORTS", $node_id ) );
+	}
 
-    function clusterCountKeysInSlot($slot) {
-        //  COUNTKEYSINSLOT slot Return the number of local keys in the specified hash slot
-    }
+	/**
+	 * Return the number of local keys in the specified hash slot
+	 * COUNTKEYSINSLOT slot
+	 */
+	function clusterCountKeysInSlot($slot) {
+		return $this->exec( $this->protocol( "CLUSTER", "COUNTKEYSINSLOT", $slot ) );
+	}
 
-    function clusterDelSlots(array $slots) {
-        //  DELSLOTS slot [slot ...] Set hash slots as unbound in receiving node
-    }
+	/**
+	 * Set hash slots as unbound in receiving node
+	 * DELSLOTS slot [slot ...]
+	 */
+	function clusterDelSlots(array $slots) {
+		if(count($slots) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one slot is required.");
+		}
+		return $this->exec( $this->protocol( "CLUSTER", "DELSLOTS", $slots ) );
+	}
 
-    function clusterFailover($slave) {
-        //  FAILOVER [FORCE|TAKEOVER] Forces a slave to perform a manual failover of its master.
-    }
+	/**
+	 * Forces a slave to perform a manual failover of its master.
+	 * FAILOVER [FORCE|TAKEOVER]
+	 */
+	function clusterFailover() {
+		return $this->exec( $this->protocol( "CLUSTER", "FAILOVER" ) );
+	}
 
-    function clusterForget($node_id) {
-        //  FORGET node-id Remove a node from the nodes table
-    }
+	/**
+	 * Forces a slave to perform a manual failover of its master.
+	 * FAILOVER [FORCE|TAKEOVER]
+	 */
+	function clusterFailoverForce() {
+		return $this->exec( $this->protocol( "CLUSTER", "FAILOVER", "FORCE" ) );
+	}
 
-    function clusterGetKeysInSlot($slot, $count) {
-        //  GETKEYSINSLOT slot count Return local key names in the specified hash slot
-    }
+	/**
+	 * Forces a slave to perform a manual failover of its master.
+	 * FAILOVER [FORCE|TAKEOVER]
+	 */
+	function clusterFailoverTakeover() {
+		return $this->exec( $this->protocol( "CLUSTER", "FAILOVER", "TAKEOVER" ) );
+	}
 
-    function clusterInfo() {
-        //  INFO Provides info about Redis Cluster node state
-    }
+	/**
+	 * Remove a node from the nodes table
+	 * FORGET node-id
+	 */
+	function clusterForget($node_id) {
+		return $this->exec( $this->protocol( "CLUSTER", "FORGET", $node_id ) );
+	}
 
-    function clusterKeySlot($key) {
-        //  KEYSLOT key Returns the hash slot of the specified key
-    }
+	/**
+	 * Return local key names in the specified hash slot
+	 * GETKEYSINSLOT slot count
+	 */
+	function clusterGetKeysInSlot($slot, $count) {
+		return $this->exec( $this->protocol( "CLUSTER", "GETKEYSINSLOT", $slot, $count ) );
+	}
 
-    function clusterMeet($ip, $port) {
-        //  MEET ip port Force a node cluster to handshake with another node
-    }
+	/**
+	 * Provides info about Redis Cluster node state
+	 * INFO
+	 */
+	function clusterInfo() {
+		return $this->exec( $this->protocol( "CLUSTER", "INFO" ) );
+	}
 
-    function clusterNodes() {
-        //  NODES Get Cluster config for the node
-    }
+	/**
+	 * Returns the hash slot of the specified key
+	 * KEYSLOT key
+	 */
+	function clusterKeySlot($key) {
+		return $this->exec( $this->protocol( "CLUSTER", "KEYSLOT", $key ) );
+	}
 
-    function clusterReplicate($node_id) {
-        //  REPLICATE node-id Reconfigure a node as a slave of the specified master node
-    }
+	/**
+	 * Force a node cluster to handshake with another node
+	 * MEET ip port
+	 */
+	function clusterMeet($ip, $port) {
+		return $this->exec( $this->protocol( "CLUSTER", "MEET", $ip, $port ) );
+	}
 
-    function clusterReset($hard) {
-        //  RESET [HARD|SOFT] Reset a Redis Cluster node
-    }
+	/**
+	 * Get Cluster config for the node
+	 * NODES
+	 */
+	function clusterNodes() {
+		return $this->exec( $this->protocol( "CLUSTER", "NODES" ) );
+	}
 
-    function clusterSaveConfig() {
-        //  SAVECONFIG Forces the node to save cluster state on disk
-    }
+	/**
+	 * Reconfigure a node as a slave of the specified master node
+	 * REPLICATE node-id
+	 */
+	function clusterReplicate($node_id) {
+		return $this->exec( $this->protocol( "CLUSTER", "REPLICATE", $node_id ) );
+	}
 
-    function clusterSetConfigEpoch() {
-        //  SET-CONFIG-EPOCH config-epoch Set the configuration epoch in a new node
-    }
+	/**
+	 * Reset a Redis Cluster node
+	 * RESET [HARD|SOFT]
+	 */
+	function clusterReset($hard = false) {
+		$hard = $hard ? "HARD" : "SOFT";
+		return $this->exec( $this->protocol( "CLUSTER", "RESET", $hard ) );
+	}
 
-    function clusterSetSlot($slot, $status, $node_id) {
-        //  SETSLOT slot IMPORTING|MIGRATING|STABLE|NODE [node-id] Bind an hash slot to a specific node
-    }
+	/**
+	 * Forces the node to save cluster state on disk
+	 * SAVECONFIG
+	 */
+	function clusterSaveConfig() {
+		return $this->exec( $this->protocol( "CLUSTER", "SAVECONFIG" ) );
+	}
 
-    function clusterSlaves($node_id) {
-        //  SLAVES node-id List slave nodes of the specified master node
-    }
+	/**
+	 * Set the configuration epoch in a new node
+	 * SET-CONFIG-EPOCH config-epoch
+	 */
+	function clusterSetConfigEpoch($epoch) {
+		return $this->exec( $this->protocol( "CLUSTER", "SET-CONFIG-EPOCH", $epoch ) );
+	}
 
-    function clusterSlots() {
-        //  SLOTS Get array of Cluster slot to node mappings
-    }
+	/**
+	 * Bind an hash slot to a specific node
+	 * SETSLOT slot IMPORTING|MIGRATING|STABLE|NODE [node-id]
+	 */
+	function clusterSetSlot($slot, $status, $node_id) {
+		throw new RedisException("(" . __FUNCTION__ . ") Not implemented.");
+	}
+
+	/**
+	 * List slave nodes of the specified master node
+	 * SLAVES node-id
+	 */
+	function clusterSlaves($node_id) {
+		return $this->exec( $this->protocol( "CLUSTER", "SLAVES", $node_id ) );
+	}
+
+	/**
+	 * Get array of Cluster slot to node mappings
+	 * SLOTS
+	 */
+	function clusterSlots() {
+		return $this->exec( $this->protocol( "CLUSTER", "SLOTS" ) );
+	}
 
 
 }

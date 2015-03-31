@@ -1,25 +1,47 @@
 <?php
 
+namespace Redis\Traits;
+
+use Redis\RedisException;
+
 trait ConnetionMethodsTrait {
 
+    /**
+     * Authenticate to the server
+     * password
+     */
     function auth($password) {
-        //  password Authenticate to the server
+        return $this->exec( $this->protocol( __FUNCTION__, $password ) );
     }
 
+    /**
+     * Echo the given string
+     * message
+     */
     function echo($message) {
-        //  message Echo the given string
+        return $this->exec( $this->protocol( __FUNCTION__, $message ) );
     }
 
+    /**
+     * Ping the server
+     */
     function ping() {
-        //  Ping the server
+        return $this->exec( $this->protocol( __FUNCTION__ ) );
     }
 
+    /**
+     * Close the connection
+     */
     function quit() {
-        //  Close the connection
+        return $this->exec( $this->protocol( __FUNCTION__ ) );
     }
 
+    /**
+     * Change the selected database for the current connection
+     * index
+     */
     function select($index) {
-        //  index Change the selected database for the current connection
+        return $this->exec( $this->protocol( __FUNCTION__, $index ) );
     }
 
 

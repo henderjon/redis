@@ -1,231 +1,287 @@
 <?php
 
+namespace Redis\Traits;
+
+use Redis\RedisException;
+
 trait StringMethodsTrait {
 
-    /**
-     *  Append a value to a key
-     */
-    function append($key, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $value ) );
-    }
+	abstract function getExpx($expx);
 
-    /**
-     * Count set bits in a string
-     * for complete documentation: http://redis.io/commands#string
-     * @params key [start end]
-     */
-    function bitcount($key, $start = "", $end = "") {
-        return $this->exec( $this->protocol( __METHOD__, $key, $start, $end ) );
-    }
+	abstract function getNxxx($expx);
 
-    /**
-     * Perform bitwise operations between strings
-     * for complete documentation: http://redis.io/commands#string
-     * @params operation destkey key [key ...]
-     */
-    function bitop($operation, $destkey, array $keys) {
-        if(count($keys) < 1){
-            throw new RedisException("(" . __METHOD__ . ") At least one key is required.");
-        }
+	/**
+	 *  Append a value to a key
+	 */
+	public function append($key, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+	}
 
-        return $this->exec( $this->protocol( __METHOD__, $operation, $destkey, $keys ) );
-    }
+	/**
+	 * Count set bits in a string
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key [start end]
+	 */
+	public function bitcount($key, $start = null, $end = null) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $end ) );
+	}
 
-    /**
-     * Find first bit set or clear in a string
-     * for complete documentation: http://redis.io/commands#string
-     * @params key bit [start] [end]
-     */
-    function bitpos($key, $bit, $start = "", $end = "") {
-        return $this->exec( $this->protocol( __METHOD__, $key, $bit, $start, $end ) );
-    }
+	/**
+	 * Perform bitwise operations between strings
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params operation destkey key [key ...]
+	 */
+	public function bitopAnd($destkey, array $keys) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
 
-    /**
-     * Decrement the integer value of a key by one
-     * for complete documentation: http://redis.io/commands#string
-     * @params key
-     */
-    function decr($key) {
-        return $this->exec( $this->protocol( __METHOD__, $key ) );
-    }
+		return $this->exe( $this->protocol( __FUNCTION__, "AND", $destkey, $keys ) );
+	}
 
-    /**
-     * Decrement the integer value of a key by the given number
-     * for complete documentation: http://redis.io/commands#string
-     * @params key decrement
-     */
-    function decrby($key, $decr) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $decr ) );
-    }
+	/**
+	 * Perform bitwise operations between strings
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params operation destkey key [key ...]
+	 */
+	public function bitopOr($destkey, array $keys) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
 
-    /**
-     * Get the value of a key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key
-     */
-    function get($key) {
-        return $this->exec( $this->protocol( __METHOD__, $key ) );
-    }
+		return $this->exe( $this->protocol( __FUNCTION__, "OR", $destkey, $keys ) );
+	}
 
-    /**
-     * Returns the bit value at offset in the string value stored at key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key offset
-     */
-    function getbit($key, $offset) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $offset ) );
-    }
+	/**
+	 * Perform bitwise operations between strings
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params operation destkey key [key ...]
+	 */
+	public function bitopXor($destkey, array $keys) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
 
-    /**
-     * Get a substring of the string stored at a key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key start end
-     */
-    function getrange($key, $start, $end) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $start, $end ) );
-    }
+		return $this->exe( $this->protocol( __FUNCTION__, "XOR", $destkey, $keys ) );
+	}
 
-    /**
-     * Set the string value of a key and return its old value
-     * for complete documentation: http://redis.io/commands#string
-     * @params key value
-     */
-    function getset($key, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $value ) );
-    }
+	/**
+	 * Perform bitwise operations between strings
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params operation destkey key [key ...]
+	 */
+	public function bitopNot($destkey, array $keys) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
 
-    /**
-     * Increment the integer value of a key by one
-     * for complete documentation: http://redis.io/commands#string
-     * @params key
-     */
-    function incr($key) {
-        return $this->exec( $this->protocol( __METHOD__, $key ) );
-    }
+		return $this->exe( $this->protocol( __FUNCTION__, "NOT", $destkey, $keys ) );
+	}
 
-    /**
-     * Increment the integer value of a key by the given amount
-     * for complete documentation: http://redis.io/commands#string
-     * @params key increment
-     */
-    function incrby($key, $incr) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $incr ) );
-    }
+	/**
+	 * Find first bit set or clear in a string
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key bit [start] [end]
+	 */
+	public function bitpos($key, $bit, $start = null, $end = null) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $bit, $start, $end ) );
+	}
 
-    /**
-     * Increment the float value of a key by the given amount
-     * for complete documentation: http://redis.io/commands#string
-     * @params key increment
-     */
-    function incrbyfloat($key, $incr) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $incr ) );
-    }
+	/**
+	 * Decrement the integer value of a key by one
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key
+	 */
+	public function decr($key) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    /**
-     * Get the values of all the given keys
-     * for complete documentation: http://redis.io/commands#string
-     * @params key [key ...]
-     */
-    function mget(array $keys) {
-        if(count($keys) < 1){
-            throw new RedisException("(" . __METHOD__ . ") At least one key is required.");
-        }
-        return $this->exec( $this->protocol( __METHOD__, $keys ) );
-    }
+	/**
+	 * Decrement the integer value of a key by the given number
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key decrement
+	 */
+	public function decrby($key, $decr) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $decr ) );
+	}
 
-    /**
-     * Set multiple keys to multiple values
-     * for complete documentation: http://redis.io/commands#string
-     * @params key value [key value ...]
-     */
-    function mset(array $map) {
-        if(count($map) < 2 || (count($map) % 2 != 0)){
-            throw new RedisException("(" . __METHOD__ . ") An even number of args is required (e.g. [key, value]).");
-        }
-        return $this->exec( $this->protocol( __METHOD__, $map ) );
-    }
+	/**
+	 * Get the value of a key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key
+	 */
+	public function get($key) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    /**
-     * Set multiple keys to multiple values, only if none of the keys exist
-     * for complete documentation: http://redis.io/commands#string
-     * @params key value [key value ...]
-     */
-    function msetnx(array $map) {
-        if(count($map) < 2 || (count($map) % 2 != 0)){
-            throw new RedisException("(" . __METHOD__ . ") An even number of args is required (e.g. [key, value]).");
-        }
-        return $this->exec( $this->protocol( __METHOD__, $map ) );
-    }
+	/**
+	 * Returns the bit value at offset in the string value stored at key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key offset
+	 */
+	public function getbit($key, $offset) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $offset ) );
+	}
 
-    /**
-     * Set the value and expiration in milliseconds of a key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key milliseconds value
-     */
-    function psetex($key, $milliseconds, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $milliseconds, $value ) );
-    }
+	/**
+	 * Get a substring of the string stored at a key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key start end
+	 */
+	public function getrange($key, $start, $end) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $end ) );
+	}
 
-    /**
-     * Set the string value of a key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key value [EX seconds] [PX milliseconds] [NX|XX]
-     */
-    function set($key, $value, $expire = "", $expx = "", $nxxx = "") {
-        if($expire && !$expx){
-            throw new RedisException("(" . __METHOD__ . ") You must specify either seconds or milliseconds.");
-        }
+	/**
+	 * Set the string value of a key and return its old value
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key value
+	 */
+	public function getset($key, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+	}
 
-        if($expire && $expx){
-            $expire = "{$expx} {$expire}";
-        }
-        return $this->exec( $this->protocol( __METHOD__, $key, $value, $expire, $nxxx ) );
-    }
+	/**
+	 * Increment the integer value of a key by one
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key
+	 */
+	public function incr($key) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+	}
 
-    /**
-     * Sets or clears the bit at offset in the string value stored at key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key offset value
-     */
-    function setbit($key, $offset, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $offset, $value ) );
-    }
+	/**
+	 * Increment the integer value of a key by the given amount
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key increment
+	 */
+	public function incrby($key, $incr) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $incr ) );
+	}
 
-    /**
-     * Set the value and expiration of a key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key seconds value
-     */
-    function setex($key, $seconds, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $seconds, $value ) );
-    }
+	/**
+	 * Increment the float value of a key by the given amount
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key increment
+	 */
+	public function incrbyfloat($key, $incr) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $incr ) );
+	}
 
-    /**
-     * Set the value of a key, only if the key does not exist
-     * for complete documentation: http://redis.io/commands#string
-     * @params key value
-     */
-    function setnx($key, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $value ) );
-    }
+	/**
+	 * Get the values of all the given keys
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key [key ...]
+	 */
+	public function mget(array $keys) {
+		if(count($keys) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
+		}
+		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+	}
 
-    /**
-     * Overwrite part of a string at key starting at the specified offset
-     * for complete documentation: http://redis.io/commands#string
-     * @params key offset value
-     */
-    function setrange($key, $offset, $value) {
-        return $this->exec( $this->protocol( __METHOD__, $key, $offset, $value ) );
-    }
+	/**
+	 * Set multiple keys to multiple values
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key value [key value ...]
+	 */
+	public function mset(array $map) {
+		if(count($map) < 2 || (count($map) % 2 != 0)){
+			throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
+		}
+		return $this->exe( $this->protocol( __FUNCTION__, $map ) );
+	}
 
-    /**
-     * Get the length of the value stored in a key
-     * for complete documentation: http://redis.io/commands#string
-     * @params key
-     */
-    function strlen($key) {
-        return $this->exec( $this->protocol( __METHOD__, $key ) );
-    }
+	/**
+	 * Set multiple keys to multiple values, only if none of the keys exist
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key value [key value ...]
+	 */
+	public function msetnx(array $map) {
+		if(count($map) < 2 || (count($map) % 2 != 0)){
+			throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
+		}
+		return $this->exe( $this->protocol( __FUNCTION__, $map ) );
+	}
+
+	/**
+	 * Set the value and expiration in milliseconds of a key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key milliseconds value
+	 */
+	public function psetex($key, $milliseconds, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $milliseconds, $value ) );
+	}
+
+	/**
+	 * Set the string value of a key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key value [EX seconds] [PX milliseconds] [NX|XX]
+	 */
+	public function set($key, $value, $expire = null, $expx = null, $nxxx = null) {
+		if($expire && !$expx){
+			throw new RedisException("(" . __FUNCTION__ . ") You must specify either seconds or milliseconds.");
+		}
+
+		if(!is_null($expx) && !($expx = $this->getExpx($expx))){
+			throw new RedisException("(" . __FUNCTION__ . ") Invalid identifier for seconds/milliseconds. (e.g. EX|PX)");
+		}
+
+		if(!is_null($nxxx) && !($nxxx = $this->getNxxx($nxxx))){
+			throw new RedisException("(" . __FUNCTION__ . ") Invalid identifier for `set` operation. (e.g. NX|XX)");
+		}
+
+		if($expire && $expx){
+			$expire = [$expx, $expire];
+		}
+
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $value, $expire, $nxxx ) );
+	}
+
+	/**
+	 * Sets or clears the bit at offset in the string value stored at key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key offset value
+	 */
+	public function setbit($key, $offset, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $offset, $value ) );
+	}
+
+	/**
+	 * Set the value and expiration of a key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key seconds value
+	 */
+	public function setex($key, $seconds, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $seconds, $value ) );
+	}
+
+	/**
+	 * Set the value of a key, only if the key does not exist
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key value
+	 */
+	public function setnx($key, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+	}
+
+	/**
+	 * Overwrite part of a string at key starting at the specified offset
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key offset value
+	 */
+	public function setrange($key, $offset, $value) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $offset, $value ) );
+	}
+
+	/**
+	 * Get the length of the value stored in a key
+	 * for complete documentation: http://redis.io/commands#string
+	 * @params key
+	 */
+	public function strlen($key) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+	}
 
 
 }
