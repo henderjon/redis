@@ -39,4 +39,15 @@ class RedisConstants extends Redis {
 	const ZMIN = "-";
 	const ZMAX = "+";
 
+	const KILL_TYPE_NORMAL = "normal";
+	const KILL_TYPE_SLAVE  = "slave";
+	const KILL_TYPE_PUBSUB = "pubsub";
+
+	function getKillType($type){
+		if(!in_array($type, [static::KILL_TYPE_NORMAL, static::KILL_TYPE_SLAVE, static::KILL_TYPE_PUBSUB])){
+			return null;
+		}
+		return $type;
+	}
+
 }

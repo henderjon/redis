@@ -16,7 +16,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one member is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $members ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $members ) );
 	}
 
 	/**
@@ -25,7 +25,7 @@ trait SetMethodsTrait {
 	 * @params key
 	 */
 	function scard($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -38,7 +38,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
 	}
 
 	/**
@@ -51,7 +51,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $dest, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $dest, $keys ) );
 	}
 
 	/**
@@ -64,7 +64,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
 	}
 
 	/**
@@ -77,7 +77,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $dest, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $dest, $keys ) );
 	}
 
 	/**
@@ -86,7 +86,7 @@ trait SetMethodsTrait {
 	 * @params key member
 	 */
 	function sismember($key, $member) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $member ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $member ) );
 	}
 
 	/**
@@ -95,7 +95,7 @@ trait SetMethodsTrait {
 	 * @params key
 	 */
 	function smembers($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -104,7 +104,7 @@ trait SetMethodsTrait {
 	 * @params source destination member
 	 */
 	function smove($source, $dest, $member) {
-		return $this->exec( $this->protocol( __FUNCTION__, $source, $dest, $member ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $source, $dest, $member ) );
 	}
 
 	/**
@@ -113,7 +113,7 @@ trait SetMethodsTrait {
 	 * @params key [count]
 	 */
 	function spop($key, $count = 1) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $count ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $count ) );
 	}
 
 	/**
@@ -122,7 +122,7 @@ trait SetMethodsTrait {
 	 * @params key [count]
 	 */
 	function srandmember($key, $count = 1) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $count ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $count ) );
 	}
 
 	/**
@@ -135,7 +135,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one member is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $members ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $members ) );
 	}
 
 	/**
@@ -148,7 +148,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
 	}
 
 	/**
@@ -161,7 +161,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $dest, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $dest, $keys ) );
 	}
 
 	/**
@@ -169,25 +169,17 @@ trait SetMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#set
 	 * @params key cursor [MATCH pattern] [COUNT count]
 	 */
-	function sscan($key, $cursor, $pattern = "", $count = "") {
-		if(count($keys) < 1){
-			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
-		}
-
-		$args = [$key, $cursor];
+	function sscan($key, $cursor, $pattern = null, $count = null) {
 
 		if($pattern){
-			$args[] = "MATCH";
-			$args[] = $pattern;
+			$pattern = ["match", $pattern];
 		}
 
 		if($count){
-			$args[] = "COUNT";
-			$args[] = $count;
+			$count = ["count", $count];
 		}
 
-
-		return $this->exec( $this->protocol( __FUNCTION__, $args ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count) );
 	}
 
 

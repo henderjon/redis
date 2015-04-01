@@ -6,28 +6,18 @@ use Redis\RedisException;
 
 trait ServerMethodsTrait {
 
-	const KILL_TYPE_NORMAL = 101;
-	const KILL_TYPE_SLAVE  = 102;
-	const KILL_TYPE_PUBSUB = 103;
-
-	protected $kill_types = [
-		101 => "normal",
-		102 => "slave",
-		103 => "pubsub",
-	];
-
 	/**
 	 * Asynchronously rewrite the append-only file
 	 */
 	function bgrewriteaof() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Asynchronously save the dataset to disk
 	 */
 	function bgsave() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
@@ -36,7 +26,7 @@ trait ServerMethodsTrait {
 	 */
 	function clientKillAddr($ip, $skipme = true) {
 		$skipme = $skipme ? "yes" : "no";
-		return $this->exec( $this->protocol( "CLIENT", "KILL", "ADDR", $ip, "SKIPME", $skipme ) );
+		return $this->exe( $this->protocol( "client", "kill", "addr", $ip, "skipme", $skipme ) );
 	}
 
 	/**
@@ -45,7 +35,7 @@ trait ServerMethodsTrait {
 	 */
 	function clientKillId($id, $skipme = true) {
 		$skipme = $skipme ? "yes" : "no";
-		return $this->exec( $this->protocol( "CLIENT", "KILL", "ID", $id, "SKIPME", $skipme ) );
+		return $this->exe( $this->protocol( "client", "kill", "id", $id, "skipme", $skipme ) );
 	}
 
 	/**
@@ -53,13 +43,12 @@ trait ServerMethodsTrait {
 	 * @params KILL [ip:port] [ID client-id] [TYPE normal|slave|pubsub] [ADDR ip:port] [SKIPME yes/no]
 	 */
 	function clientKillType($type, $skipme = true) {
-		if(!array_key_exists($type, $this->kill_types)){
+		if(!($type = $this->getKillType($type))){
 			throw new RedisException("(" . __FUNCTION__ . ") A valid type is required (e.g. normal|slave|pubsub).");
 		}
 
-		$type   = $this->kill_types[$type];
 		$skipme = $skipme ? "yes" : "no";
-		return $this->exec( $this->protocol( "CLIENT", "KILL", "TYPE", $type, "SKIPME", $skipme ) );
+		return $this->exe( $this->protocol( "client", "kill", "type", $type, "skipme", $skipme ) );
 	}
 
 	/**
@@ -67,7 +56,7 @@ trait ServerMethodsTrait {
 	 * @params LIST
 	 */
 	function clientList() {
-		return $this->exec( $this->protocol( "CLIENT", "LIST" ) );
+		return $this->exe( $this->protocol( "client", "list" ) );
 	}
 
 	/**
@@ -75,7 +64,7 @@ trait ServerMethodsTrait {
 	 * @params GETNAME
 	 */
 	function clientGetName() {
-		return $this->exec( $this->protocol( "CLIENT", "GETNAME" ) );
+		return $this->exe( $this->protocol( "client", "getname" ) );
 	}
 
 	/**
@@ -83,7 +72,7 @@ trait ServerMethodsTrait {
 	 * @params PAUSE timeout
 	 */
 	function clientPause($timeout) {
-		return $this->exec( $this->protocol( "CLIENT", "PAUSE", $timeout ) );
+		return $this->exe( $this->protocol( "client", "pause", $timeout ) );
 	}
 
 	/**
@@ -91,14 +80,14 @@ trait ServerMethodsTrait {
 	 * @params SETNAME connection-name
 	 */
 	function clientSetName($name) {
-		return $this->exec( $this->protocol( "CLIENT", "SETNAME", $name ) );
+		return $this->exe( $this->protocol( "client", "setname", $name ) );
 	}
 
 	/**
 	 * Get array of Redis command details
 	 */
 	function command() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
@@ -106,7 +95,7 @@ trait ServerMethodsTrait {
 	 * @params COUNT
 	 */
 	function commandCount() {
-		return $this->exec( $this->protocol( "COMMAND", "COUNT" ) );
+		return $this->exe( $this->protocol( "command", "count" ) );
 	}
 
 	/**
@@ -114,7 +103,7 @@ trait ServerMethodsTrait {
 	 * @params GETKEYS
 	 */
 	function commandGetKeys() {
-		return $this->exec( $this->protocol( "COMMAND", "GETKEYS" ) );
+		return $this->exe( $this->protocol( "command", "getkeys" ) );
 	}
 
 	/**
@@ -125,7 +114,7 @@ trait ServerMethodsTrait {
 		if(count($commands) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one command is required.");
 		}
-		return $this->exec( $this->protocol( "COMMAND", "INFO", $commands ) );
+		return $this->exe( $this->protocol( "command", "info", $commands ) );
 	}
 
 	/**
@@ -133,7 +122,7 @@ trait ServerMethodsTrait {
 	 * @params GET parameter
 	 */
 	function configGet($param) {
-		return $this->exec( $this->protocol( "CONFIG", "GET", $param ) );
+		return $this->exe( $this->protocol( "config", "get", $param ) );
 	}
 
 	/**
@@ -141,7 +130,7 @@ trait ServerMethodsTrait {
 	 * @params REWRITE
 	 */
 	function configRewrite() {
-		return $this->exec( $this->protocol( "CONFIG", "REWRITE" ) );
+		return $this->exe( $this->protocol( "config", "rewrite" ) );
 	}
 
 	/**
@@ -149,7 +138,7 @@ trait ServerMethodsTrait {
 	 * @params SET parameter value
 	 */
 	function configSet($param, $value) {
-		return $this->exec( $this->protocol( "CONFIG", "SET", $param, $value ) );
+		return $this->exe( $this->protocol( "config", "set", $param, $value ) );
 	}
 
 	/**
@@ -157,14 +146,14 @@ trait ServerMethodsTrait {
 	 * @params RESETSTAT
 	 */
 	function configResetStat() {
-		return $this->exec( $this->protocol( "CONFIG", "RESETSTAT" ) );
+		return $this->exe( $this->protocol( "config", "resetstat" ) );
 	}
 
 	/**
 	 * Return the number of keys in the selected database
 	 */
 	function dbsize() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
@@ -172,7 +161,7 @@ trait ServerMethodsTrait {
 	 * @params OBJECT key
 	 */
 	function debugObject($key) {
-		return $this->exec( $this->protocol( "DEBUG", "OBJECT", $key ) );
+		return $this->exe( $this->protocol( "debug", "object", $key ) );
 	}
 
 	/**
@@ -180,57 +169,57 @@ trait ServerMethodsTrait {
 	 * @params SEGFAULT
 	 */
 	function debugSegFault() {
-		return $this->exec( $this->protocol( "DEBUG", "SEGFAULT" ) );
+		return $this->exe( $this->protocol( "debug", "segfault" ) );
 	}
 
 	/**
 	 * Remove all keys from all databases
 	 */
 	function flushall() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Remove all keys from the current database
 	 */
 	function flushdb() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Get information and statistics about the server
 	 * @params [section]
 	 */
-	function info($section = "") {
-		return $this->exec( $this->protocol( __FUNCTION__, $section ) );
+	function info($section = null) {
+		return $this->exe( $this->protocol( __FUNCTION__, $section ) );
 	}
 
 	/**
 	 * Get the UNIX time stamp of the last successful save to disk
 	 */
 	function lastsave() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Listen for all requests received by the server in real time
 	 */
 	function monitor() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Return the role of the instance in the context of replication
 	 */
 	function role() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Synchronously save the dataset to disk
 	 */
 	function save() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
@@ -238,7 +227,7 @@ trait ServerMethodsTrait {
 	 * @params [NOSAVE] [SAVE]
 	 */
 	function shutdown() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
@@ -246,7 +235,7 @@ trait ServerMethodsTrait {
 	 * @params [NOSAVE] [SAVE]
 	 */
 	function shutdownSave() {
-		return $this->exec( $this->protocol( "SHUTDOWN", "SAVE" ) );
+		return $this->exe( $this->protocol( "shutdown", "save" ) );
 	}
 
 	/**
@@ -254,7 +243,7 @@ trait ServerMethodsTrait {
 	 * @params [NOSAVE] [SAVE]
 	 */
 	function shutdownNoSave() {
-		return $this->exec( $this->protocol( "SHUTDOWN", "NOSAVE" ) );
+		return $this->exe( $this->protocol( "shutdown", "nosave" ) );
 	}
 
 	/**
@@ -262,29 +251,29 @@ trait ServerMethodsTrait {
 	 * @params host port
 	 */
 	function slaveof($host, $port) {
-		return $this->exec( $this->protocol( __FUNCTION__, $host, $port ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $host, $port ) );
 	}
 
 	/**
 	 * Manages the Redis slow queries log
 	 * @params subcommand [argument]
 	 */
-	function slowlog($subcommand, $arg = "") {
-		return $this->exec( $this->protocol( __FUNCTION__, $subcommand, $arg ) );
+	function slowlog($subcommand, $arg = null) {
+		return $this->exe( $this->protocol( __FUNCTION__, $subcommand, $arg ) );
 	}
 
 	/**
 	 * Internal command used for replication
 	 */
 	function sync() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
 	 * Return the current server time
 	 */
 	function time() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 

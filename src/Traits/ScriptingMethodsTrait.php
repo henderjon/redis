@@ -7,25 +7,25 @@ use Redis\RedisException;
 trait ScriptingMethodsTrait {
 
     /**
-     * Execute a Lua script server side
+     * exeute a Lua script server side
      * @params script numkeys key [key ...] arg [arg ...]
      */
-    function eval($script, array $keys, array $args = []) {
+    function evalLua($script, array $keys, array $args = null) {
         if(count($keys) < 1 ){
             throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
         }
-        return $this->exec( $this->protocol( __FUNCTION__, $script, count($keys), $keys, $args ) );
+        return $this->exe( $this->protocol( "eval", $script, count($keys), $keys, $args ) );
     }
 
     /**
-     * Execute a Lua script server side
+     * exeute a Lua script server side
      * @params sha1 numkeys key [key ...] arg [arg ...]
      */
-    function evalsha($sha1, $numkeys, array $keys, array $args = []) {
+    function evalsha($sha1, $numkeys, array $keys, array $args = null) {
         if(count($keys) < 1 ){
             throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
         }
-        return $this->exec( $this->protocol( __FUNCTION__, $sha1, count($keys), $keys, $args ) );
+        return $this->exe( $this->protocol( __FUNCTION__, $sha1, count($keys), $keys, $args ) );
     }
 
     /**
@@ -36,7 +36,7 @@ trait ScriptingMethodsTrait {
         if(count($scripts) < 1 ){
             throw new RedisException("(" . __FUNCTION__ . ") At least one script is required.");
         }
-        return $this->exec( $this->protocol( "SCRIPT", "EXISTS", $scripts ) );
+        return $this->exe( $this->protocol( "script", "exists", $scripts ) );
     }
 
     /**
@@ -44,15 +44,15 @@ trait ScriptingMethodsTrait {
      * @params FLUSH
      */
     function scriptFlush() {
-        return $this->exec( $this->protocol( "SCRIPT", "FLUSH" ) );
+        return $this->exe( $this->protocol( "script", "flush" ) );
     }
 
     /**
-     * Kill the script currently in execution.
+     * Kill the script currently in exeution.
      * @params KILL
      */
     function scriptKill() {
-        return $this->exec( $this->protocol( "SCRIPT", "KILL" ) );
+        return $this->exe( $this->protocol( "script", "kill" ) );
     }
 
     /**
@@ -60,7 +60,7 @@ trait ScriptingMethodsTrait {
      * @params LOAD script
      */
     function scriptLoad($script) {
-        return $this->exec( $this->protocol( "SCRIPT", "LOAD", $script ) );
+        return $this->exe( $this->protocol( "script", "load", $script ) );
     }
 
 

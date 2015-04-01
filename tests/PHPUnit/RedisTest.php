@@ -85,7 +85,7 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 			"two" => "asdf",
 		);
 
-		$result = $inst->index2assoc(array(
+		$result = $inst->marshal(array(
 			"one", "qwer", "two", "asdf"
 		));
 
