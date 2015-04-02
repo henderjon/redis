@@ -148,5 +148,32 @@ class ClusterMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*2 $7 cluster $5 slots ";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_clusterAddSlots_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->clusterAddSlots([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_clusterDelSlots_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->clusterDelSlots([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_clusterSetSlot_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->clusterSetSlot("", "", "");
+	}
+
 
 }
