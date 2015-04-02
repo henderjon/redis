@@ -11,29 +11,29 @@ trait ConnetionMethodsTrait {
      * password
      */
     function auth($password) {
-        return $this->exec( $this->protocol( __FUNCTION__, $password ) );
+        return $this->exe( $this->protocol( __FUNCTION__, $password ) );
     }
 
     /**
      * Echo the given string
      * message
      */
-    function echo($message) {
-        return $this->exec( $this->protocol( __FUNCTION__, $message ) );
-    }
+    // function echo($message) {
+    //     throw new RedisException("(" . __FUNCTION__ . ") Not implemented.");
+    // }
 
     /**
      * Ping the server
      */
     function ping() {
-        return $this->exec( $this->protocol( __FUNCTION__ ) );
+        return $this->exe( $this->protocol( __FUNCTION__ ) );
     }
 
     /**
      * Close the connection
      */
     function quit() {
-        return $this->exec( $this->protocol( __FUNCTION__ ) );
+        return $this->exe( $this->protocol( __FUNCTION__ ) );
     }
 
     /**
@@ -41,7 +41,7 @@ trait ConnetionMethodsTrait {
      * index
      */
     function select($index) {
-        return $this->exec( $this->protocol( __FUNCTION__, $index ) );
+        return $this->exe( $this->protocol( __FUNCTION__, $index ) );
     }
 
 
