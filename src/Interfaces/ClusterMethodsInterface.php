@@ -27,3 +27,4 @@ interface ClusterMethodsInterface {
 	function clusterSlots();
 
 }
+
