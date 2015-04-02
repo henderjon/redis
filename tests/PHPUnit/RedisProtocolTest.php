@@ -1,9 +1,9 @@
 <?php
 
-class RedisTest extends PHPUnit_Framework_TestCase {
+class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 
 	function getInst($memory){
-		$inst = new \Redis\Redis;
+		$inst = new \Redis\RedisProtocol;
 		$reflection = new ReflectionClass($inst);
 		$handle = $reflection->getProperty("handle");
 		$handle->setAccessible(true);
@@ -15,7 +15,9 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 	 * @expectedException Redis\RedisException
 	 */
 	function test_connect_exception(){
-		$inst = (new \Redis\Redis)->connect("123.123.123.123", "12345", 2);
+		// $inst = (new \Redis\Redis)->connect("123.123.123.123", "12345", 2);
+		$inst = new \Redis\Redis;
+		$inst = $inst->connect("123.123.123.123", "12345", 2);
 	}
 
 	function test_select(){
@@ -29,10 +31,10 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 		$memory = fopen("php://memory", "rw+");
 		$inst = $this->getInst($memory);
 
-		$base = [
-			["sadd", "testkey1", "testvalue1"],
-			["sadd", "testkey2", "testvalue2"],
-		];
+		$base = array(
+			array("sadd", "testkey1", "testvalue1"),
+			array("sadd", "testkey2", "testvalue2"),
+		);
 
 		$inst->pipe($base);
 
@@ -78,14 +80,14 @@ class RedisTest extends PHPUnit_Framework_TestCase {
 	function test_index2assoc(){
 		$inst = new \Redis\Redis;
 
-		$expected = [
+		$expected = array(
 			"one" => "qwer",
 			"two" => "asdf",
-		];
+		);
 
-		$result = $inst->index2assoc([
+		$result = $inst->marshal(array(
 			"one", "qwer", "two", "asdf"
-		]);
+		));
 
 		$this->assertEquals($expected, $result);
 	}

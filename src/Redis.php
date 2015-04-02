@@ -2,118 +2,70 @@
 
 namespace Redis;
 /**
- * public API to interact with redis
+ * public API to interact with redis, based on Redis v2.8.19
  *
  * @package henderjon/redis
  * @author @henderjon
  */
-class Redis {
+class Redis extends RedisProtocol implements Interfaces\RedisInterface {
 
-	use RedisProtocolTrait;
+	use Traits\ClusterMethodsTrait;
+	use Traits\ConnectionMethodsTrait;
+	use Traits\HashMethodsTrait;
+	use Traits\HyperLogLogMethodsTrait;
+	use Traits\KeyMethodsTrait;
+	use Traits\ListMethodsTrait;
+	use Traits\PubSubMethodsTrait;
+	use Traits\ScriptingMethodsTrait;
+	use Traits\ServerMethodsTrait;
+	use Traits\SetMethodsTrait;
+	use Traits\SortedSetMethodsTrait;
+	use Traits\StringMethodsTrait;
+	use Traits\TransactionMethodsTrait;
 
-	/**
-	 * the socket handle
-	 */
-	protected $handle;
+	const EXPIRE_EX = "EX";
+	const EXPIRE_PX = "PX";
 
-	/**
-	 * the db to use
-	 */
-	public  $db = 0;
-
-	/**
-	 * Connect to a Redis instance. This isn't in the constructor so
-	 * that the tests can instantiate this object and replace the
-	 * socket handle.
-	 * @param string $ip The IP of the Redis instance
-	 * @param string $port The port of the Redis instance
-	 * @param int $timeout The number of seconds to wait when connecting
-	 * @return Redis
-	 */
-	function connect( $ip, $port, $timeout = 0 ){
-		$errno = $error = "";
-		$sock = "tcp://{$ip}:{$port}";
-		$timeout = $timeout ?: ini_get("default_socket_timeout");
-		$this->handle = @stream_socket_client($sock, $errno, $error, $timeout);
-
-		if( !$this->handle || $errno ){
-			throw new RedisException($error, $errno);
+	protected function getExpx($expx){
+		if(!in_array($expx, [static::EXPIRE_EX, static::EXPIRE_PX])){
+			return null;
 		}
-
-		return $this;
+		return $expx;
 	}
 
-	/**
-	 * Catch all calls to Redis functions and pass them to the underlying
-	 * connection
-	 * @param string $func The function name
-	 * @param mixed $args The string(s) or array(s) of the arguments
-	 * @return mixed
-	 */
-	function __call($func, $args){
+	const SET_NX    = "NX";
+	const SET_XX    = "XX";
 
-		// track the current db ...
-		if($func == strtolower("select")){
-			$this->db = reset($args);
+	protected function getNxxx($nxxx){
+		if(!in_array($nxxx, [static::SET_NX, static::SET_XX])){
+			return null;
 		}
-
-		$command = $this->protocol( $func, $args );
-		return $this->exec( $command, 1 );
+		return $nxxx;
 	}
 
-	/**
-	 * Take an array of arrays of mixed string/arrays and pipe them all
-	 * to Redis. Since Protocol::protocol takes strings and arrays and
-	 * assumes that they're all one specific command, this funciton takes
-	 * an array of those.
-	 * @param mixed $args The string(s) or array(s) of the arguments
-	 * @return mixed
-	 */
-	function pipe(){
-		$args = func_get_args();
+	const ZAGG_SUM = "SUM";
+	const ZAGG_MIN = "MIN";
+	const ZAGG_MAX = "MAX";
 
-		if( count($args) == 1 ){
-			$args = reset($args);
+	protected function getZagg($zagg){
+		if(!in_array($zagg, [static::ZAGG_SUM, static::ZAGG_MIN, static::ZAGG_MAX])){
+			return null;
 		}
-
-		$commands = [];
-		foreach($args as $arg){
-			$commands[] = $this->protocol($arg);
-		}
-
-		$command = implode($this->DELIM, $commands). $this->DELIM;
-
-		return $this->exec( $command, count($commands) );
+		return $zagg;
 	}
 
-	/**
-	 * Both __call() and pipe() do the filtering work of creating a single
-	 * string of our command(s), this function simply writes and reads
-	 * to our underlying connection
-	 * @param string $string The command(s) in protocol format
-	 * @param int $count The number of commands sent/expected responses
-	 * @return mixed
-	 */
-	protected function exec( $string, $count ){
+	const ZMIN = "-";
+	const ZMAX = "+";
 
-		// list( $count, $string ) = $this->protocol( $commands );
-		$length   = $this->write( $this->handle, $string );
-		$response = $this->read( $this->handle, $count );
+	const KILL_TYPE_NORMAL = "normal";
+	const KILL_TYPE_SLAVE  = "slave";
+	const KILL_TYPE_PUBSUB = "pubsub";
 
-		return count( $response ) == 1 ? reset( $response ) : $response;
-	}
-
-	/**
-	 * method to take an indexed array and transform it to an associatvie array.
-	 * @param $array The indexed array
-	 * @return array
-	 */
-	function index2assoc( array $array ){
-		$final = [];
-		while( $key = array_shift( $array ) ){
-			$final[ $key ] = array_shift( $array );
+	protected function getKillType($type){
+		if(!in_array($type, [static::KILL_TYPE_NORMAL, static::KILL_TYPE_SLAVE, static::KILL_TYPE_PUBSUB])){
+			return null;
 		}
-		return $final;
+		return $type;
 	}
 
 }
