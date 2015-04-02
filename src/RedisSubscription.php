@@ -7,22 +7,25 @@ namespace Redis;
  * @package henderjon/redis
  * @author @henderjon
  */
-class RedisSubscription extends Redis {
+class RedisSubscription extends RedisProtocol {
 
 	/**
-	 * to avoid strings in checking response type
+	 * subscribe to channel(s)
+	 *
+	 * @param array $channels An array of channels to subscribe to
+	 * @param bool $p Whether to use a pattern (psubscribe)
+	 * @return array
 	 */
-	const TYPE_SUBSCRIBE   = "subscribe";
+	function subscribeTo(array $channels){
 
-	/**
-	 * to avoid strings in checking response type
-	 */
-	const TYPE_UNSUBSCRIBE = "unsubscribe";
+		$command = $this->protocol( "subscribe", $channels );
+		$details = $this->exe( $command, count($channels) );
 
-	/**
-	 * to avoid strings in checking response type
-	 */
-	const TYPE_MESSAGE     = "message";
+		// all returns: list($type, $channel, $message) = $details;
+		return [$details, function(){
+			return $this->sub($this->handle);
+		}];
+	}
 
 	/**
 	 * subscribe to channel(s)
@@ -31,15 +34,15 @@ class RedisSubscription extends Redis {
 	 * @param bool $pattern Whether to use a pattern (psubscribe)
 	 * @return array
 	 */
-	function subscribe(array $channels, $pattern = false){
+	function pSubscribeTo(array $channels){
 
-		$command = $this->protocol( ($pattern ? "psubscribe" : "subscribe"), $channels );
-		$details = $this->exec( $command, count($channels) );
+		$command = $this->protocol( "psubscribe", $channels );
+		$details = $this->exe( $command, count($channels) );
 
-		// all returns: list($type, $channel, $message) = $details;
-		return [$details, function(){
-			return $this->sub($this->handle);
-		}];
+		$that = $this;
+		return array($details, function()use($that){
+			return $that->sub($that->handle);
+		});
 	}
 
 	/**
