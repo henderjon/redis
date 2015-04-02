@@ -67,5 +67,4 @@ class TransactionMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*3\r\n$5\r\nwatch\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
 	}
 
-
 }
