@@ -14,7 +14,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exec( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
 	}
 
 	/**
@@ -22,7 +22,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	function dump($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -30,7 +30,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	function exists($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -38,7 +38,7 @@ trait KeyMethodsTrait {
 	 * key seconds
 	 */
 	function expire($key, $seconds) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $seconds ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $seconds ) );
 	}
 
 	/**
@@ -46,7 +46,7 @@ trait KeyMethodsTrait {
 	 * key timestamp
 	 */
 	function expireat($key, $timestamp) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $timestamp ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $timestamp ) );
 	}
 
 	/**
@@ -54,7 +54,7 @@ trait KeyMethodsTrait {
 	 * pattern
 	 */
 	function keys($pattern) {
-		return $this->exec( $this->protocol( __FUNCTION__, $pattern ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $pattern ) );
 	}
 
 	/**
@@ -62,7 +62,7 @@ trait KeyMethodsTrait {
 	 * host port key destination-db timeout [COPY] [REPLACE]
 	 */
 	function migrate($host, $port, $key, $dest, $timeout) {
-		return $this->exec( $this->protocol( __FUNCTION__, $host, $port, $key, $dest, $timeout ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $host, $port, $key, $dest, $timeout ) );
 	}
 
 	/**
@@ -70,7 +70,7 @@ trait KeyMethodsTrait {
 	 * key db
 	 */
 	function move($key, $db) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $db ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $db ) );
 	}
 
 	/**
@@ -82,7 +82,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exec( $this->protocol( "OBJECT", "REFCOUNT", $keys ) );
+		return $this->exe( $this->protocol( "object", "refcount", $keys ) );
 	}
 
 	/**
@@ -94,7 +94,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exec( $this->protocol( "OBJECT", "ENCODING", $keys ) );
+		return $this->exe( $this->protocol( "object", "encoding", $keys ) );
 	}
 
 	/**
@@ -107,7 +107,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exec( $this->protocol( "OBJECT", "IDLETIME", $keys ) );
+		return $this->exe( $this->protocol( "object", "idletime", $keys ) );
 	}
 
 	/**
@@ -115,7 +115,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	function persist($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -123,7 +123,7 @@ trait KeyMethodsTrait {
 	 * key milliseconds
 	 */
 	function pexpire($key, $milliseconds) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $milliseconds ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $milliseconds ) );
 	}
 
 	/**
@@ -131,7 +131,7 @@ trait KeyMethodsTrait {
 	 * key milliseconds-timestamp
 	 */
 	function pexpireat($key, $timestamp) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $timeout ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $timestamp ) );
 	}
 
 	/**
@@ -139,14 +139,14 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	function pttl($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
 	 * Return a random key from the keyspace
 	 */
 	function randomkey() {
-		return $this->exec( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol( __FUNCTION__ ) );
 	}
 
 	/**
@@ -154,7 +154,7 @@ trait KeyMethodsTrait {
 	 * key newkey
 	 */
 	function rename($key, $newKey) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $newKey ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $newKey ) );
 	}
 
 	/**
@@ -162,7 +162,7 @@ trait KeyMethodsTrait {
 	 * key newkey
 	 */
 	function renamenx($key, $newKey) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $newKey ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $newKey ) );
 	}
 
 	/**
@@ -170,8 +170,8 @@ trait KeyMethodsTrait {
 	 * key ttl serialized-value [REPLACE]
 	 */
 	function restore($key, $ttl, $serialValue, $replace = true) {
-		$replace = $replace ? "REPLACE" : "";
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $ttl, $serialValue, $replace ) );
+		$replace = $replace ? "replace" : null;
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $ttl, $serialValue, $replace ) );
 	}
 
 	/**
@@ -187,7 +187,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	function ttl($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -195,22 +195,22 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	function type($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
 	 * Incrementally iterate the keys space
 	 * cursor [MATCH pattern] [COUNT count]
 	 */
-	function scan($cursor, $pattern = "", $count = 10) {
+	function scan($cursor, $pattern = null, $count = null) {
 		if($pattern){
-			$pattern = "MATCH {$pattern}";
+			$pattern = ["match", $pattern];
 		}
 		if($count){
-			$count = "COUNT {$count}";
+			$count = ["count", $count];
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $cursor, $pattern, $count ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $cursor, $pattern, $count ) );
 	}
 
 

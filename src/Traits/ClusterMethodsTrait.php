@@ -10,11 +10,19 @@ trait ClusterMethodsTrait {
 	 * Assign new hash slots to receiving node
 	 * ADDSLOTS slot [slot ...]
 	 */
+	function clusterGetName() {
+		return $this->exe( $this->protocol( "cluster", "getname" ) );
+	}
+
+	/**
+	 * Assign new hash slots to receiving node
+	 * ADDSLOTS slot [slot ...]
+	 */
 	function clusterAddSlots(array $slots) {
 		if(count($slots) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one slot is required.");
 		}
-		return $this->exec( $this->protocol( "CLUSTER", "GETNAME", $slots ) );
+		return $this->exe( $this->protocol( "cluster", "addslots", $slots ) );
 	}
 
 	/**
@@ -22,7 +30,7 @@ trait ClusterMethodsTrait {
 	 * COUNT-FAILURE-REPORTS node-id
 	 */
 	function clusterCountFailureReports($node_id) {
-		return $this->exec( $this->protocol( "CLUSTER", "COUNT-FAILURE-REPORTS", $node_id ) );
+		return $this->exe( $this->protocol( "cluster", "count-failure-reports", $node_id ) );
 	}
 
 	/**
@@ -30,7 +38,7 @@ trait ClusterMethodsTrait {
 	 * COUNTKEYSINSLOT slot
 	 */
 	function clusterCountKeysInSlot($slot) {
-		return $this->exec( $this->protocol( "CLUSTER", "COUNTKEYSINSLOT", $slot ) );
+		return $this->exe( $this->protocol( "cluster", "countkeysinslot", $slot ) );
 	}
 
 	/**
@@ -41,7 +49,7 @@ trait ClusterMethodsTrait {
 		if(count($slots) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one slot is required.");
 		}
-		return $this->exec( $this->protocol( "CLUSTER", "DELSLOTS", $slots ) );
+		return $this->exe( $this->protocol( "cluster", "delslots", $slots ) );
 	}
 
 	/**
@@ -49,7 +57,7 @@ trait ClusterMethodsTrait {
 	 * FAILOVER [FORCE|TAKEOVER]
 	 */
 	function clusterFailover() {
-		return $this->exec( $this->protocol( "CLUSTER", "FAILOVER" ) );
+		return $this->exe( $this->protocol( "cluster", "failover" ) );
 	}
 
 	/**
@@ -57,7 +65,7 @@ trait ClusterMethodsTrait {
 	 * FAILOVER [FORCE|TAKEOVER]
 	 */
 	function clusterFailoverForce() {
-		return $this->exec( $this->protocol( "CLUSTER", "FAILOVER", "FORCE" ) );
+		return $this->exe( $this->protocol( "cluster", "failover", "force" ) );
 	}
 
 	/**
@@ -65,7 +73,7 @@ trait ClusterMethodsTrait {
 	 * FAILOVER [FORCE|TAKEOVER]
 	 */
 	function clusterFailoverTakeover() {
-		return $this->exec( $this->protocol( "CLUSTER", "FAILOVER", "TAKEOVER" ) );
+		return $this->exe( $this->protocol( "cluster", "failover", "takeover" ) );
 	}
 
 	/**
@@ -73,7 +81,7 @@ trait ClusterMethodsTrait {
 	 * FORGET node-id
 	 */
 	function clusterForget($node_id) {
-		return $this->exec( $this->protocol( "CLUSTER", "FORGET", $node_id ) );
+		return $this->exe( $this->protocol( "cluster", "forget", $node_id ) );
 	}
 
 	/**
@@ -81,7 +89,7 @@ trait ClusterMethodsTrait {
 	 * GETKEYSINSLOT slot count
 	 */
 	function clusterGetKeysInSlot($slot, $count) {
-		return $this->exec( $this->protocol( "CLUSTER", "GETKEYSINSLOT", $slot, $count ) );
+		return $this->exe( $this->protocol( "cluster", "getkeysinslot", $slot, $count ) );
 	}
 
 	/**
@@ -89,7 +97,7 @@ trait ClusterMethodsTrait {
 	 * INFO
 	 */
 	function clusterInfo() {
-		return $this->exec( $this->protocol( "CLUSTER", "INFO" ) );
+		return $this->exe( $this->protocol( "cluster", "info" ) );
 	}
 
 	/**
@@ -97,7 +105,7 @@ trait ClusterMethodsTrait {
 	 * KEYSLOT key
 	 */
 	function clusterKeySlot($key) {
-		return $this->exec( $this->protocol( "CLUSTER", "KEYSLOT", $key ) );
+		return $this->exe( $this->protocol( "cluster", "keyslot", $key ) );
 	}
 
 	/**
@@ -105,7 +113,7 @@ trait ClusterMethodsTrait {
 	 * MEET ip port
 	 */
 	function clusterMeet($ip, $port) {
-		return $this->exec( $this->protocol( "CLUSTER", "MEET", $ip, $port ) );
+		return $this->exe( $this->protocol( "cluster", "meet", $ip, $port ) );
 	}
 
 	/**
@@ -113,7 +121,7 @@ trait ClusterMethodsTrait {
 	 * NODES
 	 */
 	function clusterNodes() {
-		return $this->exec( $this->protocol( "CLUSTER", "NODES" ) );
+		return $this->exe( $this->protocol( "cluster", "nodes" ) );
 	}
 
 	/**
@@ -121,7 +129,7 @@ trait ClusterMethodsTrait {
 	 * REPLICATE node-id
 	 */
 	function clusterReplicate($node_id) {
-		return $this->exec( $this->protocol( "CLUSTER", "REPLICATE", $node_id ) );
+		return $this->exe( $this->protocol( "cluster", "replicate", $node_id ) );
 	}
 
 	/**
@@ -129,8 +137,8 @@ trait ClusterMethodsTrait {
 	 * RESET [HARD|SOFT]
 	 */
 	function clusterReset($hard = false) {
-		$hard = $hard ? "HARD" : "SOFT";
-		return $this->exec( $this->protocol( "CLUSTER", "RESET", $hard ) );
+		$hard = $hard ? "hard" : "soft";
+		return $this->exe( $this->protocol( "cluster", "reset", $hard ) );
 	}
 
 	/**
@@ -138,7 +146,7 @@ trait ClusterMethodsTrait {
 	 * SAVECONFIG
 	 */
 	function clusterSaveConfig() {
-		return $this->exec( $this->protocol( "CLUSTER", "SAVECONFIG" ) );
+		return $this->exe( $this->protocol( "cluster", "saveconfig" ) );
 	}
 
 	/**
@@ -146,7 +154,7 @@ trait ClusterMethodsTrait {
 	 * SET-CONFIG-EPOCH config-epoch
 	 */
 	function clusterSetConfigEpoch($epoch) {
-		return $this->exec( $this->protocol( "CLUSTER", "SET-CONFIG-EPOCH", $epoch ) );
+		return $this->exe( $this->protocol( "cluster", "set-config-epoch", $epoch ) );
 	}
 
 	/**
@@ -162,7 +170,7 @@ trait ClusterMethodsTrait {
 	 * SLAVES node-id
 	 */
 	function clusterSlaves($node_id) {
-		return $this->exec( $this->protocol( "CLUSTER", "SLAVES", $node_id ) );
+		return $this->exe( $this->protocol( "cluster", "slaves", $node_id ) );
 	}
 
 	/**
@@ -170,7 +178,7 @@ trait ClusterMethodsTrait {
 	 * SLOTS
 	 */
 	function clusterSlots() {
-		return $this->exec( $this->protocol( "CLUSTER", "SLOTS" ) );
+		return $this->exe( $this->protocol( "cluster", "slots" ) );
 	}
 
 

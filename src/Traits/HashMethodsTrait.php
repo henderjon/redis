@@ -14,7 +14,7 @@ trait HashMethodsTrait {
 		if(count($fields) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one field is required.");
 		}
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $fields ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $fields ) );
 	}
 
 	/**
@@ -22,7 +22,7 @@ trait HashMethodsTrait {
 	 * key field
 	 */
 	function hexists($key, $field) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field ) );
 	}
 
 	/**
@@ -30,7 +30,7 @@ trait HashMethodsTrait {
 	 * key field
 	 */
 	function hget($key, $field) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field ) );
 	}
 
 	/**
@@ -38,15 +38,15 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	function hgetall($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
 	 * Increment the integer value of a hash field by the given number
 	 * key field increment
 	 */
-	function hincrby($key, $field, $inrc) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $inrc ) );
+	function hincrby($key, $field, $incr) {
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $incr ) );
 	}
 
 	/**
@@ -54,7 +54,7 @@ trait HashMethodsTrait {
 	 * key field increment
 	 */
 	function hincrbyfloat($key, $field, $incr) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $inrc ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $incr ) );
 	}
 
 	/**
@@ -62,7 +62,7 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	function hkeys($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -70,7 +70,7 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	function hlen($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
@@ -78,7 +78,10 @@ trait HashMethodsTrait {
 	 * key field [field ...]
 	 */
 	function hmget($key, array $fields) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		if(count($fields) < 1){
+			throw new RedisException("(" . __FUNCTION__ . ") At least one field is required.");
+		}
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $fields ) );
 	}
 
 	/**
@@ -89,7 +92,7 @@ trait HashMethodsTrait {
         if(count($map) < 2 && (count($map) % 2 != 0)){
             throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
         }
-        return $this->exec( $this->protocol( __FUNCTION__, $key, $map ) );
+        return $this->exe( $this->protocol( __FUNCTION__, $key, $map ) );
 	}
 
 	/**
@@ -97,7 +100,7 @@ trait HashMethodsTrait {
 	 * key field value
 	 */
 	function hset($key, $field, $value) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $value ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $value ) );
 	}
 
 	/**
@@ -105,7 +108,7 @@ trait HashMethodsTrait {
 	 * key field value
 	 */
 	function hsetnx($key, $field, $value) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field, $value ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $value ) );
 	}
 
 	/**
@@ -113,7 +116,7 @@ trait HashMethodsTrait {
 	 * key field
 	 */
 	function hstrlen($key, $field) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $field ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $field ) );
 	}
 
 	/**
@@ -121,22 +124,22 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	function hvals($key) {
-		return $this->exec( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
 	}
 
 	/**
 	 * Incrementally iterate hash fields and associated values
 	 * key cursor [MATCH pattern] [COUNT count]
 	 */
-	function hscan($key, $cursor, $pattern = "", $count = 10) {
+	function hscan($key, $cursor, $pattern = null, $count = null) {
 		if($pattern){
-			$pattern = "MATCH {$pattern}";
+			$pattern = ["match", $pattern];
 		}
 		if($count){
-			$count = "COUNT {$count}";
+			$count = ["count", $count];
 		}
 
-		return $this->exec( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count ) );
+		return $this->exe( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count ) );
 	}
 
 }
