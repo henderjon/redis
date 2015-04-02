@@ -16,7 +16,7 @@ class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 	 */
 	function test_connect_exception(){
 		// $inst = (new \Redis\Redis)->connect("123.123.123.123", "12345", 2);
-		$inst = new \Redis\Redis;
+		$inst = new \Redis\RedisProtocol;
 		$inst = $inst->connect("123.123.123.123", "12345", 2);
 	}
 
