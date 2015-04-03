@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait ClusterMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Assign new hash slots to receiving node
 	 * for complete documentation: http://redis.io/commands#cluster

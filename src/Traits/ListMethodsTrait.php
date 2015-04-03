@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait ListMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Remove and get the first element in a list, or block until one is available
 	 * for complete documentation: http://redis.io/commands#list

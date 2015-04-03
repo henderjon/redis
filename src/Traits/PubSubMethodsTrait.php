@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait PubSubMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Listen for messages published to channels matching the given patterns
 	 * for complete documentation: http://redis.io/commands#pubsub

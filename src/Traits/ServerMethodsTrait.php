@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait ServerMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	abstract protected function getKillType($type);
 
 	/**

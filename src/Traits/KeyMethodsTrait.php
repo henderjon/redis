@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait KeyMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Delete a key
 	 * for complete documentation: http://redis.io/commands#generic

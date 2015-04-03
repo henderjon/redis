@@ -6,8 +6,10 @@ use Redis\RedisException;
 
 trait StringMethodsTrait {
 
-	abstract public function getExpx($expx);
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
 
+	abstract public function getExpx($expx);
 	abstract public function getNxxx($expx);
 
 	/**

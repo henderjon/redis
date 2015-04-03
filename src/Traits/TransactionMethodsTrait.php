@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait TransactionMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Discard all commands issued after MULTI
 	 * for complete documentation: http://redis.io/commands#transactions

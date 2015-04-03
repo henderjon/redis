@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait ConnectionMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Authenticate to the server
 	 * for complete documentation: http://redis.io/commands#connection

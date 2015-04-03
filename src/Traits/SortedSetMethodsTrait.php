@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait SortedSetMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	abstract protected function getZagg($zagg);
 
 	/**

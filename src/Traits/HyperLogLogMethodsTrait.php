@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait HyperLogLogMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Adds the specified elements to the specified HyperLogLog.
 	 * for complete documentation: http://redis.io/commands#hyperloglog

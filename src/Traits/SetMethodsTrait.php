@@ -6,6 +6,9 @@ use Redis\RedisException;
 
 trait SetMethodsTrait {
 
+	abstract protected function protocol();
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * Add one or more members to a set
 	 * for complete documentation: http://redis.io/commands#set
