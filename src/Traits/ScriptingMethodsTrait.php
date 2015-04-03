@@ -26,7 +26,7 @@ trait ScriptingMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params sha1 numkeys key [key ...] arg [arg ...]
 	 */
-	public function evalsha($sha1, $numkeys, array $keys, array $args = null) {
+	public function evalsha($sha1, array $keys, array $args = null) {
 		if(count($keys) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}

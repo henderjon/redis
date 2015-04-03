@@ -49,7 +49,7 @@ class ScriptingMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function do_evalsha($inst) {
-		$inst->evalsha("testkey1", 2, ["testkey2", "testkey3"]);
+		$inst->evalsha("testkey1", ["testkey2", "testkey3"]);
 		return "*5 $7 evalsha $8 testkey1 $1 2 $8 testkey2 $8 testkey3 ";
 	}
 
@@ -89,7 +89,7 @@ class ScriptingMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	function test_evalsha_exception() {
 		$memory = fopen("php://memory", "rw+");
 		list($inst, $methods) = $this->getInst($memory);
-		$inst->evalsha("testkey1", 2, []);
+		$inst->evalsha("testkey1", []);
 	}
 
 	/**

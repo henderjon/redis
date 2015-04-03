@@ -247,7 +247,7 @@ trait SortedSetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		$weight[] = "WEIGHTS";
+		$weight = ["WEIGHTS"];
 		foreach($weights as $w){
 			$weight[] = $w;
 		}

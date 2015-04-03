@@ -7,7 +7,18 @@ tools:
 checks:
     php:
         code_rating: true
-        duplication: true
+        duplication: false
+
+        # psr2_class_declaration: false
+        # psr2_switch_declaration: false
+        # use_self_instead_of_fqcn: true
+        # symfony_request_injection: false
+        # avoid_aliased_php_functions: false
+        # no_commented_out_code: false
+        # blank_line_after_namespace_declaration: false
+        # no_trailing_whitespace: false
+        # encourage_shallow_comparison: false
+
 filter:
     excluded_paths:
         - 'tests/*'
