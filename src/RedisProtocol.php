@@ -165,17 +165,17 @@ class RedisProtocol {
 			$bytes = trim( fgets($handle) );
 
 			switch( $type ){
-				case( '-' ): //error
+				case ('-'): //error
 					throw new RedisException($bytes);
-				break;
-				case( '+' ): //single line
-				case( ':' ): //integer
+					// break;
+				case ('+'): //single line
+				case (':'): //integer
 					$response[] = $bytes;
 				break;
-				case( '$' ): //bulk
+				case ('$'): //bulk
 					$response[] = $this->pull( $handle, $bytes );
 				break;
-				case( '*' ): //multi-bulk
+				case ('*'): //multi-bulk
 					$response[] = $this->read( $handle, $bytes );
 				break;
 			}
