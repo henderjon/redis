@@ -46,7 +46,7 @@ class RedisProtocol {
 		$timeout = $timeout ?: ini_get("default_socket_timeout");
 		$this->handle = @stream_socket_client($sock, $errno, $error, $timeout);
 
-		if( !$this->handle || !is_null($errno) ){
+		if( !$this->handle || $errno ){
 			throw new RedisException($error, $errno);
 		}
 
