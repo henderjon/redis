@@ -114,8 +114,35 @@ class HashMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function do_hscan($inst) {
-		$inst->hscan("testkey1", "testkey2", "p:*:p");
-		return "*5 $5 hscan $8 testkey1 $8 testkey2 $5 match $5 p:*:p ";
+		$inst->hscan("testkey1", "testkey2", "p:*:p", 6);
+		return "*7 $5 hscan $8 testkey1 $8 testkey2 $5 match $5 p:*:p $5 count $1 6 ";
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_hdel_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->hdel("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_hmget_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->hmget("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_hmset_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->hmset("testkey1", ["testkey2", "testkey3", "testkey4"]);
 	}
 
 }

@@ -213,4 +213,22 @@ class ServerMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*1 $4 time ";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_clientKillType_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->clientKillType(E_NOTICE);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_commandInfo_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->commandInfo([]);
+	}
+
 }

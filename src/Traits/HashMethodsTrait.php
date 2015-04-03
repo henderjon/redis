@@ -99,7 +99,7 @@ trait HashMethodsTrait {
 	 * key field value [field value ...]
 	 */
 	public function hmset($key, array $map) {
-        if(count($map) < 2 && (count($map) % 2 != 0)){
+        if(count($map) < 2 || (count($map) % 2 != 0)){
             throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
         }
         return $this->exe( $this->protocol( __FUNCTION__, $key, $map ) );

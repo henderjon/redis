@@ -58,4 +58,31 @@ class HyperLogLogMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*4 $7 pfmerge $8 testkey1 $8 testkey2 $8 testkey3 ";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_pfadd_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->pfadd("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_pfcount_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->pfcount([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_pfmerge_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->pfmerge("testkey1", []);
+	}
+
 }

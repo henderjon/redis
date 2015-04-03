@@ -143,8 +143,8 @@ class StringMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function do_set($inst) {
-		$inst->set("testkey1", "testkey2");
-		return "*3\r\n$3\r\nset\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$inst->set("testkey1", "testkey2", 1234, $inst::EXPIRE_EX, $inst::SET_NX);
+		return "*6\r\n$3\r\nset\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$2\r\nEX\r\n$4\r\n1234\r\n$2\r\nNX\r\n";
 	}
 
 	function do_setbit($inst) {
@@ -170,6 +170,96 @@ class StringMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	function do_strlen($inst) {
 		$inst->strlen("testkey1");
 		return "*2\r\n$6\r\nstrlen\r\n$8\r\ntestkey1\r\n";
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_bitopAnd_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->bitopAnd("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_bitopOr_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->bitopOr("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_bitopXor_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->bitopXor("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_bitopNot_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->bitopNot("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_mget_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->mget([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_mset_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->mset(["testkey2", "testkey3", "testkey4"]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_msetnx_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->msetnx(["testkey2", "testkey3", "testkey4"]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_set_exception2() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->set("testkey1", "testkey2", 12345);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_set_exception3() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->set("testkey1", "testkey2", 12345, E_NOTICE);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_set_exception4() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->set("testkey1", "testkey2", 12345, $inst::EXPIRE_EX, E_NOTICE);
 	}
 
 }

@@ -83,4 +83,22 @@ class PubSubMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*3 $11 unsubscribe $8 testkey1 $8 testkey2 ";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_psubscribe_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->psubscribe([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_subscribe_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->subscribe([]);
+	}
+
 }

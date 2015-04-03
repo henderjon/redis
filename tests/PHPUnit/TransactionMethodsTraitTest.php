@@ -67,4 +67,13 @@ class TransactionMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*3\r\n$5\r\nwatch\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_watch_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->watch([]);
+	}
+
 }

@@ -158,4 +158,49 @@ class KeyMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*6 $4 scan $8 testkey1 $5 match $5 p:*:p $5 count $1 5 ";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_del_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->del([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_objectRefcount_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->objectRefcount([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_objectEncoding_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->objectEncoding([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_objectIdletime_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->objectIdletime([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sort_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sort("", "", "", "", [], "", "", "");
+	}
+
 }
