@@ -13,10 +13,9 @@ class RedisSubscription extends RedisProtocol {
 	 * subscribe to channel(s)
 	 *
 	 * @param array $channels An array of channels to subscribe to
-	 * @param bool $p Whether to use a pattern (psubscribe)
 	 * @return array
 	 */
-	function subscribeTo(array $channels){
+	public function subscribeTo(array $channels){
 
 		$command = $this->protocol([ "subscribe", $channels ]);
 		$details = $this->exe( $command, count($channels) );
@@ -31,10 +30,9 @@ class RedisSubscription extends RedisProtocol {
 	 * subscribe to channel(s)
 	 *
 	 * @param array $channels An array of channels to subscribe to
-	 * @param bool $pattern Whether to use a pattern (psubscribe)
 	 * @return array
 	 */
-	function pSubscribeTo(array $channels){
+	public function pSubscribeTo(array $channels){
 
 		$command = $this->protocol([ "psubscribe", $channels ]);
 		$details = $this->exe( $command, count($channels) );
@@ -51,7 +49,7 @@ class RedisSubscription extends RedisProtocol {
 	 * @param float $micro the number of micro seconds
 	 * @return bool
 	 */
-	function setTimeout($sec, $micro = 0){
+	public function setTimeout($sec, $micro = 0){
 		return stream_set_timeout($this->handle, $sec, $micro);
 	}
 

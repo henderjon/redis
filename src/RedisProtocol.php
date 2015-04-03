@@ -40,13 +40,13 @@ class RedisProtocol {
 	 * @param int $timeout The number of seconds to wait when connecting
 	 * @return Redis
 	 */
-	function connect( $ip, $port, $timeout = 0 ){
-		$errno = $error = "";
+	public function connect( $ip, $port, $timeout = 0 ){
+		$errno = $error = null;
 		$sock = "tcp://{$ip}:{$port}";
 		$timeout = $timeout ?: ini_get("default_socket_timeout");
 		$this->handle = @stream_socket_client($sock, $errno, $error, $timeout);
 
-		if( !$this->handle || $errno ){
+		if( !$this->handle || !is_null($errno) ){
 			throw new RedisException($error, $errno);
 		}
 
@@ -60,7 +60,7 @@ class RedisProtocol {
 	 * @param mixed $args The string(s) or array(s) of the arguments
 	 * @return mixed
 	 */
-	function __call($func, $args){
+	public function __call($func, $args){
 
 		// track the current db ...
 		if($func == strtolower("select")){
@@ -76,10 +76,9 @@ class RedisProtocol {
 	 * to Redis. Since Protocol::protocol takes strings and arrays and
 	 * assumes that they're all one specific command, this funciton takes
 	 * an array of those.
-	 * @param mixed $args The string(s) or array(s) of the arguments
 	 * @return mixed
 	 */
-	function pipe(){
+	public function pipe(){
 		$args = func_get_args();
 
 		if( count($args) == 1 ){
@@ -101,7 +100,7 @@ class RedisProtocol {
 	 * @param $array The indexed array
 	 * @return array
 	 */
-	function marshal( array $array ){
+	public function marshal( array $array ){
 		$final = array();
 
 		while( $key = array_shift( $array ) ){
@@ -115,7 +114,7 @@ class RedisProtocol {
 	 * @param $array The indexed array
 	 * @return array
 	 */
-	function unmarshal( array $array ){
+	public function unmarshal( array $array ){
 		$final = [];
 		foreach($array as $k => $v){
 			$final[] = $k;
