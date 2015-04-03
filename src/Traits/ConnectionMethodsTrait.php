@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait ConnectionMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -15,7 +15,7 @@ trait ConnectionMethodsTrait {
 	 * password
 	 */
 	public function auth($password) {
-		return $this->exe( $this->protocol( __FUNCTION__, $password ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $password ]) );
 	}
 
 	/**
@@ -32,7 +32,7 @@ trait ConnectionMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#connection
 	 */
 	public function ping() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -40,7 +40,7 @@ trait ConnectionMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#connection
 	 */
 	public function quit() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -49,7 +49,7 @@ trait ConnectionMethodsTrait {
 	 * index
 	 */
 	public function select($index) {
-		return $this->exe( $this->protocol( __FUNCTION__, $index ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $index ]) );
 	}
 
 

@@ -67,7 +67,7 @@ class RedisProtocol {
 			$this->db = reset($args);
 		}
 
-		$command = $this->protocol( $func, $args );
+		$command = $this->protocol([$func, $args]);
 		return $this->exe( $command, 1 );
 	}
 
@@ -88,7 +88,7 @@ class RedisProtocol {
 
 		$commands = array();
 		foreach($args as $arg){
-			$commands[] = $this->protocol($arg);
+			$commands[] = $this->protocol([$arg]);
 		}
 
 		$command = implode("\r\n", $commands). "\r\n";
@@ -228,9 +228,8 @@ class RedisProtocol {
 	 * protocol
 	 * @return string
 	 */
-	protected function protocol(){
+	protected function protocol(array $args){
 
-		$args  = func_get_args();
 		$iter1 = new \RecursiveArrayIterator($args);
 		$iter2 = new \RecursiveIteratorIterator($iter1);
 		$cmd   = "";

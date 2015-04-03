@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait TransactionMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -14,7 +14,7 @@ trait TransactionMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#transactions
 	 */
 	public function discard() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -22,7 +22,7 @@ trait TransactionMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#transactions
 	 */
 	public function exec() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -30,7 +30,7 @@ trait TransactionMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#transactions
 	 */
 	public function multi() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -38,7 +38,7 @@ trait TransactionMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#transactions
 	 */
 	public function unwatch() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -51,7 +51,7 @@ trait TransactionMethodsTrait {
 			throw new RedisException("At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 

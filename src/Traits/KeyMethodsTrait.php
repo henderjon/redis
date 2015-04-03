@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait KeyMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -18,7 +18,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 	/**
@@ -27,7 +27,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	public function dump($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -36,7 +36,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	public function exists($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -45,7 +45,7 @@ trait KeyMethodsTrait {
 	 * key seconds
 	 */
 	public function expire($key, $seconds) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $seconds ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $seconds ]) );
 	}
 
 	/**
@@ -54,7 +54,7 @@ trait KeyMethodsTrait {
 	 * key timestamp
 	 */
 	public function expireat($key, $timestamp) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $timestamp ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $timestamp ]) );
 	}
 
 	/**
@@ -63,7 +63,7 @@ trait KeyMethodsTrait {
 	 * pattern
 	 */
 	public function keys($pattern) {
-		return $this->exe( $this->protocol( __FUNCTION__, $pattern ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $pattern ]) );
 	}
 
 	/**
@@ -72,7 +72,7 @@ trait KeyMethodsTrait {
 	 * host port key destination-db timeout [COPY] [REPLACE]
 	 */
 	public function migrate($host, $port, $key, $dest, $timeout) {
-		return $this->exe( $this->protocol( __FUNCTION__, $host, $port, $key, $dest, $timeout ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $host, $port, $key, $dest, $timeout ]) );
 	}
 
 	/**
@@ -81,7 +81,7 @@ trait KeyMethodsTrait {
 	 * key db
 	 */
 	public function move($key, $db) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $db ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $db ]) );
 	}
 
 	/**
@@ -94,7 +94,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( "object", "refcount", $keys ) );
+		return $this->exe( $this->protocol([ "object", "refcount", $keys ]) );
 	}
 
 	/**
@@ -107,7 +107,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( "object", "encoding", $keys ) );
+		return $this->exe( $this->protocol([ "object", "encoding", $keys ]) );
 	}
 
 	/**
@@ -121,7 +121,7 @@ trait KeyMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( "object", "idletime", $keys ) );
+		return $this->exe( $this->protocol([ "object", "idletime", $keys ]) );
 	}
 
 	/**
@@ -130,7 +130,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	public function persist($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -139,7 +139,7 @@ trait KeyMethodsTrait {
 	 * key milliseconds
 	 */
 	public function pexpire($key, $milliseconds) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $milliseconds ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $milliseconds ]) );
 	}
 
 	/**
@@ -148,7 +148,7 @@ trait KeyMethodsTrait {
 	 * key milliseconds-timestamp
 	 */
 	public function pexpireat($key, $timestamp) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $timestamp ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $timestamp ]) );
 	}
 
 	/**
@@ -157,7 +157,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	public function pttl($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -165,7 +165,7 @@ trait KeyMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#generic
 	 */
 	public function randomkey() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -174,7 +174,7 @@ trait KeyMethodsTrait {
 	 * key newkey
 	 */
 	public function rename($key, $newKey) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $newKey ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $newKey ]) );
 	}
 
 	/**
@@ -183,7 +183,7 @@ trait KeyMethodsTrait {
 	 * key newkey
 	 */
 	public function renamenx($key, $newKey) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $newKey ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $newKey ]) );
 	}
 
 	/**
@@ -193,7 +193,7 @@ trait KeyMethodsTrait {
 	 */
 	public function restore($key, $ttl, $serialValue, $replace = true) {
 		$replace = $replace ? "replace" : null;
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $ttl, $serialValue, $replace ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $ttl, $serialValue, $replace ]) );
 	}
 
 	/**
@@ -211,7 +211,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	public function ttl($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -220,7 +220,7 @@ trait KeyMethodsTrait {
 	 * key
 	 */
 	public function type($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -236,7 +236,7 @@ trait KeyMethodsTrait {
 			$count = ["count", $count];
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $cursor, $pattern, $count ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $cursor, $pattern, $count ]) );
 	}
 
 

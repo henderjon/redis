@@ -18,7 +18,7 @@ class RedisSubscription extends RedisProtocol {
 	 */
 	function subscribeTo(array $channels){
 
-		$command = $this->protocol( "subscribe", $channels );
+		$command = $this->protocol([ "subscribe", $channels ]);
 		$details = $this->exe( $command, count($channels) );
 
 		// all returns: list($type, $channel, $message) = $details;
@@ -36,7 +36,7 @@ class RedisSubscription extends RedisProtocol {
 	 */
 	function pSubscribeTo(array $channels){
 
-		$command = $this->protocol( "psubscribe", $channels );
+		$command = $this->protocol([ "psubscribe", $channels ]);
 		$details = $this->exe( $command, count($channels) );
 
 		$that = $this;

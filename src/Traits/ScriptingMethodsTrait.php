@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait ScriptingMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -18,7 +18,7 @@ trait ScriptingMethodsTrait {
 		if(count($keys) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( "eval", $script, count($keys), $keys, $args ) );
+		return $this->exe( $this->protocol([ "eval", $script, count($keys), $keys, $args ]) );
 	}
 
 	/**
@@ -30,7 +30,7 @@ trait ScriptingMethodsTrait {
 		if(count($keys) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $sha1, count($keys), $keys, $args ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $sha1, count($keys), $keys, $args ]) );
 	}
 
 	/**
@@ -42,7 +42,7 @@ trait ScriptingMethodsTrait {
 		if(count($scripts) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one script is required.");
 		}
-		return $this->exe( $this->protocol( "script", "exists", $scripts ) );
+		return $this->exe( $this->protocol([ "script", "exists", $scripts ]) );
 	}
 
 	/**
@@ -51,7 +51,7 @@ trait ScriptingMethodsTrait {
 	 * @params FLUSH
 	 */
 	public function scriptFlush() {
-		return $this->exe( $this->protocol( "script", "flush" ) );
+		return $this->exe( $this->protocol([ "script", "flush" ]) );
 	}
 
 	/**
@@ -60,7 +60,7 @@ trait ScriptingMethodsTrait {
 	 * @params KILL
 	 */
 	public function scriptKill() {
-		return $this->exe( $this->protocol( "script", "kill" ) );
+		return $this->exe( $this->protocol([ "script", "kill" ]) );
 	}
 
 	/**
@@ -69,7 +69,7 @@ trait ScriptingMethodsTrait {
 	 * @params LOAD script
 	 */
 	public function scriptLoad($script) {
-		return $this->exe( $this->protocol( "script", "load", $script ) );
+		return $this->exe( $this->protocol([ "script", "load", $script ]) );
 	}
 
 

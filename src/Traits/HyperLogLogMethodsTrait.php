@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait HyperLogLogMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -18,7 +18,7 @@ trait HyperLogLogMethodsTrait {
 		if(count($elements) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one element is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $elements ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $elements ]) );
 	}
 
 	/**
@@ -30,7 +30,7 @@ trait HyperLogLogMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 	/**
@@ -42,7 +42,7 @@ trait HyperLogLogMethodsTrait {
 		if(count($sources) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one source key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $dest, $sources ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $dest, $sources ]) );
 	}
 
 

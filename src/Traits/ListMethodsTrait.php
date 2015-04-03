@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait ListMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -18,7 +18,7 @@ trait ListMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $keys, $timeout ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $keys, $timeout ]) );
 	}
 
 	/**
@@ -30,7 +30,7 @@ trait ListMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $keys, $timeout ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $keys, $timeout ]) );
 	}
 
 	/**
@@ -39,7 +39,7 @@ trait ListMethodsTrait {
 	 * @params source destination timeout
 	 */
 	public function brpoplpush($source, $destination, $timeout = 0) {
-		return $this->exe( $this->protocol( __FUNCTION__, $source, $destination, $timeout ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $source, $destination, $timeout ]) );
 	}
 
 	/**
@@ -48,7 +48,7 @@ trait ListMethodsTrait {
 	 * @params key index
 	 */
 	public function lindex($key, $index) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $index ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $index ]) );
 	}
 
 	/**
@@ -58,7 +58,7 @@ trait ListMethodsTrait {
 	 */
 	public function linsert($key, $before = true, $pivot, $value) {
 		$position = $before ? "before" : "after";
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $position, $pivot, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $position, $pivot, $value ]) );
 	}
 
 	/**
@@ -67,7 +67,7 @@ trait ListMethodsTrait {
 	 * @params key
 	 */
 	public function llen($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -76,7 +76,7 @@ trait ListMethodsTrait {
 	 * @params key
 	 */
 	public function lpop($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -88,7 +88,7 @@ trait ListMethodsTrait {
 		if(count($values) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one value is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $values ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $values ]) );
 	}
 
 	/**
@@ -97,7 +97,7 @@ trait ListMethodsTrait {
 	 * @params key value
 	 */
 	public function lpushx($key, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $value ]) );
 	}
 
 	/**
@@ -106,7 +106,7 @@ trait ListMethodsTrait {
 	 * @params key start stop
 	 */
 	public function lrange($key, $start, $stop) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $stop ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $stop ]) );
 	}
 
 	/**
@@ -115,7 +115,7 @@ trait ListMethodsTrait {
 	 * @params key count value
 	 */
 	public function lrem($key, $count, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $count, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $count, $value ]) );
 	}
 
 	/**
@@ -124,7 +124,7 @@ trait ListMethodsTrait {
 	 * @params key index value
 	 */
 	public function lset($key, $index, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $index, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $index, $value ]) );
 	}
 
 	/**
@@ -133,7 +133,7 @@ trait ListMethodsTrait {
 	 * @params key start stop
 	 */
 	public function ltrim($key, $start, $stop) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $stop ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $stop ]) );
 	}
 
 	/**
@@ -142,7 +142,7 @@ trait ListMethodsTrait {
 	 * @params key
 	 */
 	public function rpop($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -151,7 +151,7 @@ trait ListMethodsTrait {
 	 * @params source destination
 	 */
 	public function rpoplpush($source, $destination) {
-		return $this->exe( $this->protocol( __FUNCTION__, $source, $destination ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $source, $destination ]) );
 	}
 
 	/**
@@ -163,7 +163,7 @@ trait ListMethodsTrait {
 		if(count($values) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one value is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $values ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $values ]) );
 	}
 
 	/**
@@ -172,7 +172,7 @@ trait ListMethodsTrait {
 	 * @params key value
 	 */
 	public function rpushx($key, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $value ]) );
 	}
 
 }

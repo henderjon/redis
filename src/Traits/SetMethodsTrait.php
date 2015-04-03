@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait SetMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -19,7 +19,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one member is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $members ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $members ]) );
 	}
 
 	/**
@@ -28,7 +28,7 @@ trait SetMethodsTrait {
 	 * @params key
 	 */
 	public function scard($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -41,7 +41,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 	/**
@@ -54,7 +54,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $dest, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $dest, $keys ]) );
 	}
 
 	/**
@@ -67,7 +67,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 	/**
@@ -80,7 +80,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $dest, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $dest, $keys ]) );
 	}
 
 	/**
@@ -89,7 +89,7 @@ trait SetMethodsTrait {
 	 * @params key member
 	 */
 	public function sismember($key, $member) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $member ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $member ]) );
 	}
 
 	/**
@@ -98,7 +98,7 @@ trait SetMethodsTrait {
 	 * @params key
 	 */
 	public function smembers($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -107,7 +107,7 @@ trait SetMethodsTrait {
 	 * @params source destination member
 	 */
 	public function smove($source, $dest, $member) {
-		return $this->exe( $this->protocol( __FUNCTION__, $source, $dest, $member ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $source, $dest, $member ]) );
 	}
 
 	/**
@@ -116,7 +116,7 @@ trait SetMethodsTrait {
 	 * @params key [count]
 	 */
 	public function spop($key, $count = 1) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $count ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $count ]) );
 	}
 
 	/**
@@ -125,7 +125,7 @@ trait SetMethodsTrait {
 	 * @params key [count]
 	 */
 	public function srandmember($key, $count = 1) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $count ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $count ]) );
 	}
 
 	/**
@@ -138,7 +138,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one member is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $members ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $members ]) );
 	}
 
 	/**
@@ -151,7 +151,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 	/**
@@ -164,7 +164,7 @@ trait SetMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $dest, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $dest, $keys ]) );
 	}
 
 	/**
@@ -182,7 +182,7 @@ trait SetMethodsTrait {
 			$count = ["count", $count];
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $cursor, $pattern, $count]) );
 	}
 
 

@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait HashMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -18,7 +18,7 @@ trait HashMethodsTrait {
 		if(count($fields) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one field is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $fields ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $fields ]) );
 	}
 
 	/**
@@ -27,7 +27,7 @@ trait HashMethodsTrait {
 	 * key field
 	 */
 	public function hexists($key, $field) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field ]) );
 	}
 
 	/**
@@ -36,7 +36,7 @@ trait HashMethodsTrait {
 	 * key field
 	 */
 	public function hget($key, $field) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field ]) );
 	}
 
 	/**
@@ -45,7 +45,7 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	public function hgetall($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -54,7 +54,7 @@ trait HashMethodsTrait {
 	 * key field increment
 	 */
 	public function hincrby($key, $field, $incr) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $incr ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field, $incr ]) );
 	}
 
 	/**
@@ -63,7 +63,7 @@ trait HashMethodsTrait {
 	 * key field increment
 	 */
 	public function hincrbyfloat($key, $field, $incr) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $incr ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field, $incr ]) );
 	}
 
 	/**
@@ -72,7 +72,7 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	public function hkeys($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -81,7 +81,7 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	public function hlen($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -93,7 +93,7 @@ trait HashMethodsTrait {
 		if(count($fields) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one field is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $fields ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $fields ]) );
 	}
 
 	/**
@@ -105,7 +105,7 @@ trait HashMethodsTrait {
         if(count($map) < 2 || (count($map) % 2 != 0)){
             throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
         }
-        return $this->exe( $this->protocol( __FUNCTION__, $key, $map ) );
+        return $this->exe( $this->protocol([ __FUNCTION__, $key, $map ]) );
 	}
 
 	/**
@@ -114,7 +114,7 @@ trait HashMethodsTrait {
 	 * key field value
 	 */
 	public function hset($key, $field, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field, $value ]) );
 	}
 
 	/**
@@ -123,7 +123,7 @@ trait HashMethodsTrait {
 	 * key field value
 	 */
 	public function hsetnx($key, $field, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field, $value ]) );
 	}
 
 	/**
@@ -132,7 +132,7 @@ trait HashMethodsTrait {
 	 * key field
 	 */
 	public function hstrlen($key, $field) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $field ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $field ]) );
 	}
 
 	/**
@@ -141,7 +141,7 @@ trait HashMethodsTrait {
 	 * key
 	 */
 	public function hvals($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -157,7 +157,7 @@ trait HashMethodsTrait {
 			$count = ["count", $count];
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $cursor, $pattern, $count ]) );
 	}
 
 }

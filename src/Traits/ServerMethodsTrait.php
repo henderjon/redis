@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait ServerMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	abstract protected function getKillType($type);
@@ -16,7 +16,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function bgrewriteaof() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -24,7 +24,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function bgsave() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -34,7 +34,7 @@ trait ServerMethodsTrait {
 	 */
 	public function clientKillAddr($ip, $skipme = true) {
 		$skipme = $skipme ? "yes" : "no";
-		return $this->exe( $this->protocol( "client", "kill", "addr", $ip, "skipme", $skipme ) );
+		return $this->exe( $this->protocol([ "client", "kill", "addr", $ip, "skipme", $skipme ]) );
 	}
 
 	/**
@@ -44,7 +44,7 @@ trait ServerMethodsTrait {
 	 */
 	public function clientKillId($id, $skipme = true) {
 		$skipme = $skipme ? "yes" : "no";
-		return $this->exe( $this->protocol( "client", "kill", "id", $id, "skipme", $skipme ) );
+		return $this->exe( $this->protocol([ "client", "kill", "id", $id, "skipme", $skipme ]) );
 	}
 
 	/**
@@ -58,7 +58,7 @@ trait ServerMethodsTrait {
 		}
 
 		$skipme = $skipme ? "yes" : "no";
-		return $this->exe( $this->protocol( "client", "kill", "type", $type, "skipme", $skipme ) );
+		return $this->exe( $this->protocol([ "client", "kill", "type", $type, "skipme", $skipme ]) );
 	}
 
 	/**
@@ -67,7 +67,7 @@ trait ServerMethodsTrait {
 	 * @params LIST
 	 */
 	public function clientList() {
-		return $this->exe( $this->protocol( "client", "list" ) );
+		return $this->exe( $this->protocol([ "client", "list" ]) );
 	}
 
 	/**
@@ -76,7 +76,7 @@ trait ServerMethodsTrait {
 	 * @params GETNAME
 	 */
 	public function clientGetName() {
-		return $this->exe( $this->protocol( "client", "getname" ) );
+		return $this->exe( $this->protocol([ "client", "getname" ]) );
 	}
 
 	/**
@@ -85,7 +85,7 @@ trait ServerMethodsTrait {
 	 * @params PAUSE timeout
 	 */
 	public function clientPause($timeout) {
-		return $this->exe( $this->protocol( "client", "pause", $timeout ) );
+		return $this->exe( $this->protocol([ "client", "pause", $timeout ]) );
 	}
 
 	/**
@@ -94,7 +94,7 @@ trait ServerMethodsTrait {
 	 * @params SETNAME connection-name
 	 */
 	public function clientSetName($name) {
-		return $this->exe( $this->protocol( "client", "setname", $name ) );
+		return $this->exe( $this->protocol([ "client", "setname", $name ]) );
 	}
 
 	/**
@@ -102,7 +102,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function command() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -111,7 +111,7 @@ trait ServerMethodsTrait {
 	 * @params COUNT
 	 */
 	public function commandCount() {
-		return $this->exe( $this->protocol( "command", "count" ) );
+		return $this->exe( $this->protocol([ "command", "count" ]) );
 	}
 
 	/**
@@ -120,7 +120,7 @@ trait ServerMethodsTrait {
 	 * @params GETKEYS
 	 */
 	public function commandGetKeys() {
-		return $this->exe( $this->protocol( "command", "getkeys" ) );
+		return $this->exe( $this->protocol([ "command", "getkeys" ]) );
 	}
 
 	/**
@@ -132,7 +132,7 @@ trait ServerMethodsTrait {
 		if(count($commands) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one command is required.");
 		}
-		return $this->exe( $this->protocol( "command", "info", $commands ) );
+		return $this->exe( $this->protocol([ "command", "info", $commands ]) );
 	}
 
 	/**
@@ -141,7 +141,7 @@ trait ServerMethodsTrait {
 	 * @params GET parameter
 	 */
 	public function configGet($param) {
-		return $this->exe( $this->protocol( "config", "get", $param ) );
+		return $this->exe( $this->protocol([ "config", "get", $param ]) );
 	}
 
 	/**
@@ -150,7 +150,7 @@ trait ServerMethodsTrait {
 	 * @params REWRITE
 	 */
 	public function configRewrite() {
-		return $this->exe( $this->protocol( "config", "rewrite" ) );
+		return $this->exe( $this->protocol([ "config", "rewrite" ]) );
 	}
 
 	/**
@@ -159,7 +159,7 @@ trait ServerMethodsTrait {
 	 * @params SET parameter value
 	 */
 	public function configSet($param, $value) {
-		return $this->exe( $this->protocol( "config", "set", $param, $value ) );
+		return $this->exe( $this->protocol([ "config", "set", $param, $value ]) );
 	}
 
 	/**
@@ -168,7 +168,7 @@ trait ServerMethodsTrait {
 	 * @params RESETSTAT
 	 */
 	public function configResetStat() {
-		return $this->exe( $this->protocol( "config", "resetstat" ) );
+		return $this->exe( $this->protocol([ "config", "resetstat" ]) );
 	}
 
 	/**
@@ -176,7 +176,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function dbsize() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -185,7 +185,7 @@ trait ServerMethodsTrait {
 	 * @params OBJECT key
 	 */
 	public function debugObject($key) {
-		return $this->exe( $this->protocol( "debug", "object", $key ) );
+		return $this->exe( $this->protocol([ "debug", "object", $key ]) );
 	}
 
 	/**
@@ -194,7 +194,7 @@ trait ServerMethodsTrait {
 	 * @params SEGFAULT
 	 */
 	public function debugSegFault() {
-		return $this->exe( $this->protocol( "debug", "segfault" ) );
+		return $this->exe( $this->protocol([ "debug", "segfault" ]) );
 	}
 
 	/**
@@ -202,7 +202,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function flushall() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -210,7 +210,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function flushdb() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -219,7 +219,7 @@ trait ServerMethodsTrait {
 	 * @params [section]
 	 */
 	public function info($section = null) {
-		return $this->exe( $this->protocol( __FUNCTION__, $section ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $section ]) );
 	}
 
 	/**
@@ -227,7 +227,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function lastsave() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -235,7 +235,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function monitor() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -243,7 +243,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function role() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -251,7 +251,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function save() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -260,7 +260,7 @@ trait ServerMethodsTrait {
 	 * @params [NOSAVE] [SAVE]
 	 */
 	public function shutdown() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -269,7 +269,7 @@ trait ServerMethodsTrait {
 	 * @params [NOSAVE] [SAVE]
 	 */
 	public function shutdownSave() {
-		return $this->exe( $this->protocol( "shutdown", "save" ) );
+		return $this->exe( $this->protocol([ "shutdown", "save" ]) );
 	}
 
 	/**
@@ -278,7 +278,7 @@ trait ServerMethodsTrait {
 	 * @params [NOSAVE] [SAVE]
 	 */
 	public function shutdownNoSave() {
-		return $this->exe( $this->protocol( "shutdown", "nosave" ) );
+		return $this->exe( $this->protocol([ "shutdown", "nosave" ]) );
 	}
 
 	/**
@@ -287,7 +287,7 @@ trait ServerMethodsTrait {
 	 * @params host port
 	 */
 	public function slaveof($host, $port) {
-		return $this->exe( $this->protocol( __FUNCTION__, $host, $port ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $host, $port ]) );
 	}
 
 	/**
@@ -296,7 +296,7 @@ trait ServerMethodsTrait {
 	 * @params subcommand [argument]
 	 */
 	public function slowlog($subcommand, $arg = null) {
-		return $this->exe( $this->protocol( __FUNCTION__, $subcommand, $arg ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $subcommand, $arg ]) );
 	}
 
 	/**
@@ -304,7 +304,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function sync() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 	/**
@@ -312,7 +312,7 @@ trait ServerMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#server
 	 */
 	public function time() {
-		return $this->exe( $this->protocol( __FUNCTION__ ) );
+		return $this->exe( $this->protocol([ __FUNCTION__ ]) );
 	}
 
 

@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait PubSubMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	/**
@@ -18,7 +18,7 @@ trait PubSubMethodsTrait {
 		if(count($patterns) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one pattern is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $patterns ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $patterns ]) );
 	}
 
 	/**
@@ -27,7 +27,7 @@ trait PubSubMethodsTrait {
 	 * subcommand [argument [argument ...]]
 	 */
 	public function pubsubChannels(array $args = null) {
-		return $this->exe( $this->protocol( "pubsub", "channels", $args ) );
+		return $this->exe( $this->protocol([ "pubsub", "channels", $args ]) );
 		// CHANNELS, NUMSUB, NUMPAT
 	}
 
@@ -37,7 +37,7 @@ trait PubSubMethodsTrait {
 	 * subcommand [argument [argument ...]]
 	 */
 	public function pubsubNumsub(array $args = null) {
-		return $this->exe( $this->protocol( "pubsub", "numsub", $args ) );
+		return $this->exe( $this->protocol([ "pubsub", "numsub", $args ]) );
 		// CHANNELS, NUMSUB, NUMPAT
 	}
 
@@ -47,7 +47,7 @@ trait PubSubMethodsTrait {
 	 * subcommand [argument [argument ...]]
 	 */
 	public function pubsubNumpat(array $args = null) {
-		return $this->exe( $this->protocol( "pubsub", "numpat", $args ) );
+		return $this->exe( $this->protocol([ "pubsub", "numpat", $args ]) );
 		// CHANNELS, NUMSUB, NUMPAT
 	}
 
@@ -57,7 +57,7 @@ trait PubSubMethodsTrait {
 	 * channel message
 	 */
 	public function publish($chan, $message) {
-		return $this->exe( $this->protocol( __FUNCTION__, $chan, $message ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $chan, $message ]) );
 	}
 
 	/**
@@ -66,7 +66,7 @@ trait PubSubMethodsTrait {
 	 * [pattern [pattern ...]]
 	 */
 	public function punsubscribe(array $patterns = null) {
-		return $this->exe( $this->protocol( __FUNCTION__, $patterns ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $patterns ]) );
 	}
 
 	/**
@@ -78,7 +78,7 @@ trait PubSubMethodsTrait {
 		if(count($channels) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one channel is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $channels ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $channels ]) );
 	}
 
 	/**
@@ -87,7 +87,7 @@ trait PubSubMethodsTrait {
 	 * [channel [channel ...]]
 	 */
 	public function unsubscribe(array $channels = null) {
-		return $this->exe( $this->protocol( __FUNCTION__, $channels ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $channels ]) );
 	}
 
 

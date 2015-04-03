@@ -6,7 +6,7 @@ use Redis\RedisException;
 
 trait SortedSetMethodsTrait {
 
-	abstract protected function protocol();
+	abstract protected function protocol(array $args);
 	abstract protected function exe($string, $count = 1);
 
 	abstract protected function getZagg($zagg);
@@ -20,7 +20,7 @@ trait SortedSetMethodsTrait {
 		if(count($map) < 2 || (count($map) % 2 != 0)){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $map ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $map ]) );
 	}
 
 	/**
@@ -29,7 +29,7 @@ trait SortedSetMethodsTrait {
 	 * @params key
 	 */
 	public function zcard($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -38,7 +38,7 @@ trait SortedSetMethodsTrait {
 	 * @params key min max
 	 */
 	public function zcount($key, $min, $max) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $min, $max ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $min, $max ]) );
 	}
 
 	/**
@@ -47,7 +47,7 @@ trait SortedSetMethodsTrait {
 	 * @params key increment member
 	 */
 	public function zincrby($key, $incr, $member) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $incr, $member ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $incr, $member ]) );
 	}
 
 	/**
@@ -71,7 +71,7 @@ trait SortedSetMethodsTrait {
 
 		$aggregate = ["AGGREGATE", $aggregate];
 
-		return $this->exe( $this->protocol( __FUNCTION__, $dest, count($keys), $keys, $weight, $aggregate ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $dest, count($keys), $keys, $weight, $aggregate ]) );
 	}
 
 	/**
@@ -80,7 +80,7 @@ trait SortedSetMethodsTrait {
 	 * @params key min max
 	 */
 	public function zlexcount($key, $min, $max) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $min, $max ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $min, $max ]) );
 	}
 
 	/**
@@ -90,7 +90,7 @@ trait SortedSetMethodsTrait {
 	 */
 	public function zrange($key, $start, $stop, $withScores = null) {
 		$withScores = $withScores ? "WITHSCORES" : null;
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $stop, $withScores ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $stop, $withScores ]) );
 	}
 
 	/**
@@ -106,7 +106,7 @@ trait SortedSetMethodsTrait {
 		if($offset){
 			$offset = ["LIMIT", $offset, $count];
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $min, $max, $offset ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $min, $max, $offset ]) );
 	}
 
 	/**
@@ -122,7 +122,7 @@ trait SortedSetMethodsTrait {
 		if($offset){
 			$offset = ["LIMIT", $offset, $count];
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $max, $min, $offset ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $max, $min, $offset ]) );
 	}
 
 	/**
@@ -140,7 +140,7 @@ trait SortedSetMethodsTrait {
 		if($offset){
 			$offset = ["LIMIT", $offset, $count];
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $min, $max, $withScores, $offset ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $min, $max, $withScores, $offset ]) );
 	}
 
 	/**
@@ -149,7 +149,7 @@ trait SortedSetMethodsTrait {
 	 * @params key member
 	 */
 	public function zrank($key, $member) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $member ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $member ]) );
 	}
 
 	/**
@@ -161,7 +161,7 @@ trait SortedSetMethodsTrait {
 		if(count($members) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one member is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $members ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $members ]) );
 	}
 
 	/**
@@ -170,7 +170,7 @@ trait SortedSetMethodsTrait {
 	 * @params key min max
 	 */
 	public function zremrangebylex($key, $min, $max) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $min, $max ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $min, $max ]) );
 	}
 
 	/**
@@ -179,7 +179,7 @@ trait SortedSetMethodsTrait {
 	 * @params key start stop
 	 */
 	public function zremrangebyrank($key, $start, $stop) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $stop ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $stop ]) );
 	}
 
 	/**
@@ -188,7 +188,7 @@ trait SortedSetMethodsTrait {
 	 * @params key min max
 	 */
 	public function zremrangebyscore($key, $min, $max) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $min, $max ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $min, $max ]) );
 	}
 
 	/**
@@ -198,7 +198,7 @@ trait SortedSetMethodsTrait {
 	 */
 	public function zrevrange($key, $start, $stop, $withScores = null) {
 		$withScores = $withScores ? "WITHSCORES" : null;
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $stop, $withScores ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $stop, $withScores ]) );
 	}
 
 	/**
@@ -216,7 +216,7 @@ trait SortedSetMethodsTrait {
 		if($offset){
 			$offset = ["LIMIT", $offset, $count];
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $max, $min, $withScores, $offset ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $max, $min, $withScores, $offset ]) );
 	}
 
 	/**
@@ -225,7 +225,7 @@ trait SortedSetMethodsTrait {
 	 * @params key member
 	 */
 	public function zrevrank($key, $member) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $member ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $member ]) );
 	}
 
 	/**
@@ -234,7 +234,7 @@ trait SortedSetMethodsTrait {
 	 * @params key member
 	 */
 	public function zscore($key, $member) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $member ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $member ]) );
 	}
 
 	/**
@@ -258,7 +258,7 @@ trait SortedSetMethodsTrait {
 
 		$aggregate = ["AGGREGATE", $aggregate];
 
-		return $this->exe( $this->protocol( __FUNCTION__, $dest, count($keys), $keys, $weight, $aggregate ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $dest, count($keys), $keys, $weight, $aggregate ]) );
 	}
 
 	/**
@@ -269,7 +269,7 @@ trait SortedSetMethodsTrait {
 	public function zscan($key, $cursor, $pattern = null, $count = null) {
 		$pattern = $pattern ? ["MATCH", $pattern] : null;
 		$count   = $count   ? ["COUNT", $count]   : null;
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $cursor, $pattern, $count ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $cursor, $pattern, $count ]) );
 	}
 
 
