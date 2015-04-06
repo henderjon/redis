@@ -22,7 +22,7 @@ class RedisSubscription extends RedisProtocol {
 
 		// all returns: list($type, $channel, $message) = $details;
 		return [$details, function(){
-			return $this->sub($this->handle);
+			return $this->loop($this->handle);
 		}];
 	}
 
@@ -37,9 +37,8 @@ class RedisSubscription extends RedisProtocol {
 		$command = $this->protocol([ "psubscribe", $channels ]);
 		$details = $this->exe( $command, count($channels) );
 
-		$that = $this;
-		return array($details, function()use($that){
-			return $that->sub($that->handle);
+		return array($details, function(){
+			return $this->loop($this->handle);
 		});
 	}
 
@@ -51,6 +50,21 @@ class RedisSubscription extends RedisProtocol {
 	 */
 	public function setTimeout($sec, $micro = 0){
 		return stream_set_timeout($this->handle, $sec, $micro);
+	}
+
+	/**
+	 * the open ended listener for the SUB of pub/sub
+	 * @param Resource $handle The resouce, usually a socket connection
+	 * @return array
+	 */
+	protected function loop( $handle ){
+
+		// these values don't change and need to be read
+		// out of the stream before we parse out the response
+		$type  = fgetc($handle); // always "*"
+		$bytes = trim( fgets($handle) ); // always 3
+
+		return $this->read($handle, $bytes);
 	}
 
 }

@@ -17,7 +17,7 @@ if(file_exists($conf)){
 
 $redis = (new \Redis\RedisSubscription)->connect($config["hostname"], $config["hostport"]);
 
-list($details, $listener) = $redis->subscribe(["channel-one", "channel-two"]);
+list($details, $listener) = $redis->subscribeTo(["channel-one", "channel-two"]);
 
 print_r($details);
 
