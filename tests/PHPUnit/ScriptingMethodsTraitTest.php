@@ -2,7 +2,7 @@
 
 namespace ScriptingMethodsTraitTest;
 
-class ProperRedis extends \Redis\RedisConstants {
+class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\ScriptingMethodsTrait;
 
@@ -44,12 +44,12 @@ class ScriptingMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function do_evalLua($inst) {
-		$inst->eval("testkey1", ["testkey2"]);
-		return "*3 $4 eval $8 testkey1 $8 testkey2 ";
+		$inst->evalLua("testkey1", ["testkey2"]);
+		return "*4 $4 eval $8 testkey1 $1 1 $8 testkey2 ";
 	}
 
 	function do_evalsha($inst) {
-		$inst->evalsha("testkey1", 2, ["testkey2", "testkey3"]);
+		$inst->evalsha("testkey1", ["testkey2", "testkey3"]);
 		return "*5 $7 evalsha $8 testkey1 $1 2 $8 testkey2 $8 testkey3 ";
 	}
 
@@ -72,6 +72,33 @@ class ScriptingMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	function do_scriptLoad($inst) {
 		$inst->scriptLoad("testkey1");
 		return "*3 $6 script $4 load $8 testkey1 ";
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_evalLua_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->evalLua("script", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_evalsha_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->evalsha("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_scriptExists_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->scriptExists([]);
 	}
 
 

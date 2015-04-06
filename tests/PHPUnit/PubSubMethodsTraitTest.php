@@ -2,7 +2,7 @@
 
 namespace PubSubMethodsTraitTest;
 
-class ProperRedis extends \Redis\RedisConstants {
+class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\PubSubMethodsTrait;
 
@@ -81,6 +81,24 @@ class PubSubMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	function do_unsubscribe($inst) {
 		$inst->unsubscribe(["testkey1", "testkey2"]);
 		return "*3 $11 unsubscribe $8 testkey1 $8 testkey2 ";
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_psubscribe_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->psubscribe([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_subscribe_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->subscribe([]);
 	}
 
 }

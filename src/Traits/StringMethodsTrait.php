@@ -6,15 +6,17 @@ use Redis\RedisException;
 
 trait StringMethodsTrait {
 
-	abstract function getExpx($expx);
+	abstract protected function protocol(array $args);
+	abstract protected function exe($string, $count = 1);
 
-	abstract function getNxxx($expx);
+	abstract public function getExpx($expx);
+	abstract public function getNxxx($expx);
 
 	/**
 	 *  Append a value to a key
 	 */
 	public function append($key, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $value ]) );
 	}
 
 	/**
@@ -23,7 +25,7 @@ trait StringMethodsTrait {
 	 * @params key [start end]
 	 */
 	public function bitcount($key, $start = null, $end = null) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $end ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $end ]) );
 	}
 
 	/**
@@ -36,7 +38,7 @@ trait StringMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, "AND", $destkey, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, "AND", $destkey, $keys ]) );
 	}
 
 	/**
@@ -49,7 +51,7 @@ trait StringMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, "OR", $destkey, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, "OR", $destkey, $keys ]) );
 	}
 
 	/**
@@ -62,7 +64,7 @@ trait StringMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, "XOR", $destkey, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, "XOR", $destkey, $keys ]) );
 	}
 
 	/**
@@ -75,7 +77,7 @@ trait StringMethodsTrait {
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, "NOT", $destkey, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, "NOT", $destkey, $keys ]) );
 	}
 
 	/**
@@ -84,7 +86,7 @@ trait StringMethodsTrait {
 	 * @params key bit [start] [end]
 	 */
 	public function bitpos($key, $bit, $start = null, $end = null) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $bit, $start, $end ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $bit, $start, $end ]) );
 	}
 
 	/**
@@ -93,7 +95,7 @@ trait StringMethodsTrait {
 	 * @params key
 	 */
 	public function decr($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -102,7 +104,7 @@ trait StringMethodsTrait {
 	 * @params key decrement
 	 */
 	public function decrby($key, $decr) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $decr ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $decr ]) );
 	}
 
 	/**
@@ -111,7 +113,7 @@ trait StringMethodsTrait {
 	 * @params key
 	 */
 	public function get($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -120,7 +122,7 @@ trait StringMethodsTrait {
 	 * @params key offset
 	 */
 	public function getbit($key, $offset) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $offset ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $offset ]) );
 	}
 
 	/**
@@ -129,7 +131,7 @@ trait StringMethodsTrait {
 	 * @params key start end
 	 */
 	public function getrange($key, $start, $end) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $start, $end ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $start, $end ]) );
 	}
 
 	/**
@@ -138,7 +140,7 @@ trait StringMethodsTrait {
 	 * @params key value
 	 */
 	public function getset($key, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $value ]) );
 	}
 
 	/**
@@ -147,7 +149,7 @@ trait StringMethodsTrait {
 	 * @params key
 	 */
 	public function incr($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 	/**
@@ -156,7 +158,7 @@ trait StringMethodsTrait {
 	 * @params key increment
 	 */
 	public function incrby($key, $incr) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $incr ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $incr ]) );
 	}
 
 	/**
@@ -165,7 +167,7 @@ trait StringMethodsTrait {
 	 * @params key increment
 	 */
 	public function incrbyfloat($key, $incr) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $incr ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $incr ]) );
 	}
 
 	/**
@@ -177,7 +179,7 @@ trait StringMethodsTrait {
 		if(count($keys) < 1){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $keys ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $keys ]) );
 	}
 
 	/**
@@ -189,7 +191,7 @@ trait StringMethodsTrait {
 		if(count($map) < 2 || (count($map) % 2 != 0)){
 			throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $map ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $map ]) );
 	}
 
 	/**
@@ -201,7 +203,7 @@ trait StringMethodsTrait {
 		if(count($map) < 2 || (count($map) % 2 != 0)){
 			throw new RedisException("(" . __FUNCTION__ . ") An even number of args is required (e.g. [key, value]).");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $map ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $map ]) );
 	}
 
 	/**
@@ -210,7 +212,7 @@ trait StringMethodsTrait {
 	 * @params key milliseconds value
 	 */
 	public function psetex($key, $milliseconds, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $milliseconds, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $milliseconds, $value ]) );
 	}
 
 	/**
@@ -235,7 +237,7 @@ trait StringMethodsTrait {
 			$expire = [$expx, $expire];
 		}
 
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $value, $expire, $nxxx ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $value, $expire, $nxxx ]) );
 	}
 
 	/**
@@ -244,7 +246,7 @@ trait StringMethodsTrait {
 	 * @params key offset value
 	 */
 	public function setbit($key, $offset, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $offset, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $offset, $value ]) );
 	}
 
 	/**
@@ -253,7 +255,7 @@ trait StringMethodsTrait {
 	 * @params key seconds value
 	 */
 	public function setex($key, $seconds, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $seconds, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $seconds, $value ]) );
 	}
 
 	/**
@@ -262,7 +264,7 @@ trait StringMethodsTrait {
 	 * @params key value
 	 */
 	public function setnx($key, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $value ]) );
 	}
 
 	/**
@@ -271,7 +273,7 @@ trait StringMethodsTrait {
 	 * @params key offset value
 	 */
 	public function setrange($key, $offset, $value) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key, $offset, $value ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key, $offset, $value ]) );
 	}
 
 	/**
@@ -280,7 +282,7 @@ trait StringMethodsTrait {
 	 * @params key
 	 */
 	public function strlen($key) {
-		return $this->exe( $this->protocol( __FUNCTION__, $key ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $key ]) );
 	}
 
 

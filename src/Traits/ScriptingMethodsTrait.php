@@ -6,61 +6,70 @@ use Redis\RedisException;
 
 trait ScriptingMethodsTrait {
 
+	abstract protected function protocol(array $args);
+	abstract protected function exe($string, $count = 1);
+
 	/**
 	 * exeute a Lua script server side
+	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params script numkeys key [key ...] arg [arg ...]
 	 */
-	function evalLua($script, array $keys, array $args = null) {
+	public function evalLua($script, array $keys, array $args = null) {
 		if(count($keys) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( "eval", $script, count($keys), $keys, $args ) );
+		return $this->exe( $this->protocol([ "eval", $script, count($keys), $keys, $args ]) );
 	}
 
 	/**
 	 * exeute a Lua script server side
+	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params sha1 numkeys key [key ...] arg [arg ...]
 	 */
-	function evalsha($sha1, $numkeys, array $keys, array $args = null) {
+	public function evalsha($sha1, array $keys, array $args = null) {
 		if(count($keys) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
-		return $this->exe( $this->protocol( __FUNCTION__, $sha1, count($keys), $keys, $args ) );
+		return $this->exe( $this->protocol([ __FUNCTION__, $sha1, count($keys), $keys, $args ]) );
 	}
 
 	/**
 	 * Check existence of scripts in the script cache.
+	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params EXISTS script [script ...]
 	 */
-	function scriptExists(array $scripts) {
+	public function scriptExists(array $scripts) {
 		if(count($scripts) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one script is required.");
 		}
-		return $this->exe( $this->protocol( "script", "exists", $scripts ) );
+		return $this->exe( $this->protocol([ "script", "exists", $scripts ]) );
 	}
 
 	/**
 	 * Remove all the scripts from the script cache.
+	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params FLUSH
 	 */
-	function scriptFlush() {
-		return $this->exe( $this->protocol( "script", "flush" ) );
+	public function scriptFlush() {
+		return $this->exe( $this->protocol([ "script", "flush" ]) );
 	}
 
 	/**
 	 * Kill the script currently in exeution.
+	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params KILL
 	 */
-	function scriptKill() {
-		return $this->exe( $this->protocol( "script", "kill" ) );
+	public function scriptKill() {
+		return $this->exe( $this->protocol([ "script", "kill" ]) );
 	}
 
 	/**
 	 * Load the specified Lua script into the script cache.
+	 * for complete documentation: http://redis.io/commands#scripting
 	 * @params LOAD script
 	 */
-	function scriptLoad($script) {
-		return $this->exe( $this->protocol( "script", "load", $script ) );
+	public function scriptLoad($script) {
+		return $this->exe( $this->protocol([ "script", "load", $script ]) );
 	}
 
 

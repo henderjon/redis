@@ -2,7 +2,7 @@
 
 namespace ListMethodsTraitTest;
 
-class ProperRedis extends \Redis\RedisConstants {
+class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\ListMethodsTrait;
 
@@ -128,5 +128,41 @@ class ListMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*3 $6 rpushx $8 testkey1 $8 testkey2 ";
 	}
 
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_blpop_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->blpop("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_brpop_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->brpop("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_lpush_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->lpush("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_rpush_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->rpush("testkey1", []);
+	}
 
 }

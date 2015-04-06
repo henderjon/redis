@@ -2,7 +2,7 @@
 
 namespace SortedSetMethodsTraitTest;
 
-class ProperRedis extends \Redis\RedisConstants {
+class ProperRedis extends \Redis\Redis {
 	use \Redis\Traits\SortedSetMethodsTrait;
 }
 
@@ -77,18 +77,18 @@ class SortedSetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function do_zrangebylex($inst) {
-		$inst->zrangebylex("testkey1", 2, 6);
-		return "*4 $11 zrangebylex $8 testkey1 $1 2 $1 6 ";
+		$inst->zrangebylex("testkey1", 2, 6, 2, 6);
+		return "*7 $11 zrangebylex $8 testkey1 $1 2 $1 6 $5 LIMIT $1 2 $1 6 ";
 	}
 
 	function do_zrevrangebylex($inst) {
-		$inst->zrevrangebylex("testkey1", 2, 6);
-		return "*4 $14 zrevrangebylex $8 testkey1 $1 2 $1 6 ";
+		$inst->zrevrangebylex("testkey1", 2, 6, 2);
+		return "*6 $14 zrevrangebylex $8 testkey1 $1 2 $1 6 $5 LIMIT $1 2 ";
 	}
 
 	function do_zrangebyscore($inst) {
-		$inst->zrangebyscore("testkey1", 2, 6, true);
-		return "*5 $13 zrangebyscore $8 testkey1 $1 2 $1 6 $10 WITHSCORES ";
+		$inst->zrangebyscore("testkey1", 2, 6, true, 2);
+		return "*7 $13 zrangebyscore $8 testkey1 $1 2 $1 6 $10 WITHSCORES $5 LIMIT $1 2 ";
 	}
 
 	function do_zrank($inst) {
@@ -107,8 +107,8 @@ class SortedSetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	function do_zremrangebyrank($inst) {
-		$inst->zremrangebylex("testkey1", 2, 6);
-		return "*4 $14 zremrangebylex $8 testkey1 $1 2 $1 6 ";
+		$inst->zremrangebyrank("testkey1", 2, 6);
+		return "*4 $15 zremrangebyrank $8 testkey1 $1 2 $1 6 ";
 	}
 
 	function do_zremrangebyscore($inst) {
@@ -146,6 +146,95 @@ class SortedSetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*5 $5 zscan $8 testkey1 $8 testkey2 $5 MATCH $5 p:*:p ";
 	}
 
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zadd_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zadd("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zinterstore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zinterstore("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zinterstore_exception_2() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zinterstore("testkey1", ["testkey2"], [], E_NOTICE);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zrangebylex_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zrangebylex("testkey1", 0, 5, null, 6);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zrevrangebylex_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zrevrangebylex("testkey1", 0, 5, null, 6);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zrangebyscore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zrangebyscore("testkey1", 0, 5, true, null, 3);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zrem_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zrem("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zrevrangebyscore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zrevrangebyscore("testkey1", 0, 5, true, null, 3);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zunionstore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zunionstore("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_zunionstore_exception2() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->zunionstore("testkey1", ["testkey2"], [], E_NOTICE);
+	}
 
 
 }

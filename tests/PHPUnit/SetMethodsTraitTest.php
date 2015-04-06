@@ -2,7 +2,7 @@
 
 namespace SetMethodsTraitTest;
 
-class ProperRedis extends \Redis\RedisConstants {
+class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\SetMethodsTrait;
 
@@ -118,5 +118,78 @@ class SetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		$inst->sscan("testkey1", "testkey2", "p:*:p", 5);
 		return "*7 $5 sscan $8 testkey1 $8 testkey2 $5 match $5 p:*:p $5 count $1 5";
 	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sadd_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sadd("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sdiff_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sdiff([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sdiffstore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sdiffstore("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sinter_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sinter([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sinterstore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sinterstore("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_srem_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->srem("testkey1", []);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sunion_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sunion([]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function test_sunionstore_exception() {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+		$inst->sunionstore("testkey1", []);
+	}
+
 
 }

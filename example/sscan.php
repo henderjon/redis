@@ -1,6 +1,6 @@
 <?php
 
-return function(\Redis\Redis $redis){
+return function(\Redis\RedisProtocol $redis){
 
 	$label = "==== SSCAN =====";
 
