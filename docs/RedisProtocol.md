@@ -1,8 +1,6 @@
 ### Class: RedisProtocol \[ `\Redis` \]
 
-Class to talk to redis at a low level .
-
-.. http://redis.io/topics/protocol
+Class to talk to redis at a low level ... http://redis.io/topics/protocol
 
 #### Method: `RedisProtocol->connect($ip, $port, $timeout)`
 
