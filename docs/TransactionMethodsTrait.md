@@ -3,6 +3,7 @@
 #### Method: `TransactionMethodsTrait->discard()`
 
 Discard all commands issued after MULTI
+
 for complete documentation: [redis.io/commands#transactions](http://redis.io/commands#transactions)
 
 ---
@@ -10,6 +11,7 @@ for complete documentation: [redis.io/commands#transactions](http://redis.io/com
 #### Method: `TransactionMethodsTrait->exec()`
 
 Execute all commands issued after MULTI
+
 for complete documentation: [redis.io/commands#transactions](http://redis.io/commands#transactions)
 
 ---
@@ -17,6 +19,7 @@ for complete documentation: [redis.io/commands#transactions](http://redis.io/com
 #### Method: `TransactionMethodsTrait->multi()`
 
 Mark the start of a transaction block
+
 for complete documentation: [redis.io/commands#transactions](http://redis.io/commands#transactions)
 
 ---
@@ -24,6 +27,7 @@ for complete documentation: [redis.io/commands#transactions](http://redis.io/com
 #### Method: `TransactionMethodsTrait->unwatch()`
 
 Forget about all watched keys
+
 for complete documentation: [redis.io/commands#transactions](http://redis.io/commands#transactions)
 
 ---
@@ -31,4 +35,5 @@ for complete documentation: [redis.io/commands#transactions](http://redis.io/com
 #### Method: `TransactionMethodsTrait->watch($keys)`
 
 Watch the given keys to determine execution of the MULTI/EXEC block
+
 for complete documentation: [redis.io/commands#transactions](http://redis.io/commands#transactions)
