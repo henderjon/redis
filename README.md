@@ -20,12 +20,14 @@ All exceptions thrown are RedisExceptions.
 The `Redis` class has a few constants for those instances where keywords are used as switches within a Redis function.
 Beyond that, it composes a series of traits. These traits represent the divisions present in the Redis [documentation](http://redis.io/commands).
 
-Interfaces are included--also borken via the Redis Command docs. This allows the usage of individual traits if only a subset of Redis
+Interfaces are included--also broken into sections via the Redis Command docs. This allows the usage of individual traits if only a subset of Redis
 functionality is desired.
 
-This lib implements all** the methods that Redis has available as of v3.0. However, there are a few instances where one Redis
+This lib implements all\** the methods that Redis has available as of v3.0. However, there are a few instances where one Redis
 function has been broken into two or more PHP functions as Redis uses some keywords as arguments. For example `bitop` has been broken into
-`Redis::bitopAnd()`, `Redis::bitopOr()`, `Redis::bitopXor()`, `Redis::bitopNot()` for clearer PHP implementation.
+`Redis::bitopAnd()`, `Redis::bitopOr()`, `Redis::bitopXor()`, `Redis::bitopNot()` for (potentially) clearer PHP implementation.
+
+I would recommend against using the `PubSubTrait` methods as `RedisSubscription` abstracts a lot of the dirty work.
 
 \**There are a handful of exceptions: `Redis::clusterSetSlot()`, `Redis::echo()`, and `Redis::sort()`
 
