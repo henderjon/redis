@@ -133,11 +133,6 @@ class ClusterMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*3 $7 cluster $16 set-config-epoch $5 12345 ";
 	}
 
-	// function $inst) {
-	// 	$inst->clusterSetSlot();
-	// 	return "$7 cluster";
-	// }
-
 	function do_clusterSlaves($inst) {
 		$inst->clusterSlaves(45);
 		return "*3 $7 cluster $6 slaves $2 45 ";

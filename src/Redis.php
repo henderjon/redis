@@ -2,7 +2,7 @@
 
 namespace Redis;
 /**
- * public API to interact with redis, based on Redis v2.8.19
+ * public API to interact with redis, based on Redis v3.0
  *
  * @package henderjon/redis
  * @author @henderjon

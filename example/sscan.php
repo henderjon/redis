@@ -7,7 +7,7 @@ return function(\Redis\RedisProtocol $redis){
 	echo "\n\n{$label}\n\n";
 
 	$i = 1;
-	while(($i += 1) < 10000){
+	while(($i += 2) < 10000){
 		$redis->sadd("testkey", $i);
 	}
 

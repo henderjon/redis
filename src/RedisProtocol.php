@@ -207,7 +207,7 @@ class RedisProtocol {
 	}
 
 	/**
-	 * Take a mixed number of strings and arrays, assuming that they are all
+	 * Take an array of mixed strings and arrays, assuming that they are all
 	 * relevant to ONE command and create a string that conforms to the Redis
 	 * protocol
 	 * @return string

@@ -48,11 +48,6 @@ class ConnectionMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*2 $4 auth $8 password ";
 	}
 
-	// function $inst) {
-	// 	$inst->echo("message");
-	// 	return "*2 $4 echo $7 message ";
-	// }
-
 	function do_ping($inst) {
 		$inst->ping();
 		return "*1 $4 ping ";

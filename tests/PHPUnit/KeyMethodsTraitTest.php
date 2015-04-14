@@ -138,11 +138,6 @@ class KeyMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*5 $7 restore $8 testkey1 $3 ttl $11 serialValue $7 replace ";
 	}
 
-	// function do_sort($inst) {
-	// 	$inst->sort("testkey1");
-	// 	return "* ";
-	// }
-
 	function do_ttl($inst) {
 		$inst->ttl("testkey1");
 		return "*2 $3 ttl $8 testkey1 ";
