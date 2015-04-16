@@ -8,7 +8,7 @@
     - [ConnectionMethodsTrait](ConnectionMethodsTrait.md)
     - [HashMethodsTrait](HashMethodsTrait.md)
     - [HyperLogLogMethodsTrait](HyperLogLogMethodsTrait.md)
-    - [KeyMethodsInterface](KeyMethodsInterface.md)
+    - [KeyMethodsTrait](KeyMethodsTrait.md)
     - [ListMethodsTrait](ListMethodsTrait.md)
     - [PubSubMethodsInterface](PubSubMethodsInterface.md)
     - [ScriptingMethodsTrait](ScriptingMethodsTrait.md)
