@@ -6,7 +6,7 @@ Authenticate to the server
 
 for complete documentation: [redis.io/commands#connection](http://redis.io/commands#connection)
 
-password
+**args** password
 
 ---
 
@@ -34,4 +34,4 @@ Change the selected database for the current connection
 
 for complete documentation: [redis.io/commands#connection](http://redis.io/commands#connection)
 
-index
+**args** index

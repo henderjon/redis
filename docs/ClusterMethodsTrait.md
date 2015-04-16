@@ -6,8 +6,7 @@ Assign new hash slots to receiving node
 
 for complete documentation: [redis.io/commands#cluster](http://redis.io/commands#cluster)
 
-**args** ADDSLOTS slot [slot .
-..]
+**args** ADDSLOTS slot [slot ...]
 
 ---
 
@@ -17,8 +16,7 @@ Assign new hash slots to receiving node
 
 for complete documentation: [redis.io/commands#cluster](http://redis.io/commands#cluster)
 
-**args** ADDSLOTS slot [slot .
-..]
+**args** ADDSLOTS slot [slot ...]
 
 ---
 
@@ -48,8 +46,7 @@ Set hash slots as unbound in receiving node
 
 for complete documentation: [redis.io/commands#cluster](http://redis.io/commands#cluster)
 
-**args** DELSLOTS slot [slot .
-..]
+**args** DELSLOTS slot [slot ...]
 
 ---
 

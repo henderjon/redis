@@ -6,7 +6,7 @@ Add one or more members to a set
 
 for complete documentation: [redis.io/commands#set](http://redis.io/commands#set)
 
-key member [member ...]
+**args** key member [member ...]
 
 ---
 
