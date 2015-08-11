@@ -16,4 +16,7 @@ interface RedisInterface extends
 				SortedSetMethodsInterface,
 				StringMethodsInterface,
 				TransactionMethodsInterface {
+
+	public function beginPipe();
+	public function executePipe();
 }

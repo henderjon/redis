@@ -22,6 +22,20 @@ class RedisProtocol {
 	public $db = 0;
 
 	/**
+	 * Whether or not to pipe exe() commands
+	 *
+	 * @var bool $piping
+	 */
+	protected $piping = false;
+
+	/**
+	 * List of commands to send once the pipe is finished
+	 *
+	 * @var array $pipeList
+	 */
+	protected $pipeList = [ ];
+
+	/**
 	 * Constant line ending according to Redis protocol
 	 */
 	protected $DELIM = "\r\n";
@@ -76,18 +90,22 @@ class RedisProtocol {
 	 * to Redis. Since Protocol::protocol takes strings and arrays and
 	 * assumes that they're all one specific command, this funciton takes
 	 * an array of those.
+	 * @param array $args Commands to be piped
+	 * @param bool $isFormatted Whether or not the commands have been Protocol()'ed
 	 * @return mixed
 	 */
-	public function pipe(){
-		$args = func_get_args();
-
+	public function pipe(array $args, $isFormatted = false){
 		if( count($args) == 1 ){
 			$args = reset($args);
 		}
 
-		$commands = array();
-		foreach($args as $arg){
-			$commands[] = $this->protocol([$arg]);
+		if(!$isFormatted) {
+			$commands = array();
+			foreach( $args as $arg ) {
+				$commands[] = $this->protocol([ $arg ]);
+			}
+		} else {
+			$commands = $args;
 		}
 
 		$command = implode("\r\n", $commands). "\r\n";
@@ -124,19 +142,46 @@ class RedisProtocol {
 	}
 
 	/**
+	 * Starts collecting ALL calls to exe() and saving them in an array to be piped.
+	 */
+	public function beginPipe(){
+		$this->piping = true;
+	}
+
+	/**
+	 * Executes all commands in the list to be piped
+	 * as well as turns off piping for future exe calls.
+	 *
+	 * @return mixed
+	 */
+	public function executePipe(){
+		$this->piping = false;
+		$ret = $this->pipe($this->pipeList, true);
+		$this->pipeList = [];
+		return $ret;
+	}
+
+	/**
 	 * Both __call() and pipe() do the filtering work of creating a single
 	 * string of our command(s), this function simply writes and reads
 	 * to our underlying connection
+	 *
+	 * If piping is set, will add all calls to an array to be piped instead of executing them
+	 *
 	 * @param string $string The command(s) in protocol format
 	 * @param int $count The number of commands sent/expected responses
 	 * @return mixed
 	 */
 	protected function exe( $string, $count = 1 ){
+		if($this->piping){
+			$this->pipeList[] = $string;
+			return [];
+		} else {
+			$length   = $this->write($this->handle, $string);
+			$response = $this->read($this->handle, $count);
 
-		$length   = $this->write( $this->handle, $string );
-		$response = $this->read( $this->handle, $count );
-
-		return count( $response ) == 1 ? reset( $response ) : $response;
+			return count($response) == 1 ? reset($response) : $response;
+		}
 	}
 
 	/**
