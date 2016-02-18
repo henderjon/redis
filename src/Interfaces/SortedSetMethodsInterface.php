@@ -4,6 +4,8 @@ namespace Redis\Interfaces;
 
 interface SortedSetMethodsInterface {
 
+	const ZAGG_SUM         = "SUM";
+
 	function zadd($key, array $map);
 	function zcard($key);
 	function zcount($key, $min, $max);
