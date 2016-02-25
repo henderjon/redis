@@ -55,14 +55,21 @@ trait SortedSetMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#sorted_set
 	 * @params destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]
 	 */
-	public function zinterstore($dest, array $keys, array $weights = [1], $aggregate = self::ZAGG_SUM) {
+	public function zinterstore($dest, array $keys, array $weights = [], $aggregate = self::ZAGG_SUM) {
 		if(count($keys) < 1 ){
 			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
 		}
 
-		$weight = ["WEIGHTS"];
-		foreach($weights as $w){
-			$weight[] = $w;
+		$weight = [];
+		if($weights){
+			if(count($keys) != count($weights) ){
+				throw new RedisException("(" . __FUNCTION__ . ") The number of weights provided should be equal to the number of keys.");
+			}
+
+			$weight = ["WEIGHTS"];
+			foreach($weights as $w){
+				$weight[] = $w;
+			}
 		}
 
 		if(!($aggregate = $this->getZagg($aggregate))){

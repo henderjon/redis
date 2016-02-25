@@ -39,6 +39,18 @@ class SortedSetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 
 			$this->assertEquals($expected, $result, $message);
 		}
+
+		$methods = ["do_zinterstore2", "do_zinterstore3"];
+		foreach($methods as $method){
+			$expected = $this->$method($inst);
+			$expected = str_replace(" ", "\r\n", $expected);
+
+			fseek($memory, $seek);
+			$result = fread($memory, strlen($expected));
+			$seek += strlen($expected);
+
+			$this->assertEquals($expected, $result, $message);
+		}
 	}
 
 	function do_zadd($inst) {
@@ -61,9 +73,32 @@ class SortedSetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 		return "*4 $7 zincrby $8 testkey1 $1 2 $1 6 ";
 	}
 
-	function do_zinterstore($inst) {
+	/**
+	 * @expectedException Redis\RedisException
+	 */
+	function do_zinterstore1($inst) {
+		$memory = fopen("php://memory", "rw+");
+		list($inst, $methods) = $this->getInst($memory);
+
 		$inst->zinterstore("testkey1", ["testkey2", "testkey3"], [1], ProperRedis::ZAGG_SUM);
-		return "*9 $11 zinterstore $8 testkey1 $1 2 $8 testkey2 $8 testkey3 $7 WEIGHTS $1 1 $9 AGGREGATE $3 SUM ";
+		$expected = "*7 $11 zinterstore $8 testkey1 $1 2 $8 testkey2 $8 testkey3 $7 WEIGHTS $1 1 $9 AGGREGATE $3 SUM ";
+		$expected = str_replace(" ", "\r\n", $expected);
+
+		fseek($memory, strlen($expected));
+		$result = fread($memory, strlen($expected));
+		$seek += strlen($expected);
+
+		$this->assertEquals($expected, $result);
+	}
+
+	function do_zinterstore2($inst) {
+		$inst->zinterstore("testkey1", ["testkey2", "testkey3"], [], ProperRedis::ZAGG_SUM);
+		return "*7 $11 zinterstore $8 testkey1 $1 2 $8 testkey2 $8 testkey3 $9 AGGREGATE $3 SUM ";
+	}
+
+	function do_zinterstore3($inst) {
+		$inst->zinterstore("testkey1", ["testkey2", "testkey3"], [1, 2], ProperRedis::ZAGG_SUM);
+		return "*10 $11 zinterstore $8 testkey1 $1 2 $8 testkey2 $8 testkey3 $7 WEIGHTS $1 1 $1 2 $9 AGGREGATE $3 SUM ";
 	}
 
 	function do_zlexcount($inst) {
