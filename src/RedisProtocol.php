@@ -234,6 +234,15 @@ class RedisProtocol {
 
 	}
 
+	/**
+	 * Close the socket when we fall out of scope.
+	 */
+	function __destruct() {
+		if(is_resource($this->handle)) {
+			@fclose($this->handle);
+		}
+	}
+
 }
 
 
