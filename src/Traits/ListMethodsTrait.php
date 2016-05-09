@@ -14,10 +14,7 @@ trait ListMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#list
 	 * @params key [key ...] timeout
 	 */
-	public function blpop($key, array $keys, $timeout = 0) {
-		if(count($keys) < 1){
-			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
-		}
+	public function blpop($key, array $keys = [], $timeout = 0) {
 		return $this->exe( $this->protocol([ __FUNCTION__, $key, $keys, $timeout ]) );
 	}
 
@@ -26,10 +23,7 @@ trait ListMethodsTrait {
 	 * for complete documentation: http://redis.io/commands#list
 	 * @params key [key ...] timeout
 	 */
-	public function brpop($key, array $keys, $timeout = 0) {
-		if(count($keys) < 1){
-			throw new RedisException("(" . __FUNCTION__ . ") At least one key is required.");
-		}
+	public function brpop($key, array $keys = [], $timeout = 0) {
 		return $this->exe( $this->protocol([ __FUNCTION__, $key, $keys, $timeout ]) );
 	}
 

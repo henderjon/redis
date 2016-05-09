@@ -132,24 +132,6 @@ class ListMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @expectedException Redis\RedisException
 	 */
-	function test_blpop_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->blpop("testkey1", []);
-	}
-
-	/**
-	 * @expectedException Redis\RedisException
-	 */
-	function test_brpop_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->brpop("testkey1", []);
-	}
-
-	/**
-	 * @expectedException Redis\RedisException
-	 */
 	function test_lpush_exception() {
 		$memory = fopen("php://memory", "rw+");
 		list($inst, $methods) = $this->getInst($memory);
