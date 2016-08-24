@@ -76,11 +76,11 @@ class RedisProtocol {
 	 * to Redis. Since Protocol::protocol takes strings and arrays and
 	 * assumes that they're all one specific command, this funciton takes
 	 * an array of those.
+	 *
+	 * @param array $args
 	 * @return mixed
 	 */
-	public function pipe(){
-		$args = func_get_args();
-
+	public function pipe( array $args ){
 		if( count($args) == 1 ){
 			$args = reset($args);
 		}

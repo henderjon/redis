@@ -29,5 +29,5 @@ interface RedisInterface extends
 	const KILL_TYPE_SLAVE  = "slave";
 	const KILL_TYPE_PUBSUB = "pubsub";
 
-	public function pipe();
+	public function pipe( array $args );
 }
