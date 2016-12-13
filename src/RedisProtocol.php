@@ -10,6 +10,7 @@ namespace Redis;
  */
 class RedisProtocol {
 
+	const DEFAULT_READ_TIMEOUT = 2;
 
 	/**
 	 * the socket handle
@@ -38,9 +39,11 @@ class RedisProtocol {
 	 * @param string $ip The IP of the Redis instance
 	 * @param string $port The port of the Redis instance
 	 * @param int $timeout The number of seconds to wait when connecting
+	 * @param int $readTimeout The number of seconds to wait for data
 	 * @return Redis
+	 * @throws RedisException
 	 */
-	public function connect( $ip, $port, $timeout = 0 ){
+	public function connect( $ip, $port, $timeout = 0, $readTimeout = self::DEFAULT_READ_TIMEOUT){
 		$errno = $error = null;
 		$sock = "tcp://{$ip}:{$port}";
 		$timeout = $timeout ?: ini_get("default_socket_timeout");
@@ -50,7 +53,20 @@ class RedisProtocol {
 			throw new RedisException($error, $errno);
 		}
 
+		$this->setReadTimeout($readTimeout);
 		return $this;
+	}
+
+	/**
+	 * Set read timeout period on a Redis
+	 * @param int $readTimeout read timeout in seconds
+	 */
+	private function setReadTimeout($readTimeout) {
+		if ($readTimeout <= 0) {
+			return;
+		}
+		stream_set_blocking($this->handle, true);
+		stream_set_timeout($this->handle, (int) floor($readTimeout), ($readTimeout - floor($readTimeout)) * 1000000);
 	}
 
 	/**
@@ -160,7 +176,15 @@ class RedisProtocol {
 		$response = array();
 		for( $n = 0; $n < $count; $n++ ){
 
-			$type  = fgetc($handle);
+			$type = fgetc($handle);
+
+			if (false === $type) {
+				$info = stream_get_meta_data($handle);
+				if ($info['timed_out']) {
+					throw new RedisException('Read timeout');
+				}
+			}
+
 			$bytes = trim( fgets($handle) );
 
 			switch( $type ){
