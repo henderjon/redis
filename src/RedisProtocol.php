@@ -32,6 +32,16 @@ class RedisProtocol {
 	protected $CHUNK = 1024;
 
 	/**
+	 * a string representing the last successful connection string
+	 */
+	protected $sock;
+
+	/**
+	 * a string representing the last timeout used
+	 */
+	protected $timeout;
+
+	/**
 	 * Connect to a Redis instance. This isn't in the constructor so
 	 * that the tests can instantiate this object and replace the
 	 * socket handle.
@@ -48,6 +58,30 @@ class RedisProtocol {
 
 		if( !$this->handle || $errno ){
 			throw new RedisException($error, $errno);
+		}
+
+		$this->sock = $sock;
+		$this->timeout = $timeout;
+
+		return $this;
+	}
+
+	/**
+	 * Reconnect to a Redis instance. Use the last known socket and timeout values
+	 * and it accepts a callback to re-do bootstrapping that might have been lost
+	 * @param callable $setup A function that takes this instance as an arg
+	 * @return Redis
+	 */
+	public function reconnect(callable $setup = null){
+		$errno = $error = null;
+		$this->handle = @stream_socket_client($this->sock, $errno, $error, $this->timeout);
+
+		if( !$this->handle || $errno ){
+			throw new RedisException($error, $errno);
+		}
+
+		if(is_callable($setup)){
+			call_user_func($setup, $this);
 		}
 
 		return $this;
@@ -176,6 +210,9 @@ class RedisProtocol {
 				break;
 				case ('*'): //multi-bulk
 					$response[] = $this->read( $handle, $bytes );
+				break;
+				default:
+					throw new RedisProtocolException("unknown type character: {$type}");
 				break;
 			}
 
