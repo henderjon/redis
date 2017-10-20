@@ -201,7 +201,7 @@ class RedisProtocol {
 					$response[] = $this->read( $handle, $bytes );
 				break;
 				default:
-					throw new RedisProtocolException("unknown type character: '{$type}' {$bytes}");
+					throw new RedisProtocolException("unknown type; fgetc returned '{$type}'");
 				break;
 			}
 
