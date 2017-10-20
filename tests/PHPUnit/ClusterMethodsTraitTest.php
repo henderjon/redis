@@ -6,168 +6,157 @@ class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\ClusterMethodsTrait;
 
+	protected function exe($string, $count = 1){
+		return $string;
+	}
+
 }
 
 class ClusterMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 
-	function getInst($memory){
-		$inst = new ProperRedis;
-		$reflection = new \ReflectionClass($inst);
-		$handle = $reflection->getProperty("handle");
-		$methods = $reflection->getMethods();
-		$handle->setAccessible(true);
-		$handle->setValue($inst, $memory);
-		return [$inst, $methods];
+	function getInst(){
+		return new ProperRedis;
 	}
 
-	function test_all_the_things(){
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-
-		$seek = 0;
-		foreach($methods as $method){
-
-			$message = strtoupper($method->getName()) . "'s converstion to Redis protocol failed.";
-			$method = "do_{$method->getName()}";
-
-			if(!method_exists($this, $method)){ continue; }
-
-			$expected = $this->$method($inst);
-			$expected = str_replace(" ", "\r\n", $expected);
-
-			fseek($memory, $seek);
-			$result = fread($memory, strlen($expected));
-			$seek += strlen($expected);
-
-			$this->assertEquals($expected, $result, $message);
-		}
+	function test_clusterGetName() {
+		$actual   = $this->getInst()->clusterGetName();
+		$expected = "*2\r\n$7\r\ncluster\r\n$7\r\ngetname\r\n";
+		$this->assertEquals($expected, $actual, "clusterGetName's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterGetName($inst) {
-		$inst->clusterGetName();
-		return "*2 $7 cluster $7 getname ";
+	function test_clusterAddSlots() {
+		$actual   = $this->getInst()->clusterAddSlots(["testkey1", "testkey2"]);
+		$expected = "*4\r\n$7\r\ncluster\r\n$8\r\naddslots\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "clusterAddSlots's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterAddSlots($inst) {
-		$inst->clusterAddSlots(["testkey1", "testkey2"]);
-		return "*4 $7 cluster $8 addslots $8 testkey1 $8 testkey2 ";
+	function test_clusterCountFailureReports() {
+		$actual   = $this->getInst()->clusterCountFailureReports(45);
+		$expected = "*3\r\n$7\r\ncluster\r\n$21\r\ncount-failure-reports\r\n$2\r\n45\r\n";
+		$this->assertEquals($expected, $actual, "clusterCountFailureReports's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterCountFailureReports($inst) {
-		$inst->clusterCountFailureReports(45);
-		return "*3 $7 cluster $21 count-failure-reports $2 45 ";
+	function test_clusterCountKeysInSlot() {
+		$actual   = $this->getInst()->clusterCountKeysInSlot(45);
+		$expected = "*3\r\n$7\r\ncluster\r\n$15\r\ncountkeysinslot\r\n$2\r\n45\r\n";
+		$this->assertEquals($expected, $actual, "clusterCountKeysInSlot's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterCountKeysInSlot($inst) {
-		$inst->clusterCountKeysInSlot(45);
-		return "*3 $7 cluster $15 countkeysinslot $2 45 ";
+	function test_clusterDelSlots() {
+		$actual   = $this->getInst()->clusterDelSlots(["testkey1", "testkey2"]);
+		$expected = "*4\r\n$7\r\ncluster\r\n$8\r\ndelslots\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "clusterDelSlots's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterDelSlots($inst) {
-		$inst->clusterDelSlots(["testkey1", "testkey2"]);
-		return "*4 $7 cluster $8 delslots $8 testkey1 $8 testkey2 ";
+	function test_clusterFailover() {
+		$actual   = $this->getInst()->clusterFailover();
+		$expected = "*2\r\n$7\r\ncluster\r\n$8\r\nfailover\r\n";
+		$this->assertEquals($expected, $actual, "clusterFailover's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterFailover($inst) {
-		$inst->clusterFailover();
-		return "*2 $7 cluster $8 failover ";
+	function test_clusterFailoverForce() {
+		$actual   = $this->getInst()->clusterFailoverForce();
+		$expected = "*3\r\n$7\r\ncluster\r\n$8\r\nfailover\r\n$5\r\nforce\r\n";
+		$this->assertEquals($expected, $actual, "clusterFailoverForce's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterFailoverForce($inst) {
-		$inst->clusterFailoverForce();
-		return "*3 $7 cluster $8 failover $5 force ";
+	function test_clusterFailoverTakeover() {
+		$actual   = $this->getInst()->clusterFailoverTakeover();
+		$expected = "*3\r\n$7\r\ncluster\r\n$8\r\nfailover\r\n$8\r\ntakeover\r\n";
+		$this->assertEquals($expected, $actual, "clusterFailoverTakeover's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterFailoverTakeover($inst) {
-		$inst->clusterFailoverTakeover();
-		return "*3 $7 cluster $8 failover $8 takeover ";
+	function test_clusterForget() {
+		$actual   = $this->getInst()->clusterForget(45);
+		$expected = "*3\r\n$7\r\ncluster\r\n$6\r\nforget\r\n$2\r\n45\r\n";
+		$this->assertEquals($expected, $actual, "clusterForget's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterForget($inst) {
-		$inst->clusterForget(45);
-		return "*3 $7 cluster $6 forget $2 45 ";
+	function test_clusterGetKeysInSlot() {
+		$actual   = $this->getInst()->clusterGetKeysInSlot("testkey1", 45);
+		$expected = "*4\r\n$7\r\ncluster\r\n$13\r\ngetkeysinslot\r\n$8\r\ntestkey1\r\n$2\r\n45\r\n";
+		$this->assertEquals($expected, $actual, "clusterGetKeysInSlot's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterGetKeysInSlot($inst) {
-		$inst->clusterGetKeysInSlot("testkey1", 45);
-		return "*4 $7 cluster $13 getkeysinslot $8 testkey1 $2 45 ";
+	function test_clusterInfo() {
+		$actual   = $this->getInst()->clusterInfo();
+		$expected = "*2\r\n$7\r\ncluster\r\n$4\r\ninfo\r\n";
+		$this->assertEquals($expected, $actual, "clusterInfo's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterInfo($inst) {
-		$inst->clusterInfo();
-		return "*2 $7 cluster $4 info ";
+	function test_clusterKeySlot() {
+		$actual   = $this->getInst()->clusterKeySlot("testkey1");
+		$expected = "*3\r\n$7\r\ncluster\r\n$7\r\nkeyslot\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "clusterKeySlot's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterKeySlot($inst) {
-		$inst->clusterKeySlot("testkey1");
-		return "*3 $7 cluster $7 keyslot $8 testkey1 ";
+	function test_clusterMeet() {
+		$actual   = $this->getInst()->clusterMeet("127.0.0.1", "6637");
+		$expected = "*4\r\n$7\r\ncluster\r\n$4\r\nmeet\r\n$9\r\n127.0.0.1\r\n$4\r\n6637\r\n";
+		$this->assertEquals($expected, $actual, "clusterMeet's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterMeet($inst) {
-		$inst->clusterMeet("127.0.0.1", "6637");
-		return "*4 $7 cluster $4 meet $9 127.0.0.1 $4 6637 ";
+	function test_clusterNodes() {
+		$actual   = $this->getInst()->clusterNodes();
+		$expected = "*2\r\n$7\r\ncluster\r\n$5\r\nnodes\r\n";
+		$this->assertEquals($expected, $actual, "clusterNodes's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterNodes($inst) {
-		$inst->clusterNodes();
-		return "*2 $7 cluster $5 nodes ";
+	function test_clusterReplicate() {
+		$actual   = $this->getInst()->clusterReplicate(45);
+		$expected = "*3\r\n$7\r\ncluster\r\n$9\r\nreplicate\r\n$2\r\n45\r\n";
+		$this->assertEquals($expected, $actual, "clusterReplicate's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterReplicate($inst) {
-		$inst->clusterReplicate(45);
-		return "*3 $7 cluster $9 replicate $2 45 ";
+	function test_clusterReset() {
+		$actual   = $this->getInst()->clusterReset();
+		$expected = "*3\r\n$7\r\ncluster\r\n$5\r\nreset\r\n$4\r\nsoft\r\n";
+		$this->assertEquals($expected, $actual, "clusterReset's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterReset($inst) {
-		$inst->clusterReset();
-		return "*3 $7 cluster $5 reset $4 soft ";
+	function test_clusterSaveConfig() {
+		$actual   = $this->getInst()->clusterSaveConfig();
+		$expected = "*2\r\n$7\r\ncluster\r\n$10\r\nsaveconfig\r\n";
+		$this->assertEquals($expected, $actual, "clusterSaveConfig's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterSaveConfig($inst) {
-		$inst->clusterSaveConfig();
-		return "*2 $7 cluster $10 saveconfig ";
+	function test_clusterSetConfigEpoch() {
+		$actual   = $this->getInst()->clusterSetConfigEpoch(12345);
+		$expected = "*3\r\n$7\r\ncluster\r\n$16\r\nset-config-epoch\r\n$5\r\n12345\r\n";
+		$this->assertEquals($expected, $actual, "clusterSetConfigEpoch's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterSetConfigEpoch($inst) {
-		$inst->clusterSetConfigEpoch(12345);
-		return "*3 $7 cluster $16 set-config-epoch $5 12345 ";
+	function test_clusterSlaves() {
+		$actual   = $this->getInst()->clusterSlaves(45);
+		$expected = "*3\r\n$7\r\ncluster\r\n$6\r\nslaves\r\n$2\r\n45\r\n";
+		$this->assertEquals($expected, $actual, "clusterSlaves's converstion to Redis protocol failed.");
 	}
 
-	function do_clusterSlaves($inst) {
-		$inst->clusterSlaves(45);
-		return "*3 $7 cluster $6 slaves $2 45 ";
-	}
-
-	function do_clusterSlots($inst) {
-		$inst->clusterSlots();
-		return "*2 $7 cluster $5 slots ";
+	function test_clusterSlots() {
+		$actual   = $this->getInst()->clusterSlots();
+		$expected = "*2\r\n$7\r\ncluster\r\n$5\r\nslots\r\n";
+		$this->assertEquals($expected, $actual, "clusterSlots's converstion to Redis protocol failed.");
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_clusterAddSlots_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->clusterAddSlots([]);
+		$this->getInst()->clusterAddSlots([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_clusterDelSlots_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->clusterDelSlots([]);
+		$this->getInst()->clusterDelSlots([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_clusterSetSlot_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->clusterSetSlot("", "", "");
+		$this->getInst()->clusterSetSlot("", "", "");
 	}
 
 

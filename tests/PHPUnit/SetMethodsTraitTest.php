@@ -6,189 +6,162 @@ class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\SetMethodsTrait;
 
+	protected function exe($string, $count = 1){
+		return $string;
+	}
+
 }
 
 class SetMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 
-	function getInst($memory){
-		$inst = new ProperRedis;
-		$reflection = new \ReflectionClass($inst);
-		$handle = $reflection->getProperty("handle");
-		$methods = $reflection->getMethods();
-		$handle->setAccessible(true);
-		$handle->setValue($inst, $memory);
-		return [$inst, $methods];
+	function getInst(){
+		return new ProperRedis;
 	}
 
-	function test_all_the_things(){
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-
-		$seek = 0;
-		foreach($methods as $method){
-
-			$message = strtoupper($method->getName()) . "'s converstion to Redis protocol failed.";
-			$method = "do_{$method->getName()}";
-
-			if(!method_exists($this, $method)){ continue; }
-
-			$expected = $this->$method($inst);
-
-			$expected = str_replace(" ", "\r\n", $expected);
-
-			fseek($memory, $seek);
-			$result = fread($memory, strlen($expected));
-			$seek += strlen($expected);
-
-			$this->assertEquals($expected, $result, $message);
-		}
+	function test_sadd() {
+		$actual   = $this->getInst()->sadd("testkey1", ["testkey2", "testkey3"]);
+		$expected = "*4\r\n$4\r\nsadd\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$8\r\ntestkey3\r\n";
+		$this->assertEquals($expected, $actual, "sadd's converstion to Redis protocol failed.");
 	}
 
-	function do_sadd($inst) {
-		$inst->sadd("testkey1", ["testkey2", "testkey3"]);
-		return "*4 $4 sadd $8 testkey1 $8 testkey2 $8 testkey3 ";
+	function test_scard() {
+		$actual   = $this->getInst()->scard("testkey1");
+		$expected = "*2\r\n$5\r\nscard\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "scard's converstion to Redis protocol failed.");
 	}
 
-	function do_scard($inst) {
-		$inst->scard("testkey1");
-		return "*2 $5 scard $8 testkey1 ";
+	function test_sdiff() {
+		$actual   = $this->getInst()->sdiff(["testkey1", "testkey2"]);
+		$expected = "*3\r\n$5\r\nsdiff\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "sdiff's converstion to Redis protocol failed.");
 	}
 
-	function do_sdiff($inst) {
-		$inst->sdiff(["testkey1", "testkey2"]);
-		return "*3 $5 sdiff $8 testkey1 $8 testkey2 ";
+	function test_sdiffstore() {
+		$actual   = $this->getInst()->sdiffstore("testkey1", ["testkey2", "testkey3"]);
+		$expected = "*4\r\n$10\r\nsdiffstore\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$8\r\ntestkey3\r\n";
+		$this->assertEquals($expected, $actual, "sdiffstore's converstion to Redis protocol failed.");
 	}
 
-	function do_sdiffstore($inst) {
-		$inst->sdiffstore("testkey1", ["testkey2", "testkey3"]);
-		return "*4 $10 sdiffstore $8 testkey1 $8 testkey2 $8 testkey3 ";
+	function test_sinter() {
+		$actual   = $this->getInst()->sinter(["testkey1", "testkey2"]);
+		$expected = "*3\r\n$6\r\nsinter\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "sinter's converstion to Redis protocol failed.");
 	}
 
-	function do_sinter($inst) {
-		$inst->sinter(["testkey1", "testkey2"]);
-		return "*3 $6 sinter $8 testkey1 $8 testkey2 ";
+	function test_sinterstore() {
+		$actual   = $this->getInst()->sinterstore("testkey1", ["testkey2", "testkey3"]);
+		$expected = "*4\r\n$11\r\nsinterstore\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$8\r\ntestkey3\r\n";
+		$this->assertEquals($expected, $actual, "sinterstore's converstion to Redis protocol failed.");
 	}
 
-	function do_sinterstore($inst) {
-		$inst->sinterstore("testkey1", ["testkey2", "testkey3"]);
-		return "*4 $11 sinterstore $8 testkey1 $8 testkey2 $8 testkey3 ";
+	function test_sismember() {
+		$actual   = $this->getInst()->sismember("testkey1", "testkey2");
+		$expected = "*3\r\n$9\r\nsismember\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "sismember's converstion to Redis protocol failed.");
 	}
 
-	function do_sismember($inst) {
-		$inst->sismember("testkey1", "testkey2");
-		return "*3 $9 sismember $8 testkey1 $8 testkey2 ";
+	function test_smembers() {
+		$actual   = $this->getInst()->smembers("testkey1");
+		$expected = "*2\r\n$8\r\nsmembers\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "smembers's converstion to Redis protocol failed.");
 	}
 
-	function do_smembers($inst) {
-		$inst->smembers("testkey1");
-		return "*2 $8 smembers $8 testkey1 ";
+	function test_smove() {
+		$actual   = $this->getInst()->smove("testkey1", "testkey2", "testkey3");
+		$expected = "*4\r\n$5\r\nsmove\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$8\r\ntestkey3\r\n";
+		$this->assertEquals($expected, $actual, "smove's converstion to Redis protocol failed.");
 	}
 
-	function do_smove($inst) {
-		$inst->smove("testkey1", "testkey2", "testkey3");
-		return "*4 $5 smove $8 testkey1 $8 testkey2 $8 testkey3 ";
+	function test_spop() {
+		$actual   = $this->getInst()->spop("testkey1", 5);
+		$expected = "*3\r\n$4\r\nspop\r\n$8\r\ntestkey1\r\n$1\r\n5\r\n";
+		$this->assertEquals($expected, $actual, "spop's converstion to Redis protocol failed.");
 	}
 
-	function do_spop($inst) {
-		$inst->spop("testkey1", 5);
-		return "*3 $4 spop $8 testkey1 $1 5 ";
+	function test_srandmember() {
+		$actual   = $this->getInst()->srandmember("testkey1", 4);
+		$expected = "*3\r\n$11\r\nsrandmember\r\n$8\r\ntestkey1\r\n$1\r\n4\r\n";
+		$this->assertEquals($expected, $actual, "srandmember's converstion to Redis protocol failed.");
 	}
 
-	function do_srandmember($inst) {
-		$inst->srandmember("testkey1", 4);
-		return "*3 $11 srandmember $8 testkey1 $1 4 ";
+	function test_srem() {
+		$actual   = $this->getInst()->srem("testkey1", ["testkey2", "testkey3"]);
+		$expected = "*4\r\n$4\r\nsrem\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$8\r\ntestkey3\r\n";
+		$this->assertEquals($expected, $actual, "srem's converstion to Redis protocol failed.");
 	}
 
-	function do_srem($inst) {
-		$inst->srem("testkey1", ["testkey2", "testkey3"]);
-		return "*4 $4 srem $8 testkey1 $8 testkey2 $8 testkey3 ";
+	function test_sunion() {
+		$actual   = $this->getInst()->sunion(["testkey1", "testkey2"]);
+		$expected = "*3\r\n$6\r\nsunion\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "sunion's converstion to Redis protocol failed.");
 	}
 
-	function do_sunion($inst) {
-		$inst->sunion(["testkey1", "testkey2"]);
-		return "*3 $6 sunion $8 testkey1 $8 testkey2 ";
+	function test_sunionstore() {
+		$actual   = $this->getInst()->sunionstore("testkey1", ["testkey2", "testkey3"]);
+		$expected = "*4\r\n$11\r\nsunionstore\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$8\r\ntestkey3\r\n";
+		$this->assertEquals($expected, $actual, "sunionstore's converstion to Redis protocol failed.");
 	}
 
-	function do_sunionstore($inst) {
-		$inst->sunionstore("testkey1", ["testkey2", "testkey3"]);
-		return "*4 $11 sunionstore $8 testkey1 $8 testkey2 $8 testkey3 ";
-	}
-
-	function do_sscan($inst) {
-		$inst->sscan("testkey1", "testkey2", "p:*:p", 5);
-		return "*7 $5 sscan $8 testkey1 $8 testkey2 $5 match $5 p:*:p $5 count $1 5";
+	function test_sscan() {
+		$actual   = $this->getInst()->sscan("testkey1", "testkey2", "p:*:p", 5);
+		$expected = "*7\r\n$5\r\nsscan\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n$5\r\nmatch\r\n$5\r\np:*:p\r\n$5\r\ncount\r\n$1\r\n5\r\n";
+		$this->assertEquals($expected, $actual, "sscan's converstion to Redis protocol failed.");
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sadd_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sadd("testkey1", []);
+		$this->getInst()->sadd("testkey1", []);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sdiff_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sdiff([]);
+		$this->getInst()->sdiff([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sdiffstore_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sdiffstore("testkey1", []);
+		$this->getInst()->sdiffstore("testkey1", []);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sinter_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sinter([]);
+		$this->getInst()->sinter([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sinterstore_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sinterstore("testkey1", []);
+		$this->getInst()->sinterstore("testkey1", []);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_srem_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->srem("testkey1", []);
+		$this->getInst()->srem("testkey1", []);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sunion_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sunion([]);
+		$this->getInst()->sunion([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sunionstore_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sunionstore("testkey1", []);
+		$this->getInst()->sunionstore("testkey1", []);
 	}
 
 

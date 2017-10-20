@@ -5,230 +5,233 @@ namespace ServerMethodsTraitTest;
 class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\ServerMethodsTrait;
-
+	protected function exe($string, $count = 1){
+		return $string;
+	}
 }
 
 class ServerMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 
-	function getInst($memory){
-		$inst = new ProperRedis;
-		$reflection = new \ReflectionClass($inst);
-		$handle = $reflection->getProperty("handle");
-		$methods = $reflection->getMethods();
-		$handle->setAccessible(true);
-		$handle->setValue($inst, $memory);
-		return [$inst, $methods];
+	function getInst(){
+		return new ProperRedis;
 	}
 
-	function test_all_the_things(){
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-
-		$seek = 0;
-		foreach($methods as $method){
-
-			$message = strtoupper($method->getName()) . "'s converstion to Redis protocol failed.";
-			$method = "do_{$method->getName()}";
-
-			if(!method_exists($this, $method)){ continue; }
-
-			$expected = $this->$method($inst);
-			$expected = str_replace(" ", "\r\n", $expected);
-
-			fseek($memory, $seek);
-			$result = fread($memory, strlen($expected));
-			$seek += strlen($expected);
-
-			$this->assertEquals($expected, $result, $message);
-		}
+	function test_bgrewriteaof() {
+		$actual   = $this->getInst()->bgrewriteaof();
+		$expected = "*1\r\n$12\r\nbgrewriteaof\r\n";
+		$this->assertEquals($expected, $actual, "bgrewriteaof's converstion to Redis protocol failed.");
 	}
 
-	function do_bgrewriteaof($inst) {
-		$inst->bgrewriteaof();
-		return "*1 $12 bgrewriteaof ";
+	function test_bgsave() {
+		$actual   = $this->getInst()->bgsave();
+		$expected = "*1\r\n$6\r\nbgsave\r\n";
+		$this->assertEquals($expected, $actual, "bgsave's converstion to Redis protocol failed.");
 	}
 
-	function do_bgsave($inst) {
-		$inst->bgsave();
-		return "*1 $6 bgsave ";
+	function test_clientKillAddr() {
+		$actual   = $this->getInst()->clientKillAddr("ip:port", true);
+		$expected = "*6\r\n$6\r\nclient\r\n$4\r\nkill\r\n$4\r\naddr\r\n$7\r\nip:port\r\n$6\r\nskipme\r\n$3\r\nyes\r\n";
+		$this->assertEquals($expected, $actual, "clientKillAddr's converstion to Redis protocol failed.");
 	}
 
-	function do_clientKillAddr($inst) {
-		$inst->clientKillAddr("ip:port", true);
-		return "*6 $6 client $4 kill $4 addr $7 ip:port $6 skipme $3 yes ";
+	function test_clientKillId() {
+		$actual   = $this->getInst()->clientKillId("id", true);
+		$expected = "*6\r\n$6\r\nclient\r\n$4\r\nkill\r\n$2\r\nid\r\n$2\r\nid\r\n$6\r\nskipme\r\n$3\r\nyes\r\n";
+		$this->assertEquals($expected, $actual, "clientKillId's converstion to Redis protocol failed.");
 	}
 
-	function do_clientKillId($inst) {
-		$inst->clientKillId("id", true);
-		return "*6 $6 client $4 kill $2 id $2 id $6 skipme $3 yes ";
+	function test_clientKillType() {
+		$actual   = $this->getInst()->clientKillType("normal", $skipme = true);
+		$expected = "*6\r\n$6\r\nclient\r\n$4\r\nkill\r\n$4\r\ntype\r\n$6\r\nnormal\r\n$6\r\nskipme\r\n$3\r\nyes\r\n";
+		$this->assertEquals($expected, $actual, "clientKillType's converstion to Redis protocol failed.");
 	}
 
-	function do_clientKillType($inst) {
-		$inst->clientKillType("normal", $skipme = true);
-		return "*6 $6 client $4 kill $4 type $6 normal $6 skipme $3 yes ";
+	function test_clientList() {
+		$actual   = $this->getInst()->clientList();
+		$expected = "*2\r\n$6\r\nclient\r\n$4\r\nlist\r\n";
+		$this->assertEquals($expected, $actual, "clientList's converstion to Redis protocol failed.");
 	}
 
-	function do_clientList($inst) {
-		$inst->clientList();
-		return "*2 $6 client $4 list ";
+	function test_clientGetName() {
+		$actual   = $this->getInst()->clientGetName();
+		$expected = "*2\r\n$6\r\nclient\r\n$7\r\ngetname\r\n";
+		$this->assertEquals($expected, $actual, "clientGetName's converstion to Redis protocol failed.");
 	}
 
-	function do_clientGetName($inst) {
-		$inst->clientGetName();
-		return "*2 $6 client $7 getname ";
+	function test_clientPause() {
+		$actual   = $this->getInst()->clientPause("12");
+		$expected = "*3\r\n$6\r\nclient\r\n$5\r\npause\r\n$2\r\n12\r\n";
+		$this->assertEquals($expected, $actual, "clientPause's converstion to Redis protocol failed.");
 	}
 
-	function do_clientPause($inst) {
-		$inst->clientPause("12");
-		return "*3 $6 client $5 pause $2 12 ";
+	function test_clientSetName() {
+		$actual   = $this->getInst()->clientSetName("Keith");
+		$expected = "*3\r\n$6\r\nclient\r\n$7\r\nsetname\r\n$5\r\nKeith\r\n";
+		$this->assertEquals($expected, $actual, "clientSetName's converstion to Redis protocol failed.");
 	}
 
-	function do_clientSetName($inst) {
-		$inst->clientSetName("Keith");
-		return "*3 $6 client $7 setname $5 Keith ";
+	function test_command() {
+		$actual   = $this->getInst()->command();
+		$expected = "*1\r\n$7\r\ncommand\r\n";
+		$this->assertEquals($expected, $actual, "command's converstion to Redis protocol failed.");
 	}
 
-	function do_command($inst) {
-		$inst->command();
-		return "*1 $7 command ";
+	function test_commandCount() {
+		$actual   = $this->getInst()->commandCount();
+		$expected = "*2\r\n$7\r\ncommand\r\n$5\r\ncount\r\n";
+		$this->assertEquals($expected, $actual, "commandCount's converstion to Redis protocol failed.");
 	}
 
-	function do_commandCount($inst) {
-		$inst->commandCount();
-		return "*2 $7 command $5 count ";
+	function test_commandGetKeys() {
+		$actual   = $this->getInst()->commandGetKeys();
+		$expected = "*2\r\n$7\r\ncommand\r\n$7\r\ngetkeys\r\n";
+		$this->assertEquals($expected, $actual, "commandGetKeys's converstion to Redis protocol failed.");
 	}
 
-	function do_commandGetKeys($inst) {
-		$inst->commandGetKeys();
-		return "*2 $7 command $7 getkeys ";
+	function test_commandInfo() {
+		$actual   = $this->getInst()->commandInfo(["one", "two"]);
+		$expected = "*4\r\n$7\r\ncommand\r\n$4\r\ninfo\r\n$3\r\none\r\n$3\r\ntwo\r\n";
+		$this->assertEquals($expected, $actual, "commandInfo's converstion to Redis protocol failed.");
 	}
 
-	function do_commandInfo($inst) {
-		$inst->commandInfo(["one", "two"]);
-		return "*4 $7 command $4 info $3 one $3 two ";
+	function test_configGet() {
+		$actual   = $this->getInst()->configGet("name");
+		$expected = "*3\r\n$6\r\nconfig\r\n$3\r\nget\r\n$4\r\nname\r\n";
+		$this->assertEquals($expected, $actual, "configGet's converstion to Redis protocol failed.");
 	}
 
-	function do_configGet($inst) {
-		$inst->configGet("name");
-		return "*3 $6 config $3 get $4 name ";
+	function test_configRewrite() {
+		$actual   = $this->getInst()->configRewrite();
+		$expected = "*2\r\n$6\r\nconfig\r\n$7\r\nrewrite\r\n";
+		$this->assertEquals($expected, $actual, "configRewrite's converstion to Redis protocol failed.");
 	}
 
-	function do_configRewrite($inst) {
-		$inst->configRewrite();
-		return "*2 $6 config $7 rewrite ";
+	function test_configSet() {
+		$actual   = $this->getInst()->configSet("name", "Keith");
+		$expected = "*4\r\n$6\r\nconfig\r\n$3\r\nset\r\n$4\r\nname\r\n$5\r\nKeith\r\n";
+		$this->assertEquals($expected, $actual, "configSet's converstion to Redis protocol failed.");
 	}
 
-	function do_configSet($inst) {
-		$inst->configSet("name", "Keith");
-		return "*4 $6 config $3 set $4 name $5 Keith ";
+	function test_configResetStat() {
+		$actual   = $this->getInst()->configResetStat();
+		$expected = "*2\r\n$6\r\nconfig\r\n$9\r\nresetstat\r\n";
+		$this->assertEquals($expected, $actual, "configResetStat's converstion to Redis protocol failed.");
 	}
 
-	function do_configResetStat($inst) {
-		$inst->configResetStat();
-		return "*2 $6 config $9 resetstat ";
+	function test_dbsize() {
+		$actual   = $this->getInst()->dbsize();
+		$expected = "*1\r\n$6\r\ndbsize\r\n";
+		$this->assertEquals($expected, $actual, "dbsize's converstion to Redis protocol failed.");
 	}
 
-	function do_dbsize($inst) {
-		$inst->dbsize();
-		return "*1 $6 dbsize ";
+	function test_debugObject() {
+		$actual   = $this->getInst()->debugObject("Keith");
+		$expected = "*3\r\n$5\r\ndebug\r\n$6\r\nobject\r\n$5\r\nKeith\r\n";
+		$this->assertEquals($expected, $actual, "debugObject's converstion to Redis protocol failed.");
 	}
 
-	function do_debugObject($inst) {
-		$inst->debugObject("Keith");
-		return "*3 $5 debug $6 object $5 Keith";
+	function test_debugSegFault() {
+		$actual   = $this->getInst()->debugSegFault();
+		$expected = "*2\r\n$5\r\ndebug\r\n$8\r\nsegfault\r\n";
+		$this->assertEquals($expected, $actual, "debugSegFault's converstion to Redis protocol failed.");
 	}
 
-	function do_debugSegFault($inst) {
-		$inst->debugSegFault();
-		return "*2 $5 debug $8 segfault ";
+	function test_flushall() {
+		$actual   = $this->getInst()->flushall();
+		$expected = "*1\r\n$8\r\nflushall\r\n";
+		$this->assertEquals($expected, $actual, "flushall's converstion to Redis protocol failed.");
 	}
 
-	function do_flushall($inst) {
-		$inst->flushall();
-		return "*1 $8 flushall ";
+	function test_flushdb() {
+		$actual   = $this->getInst()->flushdb();
+		$expected = "*1\r\n$7\r\nflushdb\r\n";
+		$this->assertEquals($expected, $actual, "flushdb's converstion to Redis protocol failed.");
 	}
 
-	function do_flushdb($inst) {
-		$inst->flushdb();
-		return "*1 $7 flushdb ";
+	function test_info() {
+		$actual   = $this->getInst()->info("names");
+		$expected = "*2\r\n$4\r\ninfo\r\n$5\r\nnames\r\n";
+		$this->assertEquals($expected, $actual, "info's converstion to Redis protocol failed.");
 	}
 
-	function do_info($inst) {
-		$inst->info("names");
-		return "*2 $4 info $5 names ";
+	function test_lastsave() {
+		$actual   = $this->getInst()->lastsave();
+		$expected = "*1\r\n$8\r\nlastsave\r\n";
+		$this->assertEquals($expected, $actual, "lastsave's converstion to Redis protocol failed.");
 	}
 
-	function do_lastsave($inst) {
-		$inst->lastsave();
-		return "*1 $8 lastsave ";
+	function test_monitor() {
+		$actual   = $this->getInst()->monitor();
+		$expected = "*1\r\n$7\r\nmonitor\r\n";
+		$this->assertEquals($expected, $actual, "monitor's converstion to Redis protocol failed.");
 	}
 
-	function do_monitor($inst) {
-		$inst->monitor();
-		return "*1 $7 monitor ";
+	function test_role() {
+		$actual   = $this->getInst()->role();
+		$expected = "*1\r\n$4\r\nrole\r\n";
+		$this->assertEquals($expected, $actual, "role's converstion to Redis protocol failed.");
 	}
 
-	function do_role($inst) {
-		$inst->role();
-		return "*1 $4 role ";
+	function test_save() {
+		$actual   = $this->getInst()->save();
+		$expected = "*1\r\n$4\r\nsave\r\n";
+		$this->assertEquals($expected, $actual, "save's converstion to Redis protocol failed.");
 	}
 
-	function do_save($inst) {
-		$inst->save();
-		return "*1 $4 save ";
+	function test_shutdown() {
+		$actual   = $this->getInst()->shutdown();
+		$expected = "*1\r\n$8\r\nshutdown\r\n";
+		$this->assertEquals($expected, $actual, "shutdown's converstion to Redis protocol failed.");
 	}
 
-	function do_shutdown($inst) {
-		$inst->shutdown();
-		return "*1 $8 shutdown ";
+	function test_shutdownSave() {
+		$actual   = $this->getInst()->shutdownSave();
+		$expected = "*2\r\n$8\r\nshutdown\r\n$4\r\nsave\r\n";
+		$this->assertEquals($expected, $actual, "shutdownSave's converstion to Redis protocol failed.");
 	}
 
-	function do_shutdownSave($inst) {
-		$inst->shutdownSave();
-		return "*2 $8 shutdown $4 save ";
+	function test_shutdownNoSave() {
+		$actual   = $this->getInst()->shutdownNoSave();
+		$expected = "*2\r\n$8\r\nshutdown\r\n$6\r\nnosave\r\n";
+		$this->assertEquals($expected, $actual, "shutdownNoSave's converstion to Redis protocol failed.");
 	}
 
-	function do_shutdownNoSave($inst) {
-		$inst->shutdownNoSave();
-		return "*2 $8 shutdown $6 nosave ";
+	function test_slaveof() {
+		$actual   = $this->getInst()->slaveof("127.0.0.1", "6637");
+		$expected = "*3\r\n$7\r\nslaveof\r\n$9\r\n127.0.0.1\r\n$4\r\n6637\r\n";
+		$this->assertEquals($expected, $actual, "slaveof's converstion to Redis protocol failed.");
 	}
 
-	function do_slaveof($inst) {
-		$inst->slaveof("127.0.0.1", "6637");
-		return "*3 $7 slaveof $9 127.0.0.1 $4 6637 ";
+	function test_slowlog() {
+		$actual   = $this->getInst()->slowlog("Keith");
+		$expected = "*2\r\n$7\r\nslowlog\r\n$5\r\nKeith\r\n";
+		$this->assertEquals($expected, $actual, "slowlog's converstion to Redis protocol failed.");
 	}
 
-	function do_slowlog($inst) {
-		$inst->slowlog("Keith");
-		return "*2 $7 slowlog $5 Keith ";
+	function test_sync() {
+		$actual   = $this->getInst()->sync();
+		$expected = "*1\r\n$4\r\nsync\r\n";
+		$this->assertEquals($expected, $actual, "sync's converstion to Redis protocol failed.");
 	}
 
-	function do_sync($inst) {
-		$inst->sync();
-		return "*1 $4 sync ";
-	}
-
-	function do_time($inst) {
-		$inst->time();
-		return "*1 $4 time ";
+	function test_time() {
+		$actual   = $this->getInst()->time();
+		$expected = "*1\r\n$4\r\ntime\r\n";
+		$this->assertEquals($expected, $actual, "time's converstion to Redis protocol failed.");
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_clientKillType_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->clientKillType(E_NOTICE);
+		$this->getInst()->clientKillType(E_NOTICE);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_commandInfo_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->commandInfo([]);
+		$this->getInst()->commandInfo([]);
 	}
 
 }

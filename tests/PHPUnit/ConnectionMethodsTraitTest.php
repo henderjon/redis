@@ -6,61 +6,39 @@ class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\ConnectionMethodsTrait;
 
+	protected function exe($string, $count = 1){
+		return $string;
+	}
 }
 
 class ConnectionMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 
-	function getInst($memory){
-		$inst = new ProperRedis;
-		$reflection = new \ReflectionClass($inst);
-		$handle = $reflection->getProperty("handle");
-		$methods = $reflection->getMethods();
-		$handle->setAccessible(true);
-		$handle->setValue($inst, $memory);
-		return [$inst, $methods];
+	function getInst(){
+		return new ProperRedis;
 	}
 
-	function test_all_the_things(){
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-
-		$seek = 0;
-		foreach($methods as $method){
-
-			$message = strtoupper($method->getName()) . "'s converstion to Redis protocol failed.";
-			$method = "do_{$method->getName()}";
-
-			if(!method_exists($this, $method)){ continue; }
-
-			$expected = $this->$method($inst);
-			$expected = str_replace(" ", "\r\n", $expected);
-
-			fseek($memory, $seek);
-			$result = fread($memory, strlen($expected));
-			$seek += strlen($expected);
-
-			$this->assertEquals($expected, $result, $message);
-		}
+	function test_auth() {
+		$actual   = $this->getInst()->auth("password");
+		$expected = "*2\r\n$4\r\nauth\r\n$8\r\npassword\r\n";
+		$this->assertEquals($expected, $actual, "auth's converstion to Redis protocol failed.");
 	}
 
-	function do_auth($inst) {
-		$inst->auth("password");
-		return "*2 $4 auth $8 password ";
+	function test_ping() {
+		$actual   = $this->getInst()->ping();
+		$expected = "*1\r\n$4\r\nping\r\n";
+		$this->assertEquals($expected, $actual, "ping's converstion to Redis protocol failed.");
 	}
 
-	function do_ping($inst) {
-		$inst->ping();
-		return "*1 $4 ping ";
+	function test_quit() {
+		$actual   = $this->getInst()->quit();
+		$expected = "*1\r\n$4\r\nquit\r\n";
+		$this->assertEquals($expected, $actual, "quit's converstion to Redis protocol failed.");
 	}
 
-	function do_quit($inst) {
-		$inst->quit();
-		return "*1 $4 quit ";
-	}
-
-	function do_select($inst) {
-		$inst->select(5);
-		return "*2 $6 select $1 5 ";
+	function test_select() {
+		$actual   = $this->getInst()->select(5);
+		$expected = "*2\r\n$6\r\nselect\r\n$1\r\n5\r\n";
+		$this->assertEquals($expected, $actual, "select's converstion to Redis protocol failed.");
 	}
 
 }

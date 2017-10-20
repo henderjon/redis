@@ -17,11 +17,6 @@ class RedisProtocol {
 	protected $handle;
 
 	/**
-	 * the db to use
-	 */
-	public $db = 0;
-
-	/**
 	 * Constant line ending according to Redis protocol
 	 */
 	protected $DELIM = "\r\n";
@@ -95,12 +90,6 @@ class RedisProtocol {
 	 * @return mixed
 	 */
 	public function __call($func, $args){
-
-		// track the current db ...
-		if($func == strtolower("select")){
-			$this->db = reset($args);
-		}
-
 		$command = $this->protocol([$func, $args]);
 		return $this->exe( $command, 1 );
 	}
@@ -212,7 +201,7 @@ class RedisProtocol {
 					$response[] = $this->read( $handle, $bytes );
 				break;
 				default:
-					throw new RedisProtocolException("unknown type character: {$type}");
+					throw new RedisProtocolException("unknown type character: '{$type}' {$bytes}");
 				break;
 			}
 
