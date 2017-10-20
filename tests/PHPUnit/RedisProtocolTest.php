@@ -105,7 +105,7 @@ class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 	 */
 	function test_protocol_exception(){
 		$memory = fopen("php://memory", "rw+");
-		fwrite($memory, '["look at me I\m json data!!"]');
+		fwrite($memory, '["look at me I\'m json data!!"]');
 		rewind($memory);
 
 		$inst       = new \Redis\RedisProtocol;
