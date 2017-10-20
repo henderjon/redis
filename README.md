@@ -28,7 +28,7 @@ that allow for looping/listening as part of a subscription
 
 ## RedisExceptions
 
-All exceptions thrown are RedisExceptions.
+All Redis errors are RedisExceptions. Protocol errors are RedisProtocolExceptions.
 
 ## Redis
 
