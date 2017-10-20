@@ -13,7 +13,6 @@ matrix:
     - php: hhvm
 
 install:
-  - composer --self-update
   - composer install
 
 script:
