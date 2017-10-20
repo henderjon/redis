@@ -39,19 +39,19 @@ class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 
 	}
 
-	function test___call_set(){
-		$actual   = (new ProperRedis)->set("testkey1", "testvalue1");
-		$expected = "*3\r\n$3\r\nset\r\n$8\r\ntestkey1\r\n$10\r\ntestvalue1\r\n";
+	// function test___call_set(){
+	// 	$actual   = (new ProperRedis)->set("testkey1", "testvalue1");
+	// 	$expected = "*3\r\n$3\r\nset\r\n$8\r\ntestkey1\r\n$10\r\ntestvalue1\r\n";
 
-		$this->assertEquals($expected, $actual);
-	}
+	// 	$this->assertEquals($expected, $actual);
+	// }
 
-	function test___call_get(){
-		$actual   = (new ProperRedis)->get("testkey1");
-		$expected = "*2\r\n$3\r\nget\r\n$8\r\ntestkey1\r\n";
+	// function test___call_get(){
+	// 	$actual   = (new ProperRedis)->get("testkey1");
+	// 	$expected = "*2\r\n$3\r\nget\r\n$8\r\ntestkey1\r\n";
 
-		$this->assertEquals($expected, $actual);
-	}
+	// 	$this->assertEquals($expected, $actual);
+	// }
 
 	function test_marshal(){
 		$inst = new \Redis\RedisProtocol;

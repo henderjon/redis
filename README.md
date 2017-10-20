@@ -13,8 +13,9 @@ Peruse the tests or, if present, the examples directory to see usage.
 translating PHP functions/args into the Redis
 [protocol](http://redis.io/topics/protocol), and reading/writing to the
 connection. It allows for [pipelining](http://redis.io/topics/pipelining) (via
-`pipe()`) and uses `__call()` to allow for the variability in Redis function
-names and arguments. Extending `RedisProtocol` is simple and effective if
+`pipe()`) ~~and uses `__call()` to allow for the variability in Redis function
+names and arguments~~. Extending `RedisProtocol` or only implemnting the trait
+in whose methods your interested, is simple and effective if
 you're 1) not interested in [pub/sub](http://redis.io/topics/pubsub) and 2)
 familiar with Redis.
 
@@ -28,7 +29,7 @@ that allow for looping/listening as part of a subscription
 
 ## RedisExceptions
 
-All exceptions thrown are RedisExceptions.
+All Redis errors are thrown as RedisExceptions. Protocol errors are thrown as RedisProtocolExceptions.
 
 ## Redis
 

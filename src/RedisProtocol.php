@@ -89,10 +89,10 @@ class RedisProtocol {
 	 * @param mixed $args The string(s) or array(s) of the arguments
 	 * @return mixed
 	 */
-	public function __call($func, $args){
-		$command = $this->protocol([$func, $args]);
-		return $this->exe( $command, 1 );
-	}
+	// public function __call($func, $args){
+	// 	$command = $this->protocol([$func, $args]);
+	// 	return $this->exe( $command, 1 );
+	// }
 
 	/**
 	 * Take an array of arrays of mixed string/arrays and pipe them all
