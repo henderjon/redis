@@ -6,7 +6,7 @@ Adds the specified elements to the specified HyperLogLog.
 
 for complete documentation: [redis.io/commands#hyperloglog](http://redis.io/commands#hyperloglog)
 
-key element [element ...]
+**args** key element [element ...]
 
 ---
 
@@ -16,7 +16,7 @@ Return the approximated cardinality of the set(s) observed by the HyperLogLog at
 
 for complete documentation: [redis.io/commands#hyperloglog](http://redis.io/commands#hyperloglog)
 
-key [key ...]
+**args** key [key ...]
 
 ---
 
@@ -26,5 +26,5 @@ Merge N different HyperLogLogs into a single one.
 
 for complete documentation: [redis.io/commands#hyperloglog](http://redis.io/commands#hyperloglog)
 
-destkey sourcekey [sourcekey ...]
+**args** destkey sourcekey [sourcekey ...]
 

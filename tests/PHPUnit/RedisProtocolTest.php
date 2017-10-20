@@ -1,5 +1,12 @@
 <?php
 
+class ProperRedis extends \Redis\RedisProtocol {
+
+	protected function exe($string, $count = 1){
+		return $string;
+	}
+}
+
 class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 
 	function getInst($memory){
@@ -21,61 +28,29 @@ class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 		// $this->assertTrue(($inst InstanceOf \Redis\RedisProtocol));
 	}
 
-	function test_select(){
-		$memory = fopen("php://memory", "rw+");
-		$inst = $this->getInst($memory);
-		$inst->select(4);
-		$this->assertEquals(4, $inst->db);
-	}
-
 	function test_pipe(){
-		$memory = fopen("php://memory", "rw+");
-		$inst = $this->getInst($memory);
-
-		$base = array(
+		$actual   = (new ProperRedis)->pipe(array(
 			array("sadd", "testkey1", "testvalue1"),
 			array("sadd", "testkey2", "testvalue2"),
-		);
-
-		$inst->pipe($base);
-
+		));
 		$expected = "*3\r\n$4\r\nsadd\r\n$8\r\ntestkey1\r\n$10\r\ntestvalue1\r\n\r\n*3\r\n$4\r\nsadd\r\n$8\r\ntestkey2\r\n$10\r\ntestvalue2\r\n\r\n";
 
-		rewind($memory);
-		$result = fread($memory, strlen($expected));
-
-		$this->assertEquals($expected, $result);
+		$this->assertEquals($expected, $actual);
 
 	}
 
 	function test___call_set(){
-		$memory = fopen("php://memory", "rw+");
-		$inst = $this->getInst($memory);
-
-		$inst->set("testkey1", "testvalue1");
-
+		$actual   = (new ProperRedis)->set("testkey1", "testvalue1");
 		$expected = "*3\r\n$3\r\nset\r\n$8\r\ntestkey1\r\n$10\r\ntestvalue1\r\n";
 
-		rewind($memory);
-		$result = fread($memory, strlen($expected));
-
-		$this->assertEquals($expected, $result);
+		$this->assertEquals($expected, $actual);
 	}
 
 	function test___call_get(){
-		$memory = fopen("php://memory", "rw+");
-		$inst = $this->getInst($memory);
+		$actual   = (new ProperRedis)->get("testkey1");
+		$expected = "*2\r\n$3\r\nget\r\n$8\r\ntestkey1\r\n";
 
-		$inst->set("testkey1", "testvalue1");
-
-		rewind($memory);
-		// $result = fread($memory, strlen($expected));
-
-		$result = $inst->get("testkey1");
-
-		$expected = "testvalue1";
-
-		$this->assertEquals($expected, $result);
+		$this->assertEquals($expected, $actual);
 	}
 
 	function test_marshal(){
@@ -115,6 +90,22 @@ class RedisProtocolTest extends PHPUnit_Framework_TestCase {
 	function test_read_exception(){
 		$memory = fopen("php://memory", "rw+");
 		fwrite($memory, "-ERR Operation not permitted");
+		rewind($memory);
+
+		$inst       = new \Redis\RedisProtocol;
+		$reflection = new ReflectionClass($inst);
+		$read       = $reflection->getMethod("read");
+
+		$read->setAccessible(true);
+		$read->invokeArgs($inst, [$memory, 1]);
+	}
+
+	/**
+	 * @expectedException Redis\RedisProtocolException
+	 */
+	function test_protocol_exception(){
+		$memory = fopen("php://memory", "rw+");
+		fwrite($memory, '["look at me I\'m json data!!"]');
 		rewind($memory);
 
 		$inst       = new \Redis\RedisProtocol;

@@ -6,8 +6,7 @@ Delete a key
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key [key .
-..]
+**args** key [key ...]
 
 ---
 
@@ -17,7 +16,7 @@ Return a serialized version of the value stored at the specified key.
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key
+**args** key
 
 ---
 
@@ -27,7 +26,7 @@ Determine if a key exists
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key
+**args** key
 
 ---
 
@@ -37,7 +36,7 @@ Set a key's time to live in seconds
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key seconds
+**args** key seconds
 
 ---
 
@@ -47,7 +46,7 @@ Set the expiration for a key as a UNIX timestamp
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key timestamp
+**args** key timestamp
 
 ---
 
@@ -57,7 +56,7 @@ Find all keys matching the given pattern
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-pattern
+**args** pattern
 
 ---
 
@@ -67,7 +66,7 @@ Atomically transfer a key from a Redis instance to another one.
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-host port key destination-db timeout [COPY] [REPLACE]
+**args** host port key destination-db timeout [COPY] [REPLACE]
 
 ---
 
@@ -77,7 +76,7 @@ Move a key to another database
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key db
+**args** key db
 
 ---
 
@@ -88,7 +87,8 @@ Inspect the internals of Redis objects
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
 returns the number of references of the value associated with the specified key. This command is mainly useful for debugging.
-subcommand [arguments [arguments ...]]
+
+**args** subcommand [arguments [arguments ...]]
 
 ---
 
@@ -99,7 +99,8 @@ Inspect the internals of Redis objects
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
 returns the kind of internal representation used in order to store the value associated with a key.
-subcommand [arguments [arguments ...]]
+
+**args** subcommand [arguments [arguments ...]]
 
 ---
 
@@ -111,7 +112,8 @@ for complete documentation: [redis.io/commands#generic](http://redis.io/commands
 
 returns the number of seconds since the object stored at the specified key is idle (not requested by read or write operations).
 While the value is returned in seconds the actual resolution of this timer is 10 seconds, but may vary in future implementations.
-subcommand [arguments [arguments ...]]
+
+**args** subcommand [arguments [arguments ...]]
 
 ---
 
@@ -121,7 +123,7 @@ Remove the expiration from a key
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key
+**args** key
 
 ---
 
@@ -131,7 +133,7 @@ Set a key's time to live in milliseconds
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key milliseconds
+**args** key milliseconds
 
 ---
 
@@ -141,7 +143,7 @@ Set the expiration for a key as a UNIX timestamp specified in milliseconds
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key milliseconds-timestamp
+**args** key milliseconds-timestamp
 
 ---
 
@@ -151,7 +153,7 @@ Get the time to live for a key in milliseconds
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key
+**args** key
 
 ---
 
@@ -170,7 +172,7 @@ Rename a key
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key newkey
+**args** key newkey
 
 ---
 
@@ -180,7 +182,7 @@ Rename a key, only if the new key does not exist
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key newkey
+**args** key newkey
 
 ---
 
@@ -190,7 +192,7 @@ Create a key using the provided serialized value, previously obtained using DUMP
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key ttl serialized-value [REPLACE]
+**args** key ttl serialized-value [REPLACE]
 
 ---
 
@@ -200,8 +202,7 @@ Sort the elements in a list, set or sorted set
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern .
-..]] [ASC|DESC] [ALPHA] [STORE destination]
+**args** key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination]
 
 ---
 
@@ -211,7 +212,7 @@ Get the time to live for a key
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key
+**args** key
 
 ---
 
@@ -221,7 +222,7 @@ Determine the type stored at key
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-key
+**args** key
 
 ---
 
@@ -231,5 +232,5 @@ Incrementally iterate the keys space
 
 for complete documentation: [redis.io/commands#generic](http://redis.io/commands#generic)
 
-cursor [MATCH pattern] [COUNT count]
+**args** cursor [MATCH pattern] [COUNT count]
 

@@ -17,11 +17,6 @@ class RedisProtocol {
 	protected $handle;
 
 	/**
-	 * the db to use
-	 */
-	public $db = 0;
-
-	/**
 	 * Constant line ending according to Redis protocol
 	 */
 	protected $DELIM = "\r\n";
@@ -30,6 +25,16 @@ class RedisProtocol {
 	 * the chunk size (in bytes) to read out of the stream at a time
 	 */
 	protected $CHUNK = 1024;
+
+	/**
+	 * a string representing the last successful connection string
+	 */
+	protected $sock;
+
+	/**
+	 * a string representing the last timeout used
+	 */
+	protected $timeout;
 
 	/**
 	 * Connect to a Redis instance. This isn't in the constructor so
@@ -50,6 +55,30 @@ class RedisProtocol {
 			throw new RedisException($error, $errno);
 		}
 
+		$this->sock = $sock;
+		$this->timeout = $timeout;
+
+		return $this;
+	}
+
+	/**
+	 * Reconnect to a Redis instance. Use the last known socket and timeout values
+	 * and it accepts a callback to re-do bootstrapping that might have been lost
+	 * @param callable $setup A function that takes this instance as an arg
+	 * @return Redis
+	 */
+	public function reconnect(callable $setup = null){
+		$errno = $error = null;
+		$this->handle = @stream_socket_client($this->sock, $errno, $error, $this->timeout);
+
+		if( !$this->handle || $errno ){
+			throw new RedisException($error, $errno);
+		}
+
+		if(is_callable($setup)){
+			call_user_func($setup, $this);
+		}
+
 		return $this;
 	}
 
@@ -61,12 +90,6 @@ class RedisProtocol {
 	 * @return mixed
 	 */
 	public function __call($func, $args){
-
-		// track the current db ...
-		if($func == strtolower("select")){
-			$this->db = reset($args);
-		}
-
 		$command = $this->protocol([$func, $args]);
 		return $this->exe( $command, 1 );
 	}
@@ -177,6 +200,9 @@ class RedisProtocol {
 				case ('*'): //multi-bulk
 					$response[] = $this->read( $handle, $bytes );
 				break;
+				default:
+					throw new RedisProtocolException("unknown type; fgetc returned '{$type}'");
+				break;
 			}
 
 		}
@@ -232,6 +258,15 @@ class RedisProtocol {
 		$command = sprintf("*%d%s%s", $i, $this->DELIM, $cmd);
 		return $command;
 
+	}
+
+	/**
+	 * Close the socket when we fall out of scope.
+	 */
+	function __destruct() {
+		if(is_resource($this->handle)) {
+			@fclose($this->handle);
+		}
 	}
 
 }

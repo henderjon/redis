@@ -6,7 +6,7 @@ Listen for messages published to channels matching the given patterns
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-pattern [pattern ...]
+**args** pattern [pattern ...]
 
 ---
 
@@ -16,7 +16,7 @@ Inspect the state of the Pub/Sub subsystem
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-subcommand [argument [argument ...]]
+**args** subcommand [argument [argument ...]]
 
 ---
 
@@ -26,7 +26,7 @@ Inspect the state of the Pub/Sub subsystem
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-subcommand [argument [argument ...]]
+**args** subcommand [argument [argument ...]]
 
 ---
 
@@ -36,7 +36,7 @@ Inspect the state of the Pub/Sub subsystem
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-subcommand [argument [argument ...]]
+**args** subcommand [argument [argument ...]]
 
 ---
 
@@ -46,7 +46,7 @@ Post a message to a channel
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-channel message
+**args** channel message
 
 ---
 
@@ -56,7 +56,7 @@ Stop listening for messages posted to channels matching the given patterns
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-[pattern [pattern ...]]
+**args** [pattern [pattern ...]]
 
 ---
 
@@ -66,7 +66,7 @@ Listen for messages published to the given channels
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-channel [channel ...]
+**args** channel [channel ...]
 
 ---
 
@@ -76,5 +76,5 @@ Stop listening for messages posted to the given channels
 
 for complete documentation: [redis.io/commands#pubsub](http://redis.io/commands#pubsub)
 
-[channel [channel ...]]
+**args** [channel [channel ...]]
 

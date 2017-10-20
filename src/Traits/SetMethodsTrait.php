@@ -112,11 +112,15 @@ trait SetMethodsTrait {
 
 	/**
 	 * Remove and return one or multiple random members from a set
-	 * for complete documentation: http://redis.io/commands#set
+	 * for complete documentation: http://redis.io/commands#spop
 	 * @params key [count]
 	 */
-	public function spop($key, $count = 1) {
-		return $this->exe( $this->protocol([ __FUNCTION__, $key, $count ]) );
+	public function spop($key, $count = null) {
+		$args = [ __FUNCTION__, $key ];
+		if (! is_null($count) ) {
+			$args[] = $count;
+		}
+		return $this->exe( $this->protocol($args) );
 	}
 
 	/**

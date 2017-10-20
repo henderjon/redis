@@ -6,196 +6,182 @@ class ProperRedis extends \Redis\Redis {
 
 	use \Redis\Traits\KeyMethodsTrait;
 
+	protected function exe($string, $count = 1){
+		return $string;
+	}
 }
 
 class KeyMethodsTraitTest extends \PHPUnit_Framework_TestCase {
 
-	function getInst($memory){
-		$inst = new ProperRedis;
-		$reflection = new \ReflectionClass($inst);
-		$handle = $reflection->getProperty("handle");
-		$methods = $reflection->getMethods();
-		$handle->setAccessible(true);
-		$handle->setValue($inst, $memory);
-		return [$inst, $methods];
+	function getInst(){
+		return new ProperRedis;
 	}
 
-	function test_all_the_things(){
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-
-		$seek = 0;
-		foreach($methods as $method){
-
-			$message = strtoupper($method->getName()) . "'s converstion to Redis protocol failed.";
-			$method = "do_{$method->getName()}";
-
-			if(!method_exists($this, $method)){ continue; }
-
-			$expected = $this->$method($inst);
-			$expected = str_replace(" ", "\r\n", $expected);
-
-			fseek($memory, $seek);
-			$result = fread($memory, strlen($expected));
-			$seek += strlen($expected);
-
-			$this->assertEquals($expected, $result, $message);
-		}
+	function test_del() {
+		$actual   = $this->getInst()->del(["testkey1", "testkey2"]);
+		$expected = "*3\r\n$3\r\ndel\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "del's converstion to Redis protocol failed.");
 	}
 
-	function do_del($inst) {
-		$inst->del(["testkey1", "testkey2"]);
-		return "*3 $3 del $8 testkey1 $8 testkey2 ";
+	function test_dump() {
+		$actual   = $this->getInst()->dump("testkey1");
+		$expected = "*2\r\n$4\r\ndump\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "dump's converstion to Redis protocol failed.");
 	}
 
-	function do_dump($inst) {
-		$inst->dump("testkey1");
-		return "*2 $4 dump $8 testkey1 ";
+	function test_exists() {
+		$actual   = $this->getInst()->exists("testkey1");
+		$expected = "*2\r\n$6\r\nexists\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "exists's converstion to Redis protocol failed.");
 	}
 
-	function do_exists($inst) {
-		$inst->exists("testkey1");
-		return "*2 $6 exists $8 testkey1 ";
+	function test_expire() {
+		$actual   = $this->getInst()->expire("testkey1", 5);
+		$expected = "*3\r\n$6\r\nexpire\r\n$8\r\ntestkey1\r\n$1\r\n5\r\n";
+		$this->assertEquals($expected, $actual, "expire's converstion to Redis protocol failed.");
 	}
 
-	function do_expire($inst) {
-		$inst->expire("testkey1", 5);
-		return "*3 $6 expire $8 testkey1 $1 5";
+	function test_expireat() {
+		$actual   = $this->getInst()->expireat("testkey1", 12345678);
+		$expected = "*3\r\n$8\r\nexpireat\r\n$8\r\ntestkey1\r\n$8\r\n12345678\r\n";
+		$this->assertEquals($expected, $actual, "expireat's converstion to Redis protocol failed.");
 	}
 
-	function do_expireat($inst) {
-		$inst->expireat("testkey1", 12345678);
-		return "*3 $8 expireat $8 testkey1 $8 12345678 ";
+	function test_keys() {
+		$actual   = $this->getInst()->keys("pattern");
+		$expected = "*2\r\n$4\r\nkeys\r\n$7\r\npattern\r\n";
+		$this->assertEquals($expected, $actual, "keys's converstion to Redis protocol failed.");
 	}
 
-	function do_keys($inst) {
-		$inst->keys("pattern");
-		return "*2 $4 keys $7 pattern ";
+	function test_migrate() {
+		$actual   = $this->getInst()->migrate("host", "port", "key", "dest", "timeout");
+		$expected = "*6\r\n$7\r\nmigrate\r\n$4\r\nhost\r\n$4\r\nport\r\n$3\r\nkey\r\n$4\r\ndest\r\n$7\r\ntimeout\r\n";
+		$this->assertEquals($expected, $actual, "migrate's converstion to Redis protocol failed.");
 	}
 
-	function do_migrate($inst) {
-		$inst->migrate("host", "port", "key", "dest", "timeout");
-		return "*6 $7 migrate $4 host $4 port $3 key $4 dest $7 timeout ";
+	function test_move() {
+		$actual   = $this->getInst()->move("testkey1", 5);
+		$expected = "*3\r\n$4\r\nmove\r\n$8\r\ntestkey1\r\n$1\r\n5\r\n";
+		$this->assertEquals($expected, $actual, "move's converstion to Redis protocol failed.");
 	}
 
-	function do_move($inst) {
-		$inst->move("testkey1", 5);
-		return "*3 $4 move $8 testkey1 $1 5 ";
+	function test_objectRefcount() {
+		$actual   = $this->getInst()->objectRefcount(["testkey1", "testkey2"]);
+		$expected = "*4\r\n$6\r\nobject\r\n$8\r\nrefcount\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "'s cobjectRefcountonverstion to Redis protocol failed.");
 	}
 
-	function do_objectRefcount($inst) {
-		$inst->objectRefcount(["testkey1", "testkey2"]);
-		return "*4 $6 object $8 refcount $8 testkey1 $8 testkey2 ";
+	function test_objectEncoding() {
+		$actual   = $this->getInst()->objectEncoding(["testkey1", "testkey2"]);
+		$expected = "*4\r\n$6\r\nobject\r\n$8\r\nencoding\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "'s cobjectEncodingonverstion to Redis protocol failed.");
 	}
 
-	function do_objectEncoding($inst) {
-		$inst->objectEncoding(["testkey1", "testkey2"]);
-		return "*4 $6 object $8 encoding $8 testkey1 $8 testkey2 ";
+	function test_objectIdletime() {
+		$actual   = $this->getInst()->objectIdletime(["testkey1", "testkey2"]);
+		$expected = "*4\r\n$6\r\nobject\r\n$8\r\nidletime\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "'s cobjectIdletimeonverstion to Redis protocol failed.");
 	}
 
-	function do_objectIdletime($inst) {
-		$inst->objectIdletime(["testkey1", "testkey2"]);
-		return "*4 $6 object $8 idletime $8 testkey1 $8 testkey2 ";
+	function test_persist() {
+		$actual   = $this->getInst()->persist("testkey1");
+		$expected = "*2\r\n$7\r\npersist\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "persist's converstion to Redis protocol failed.");
 	}
 
-	function do_persist($inst) {
-		$inst->persist("testkey1");
-		return "*2 $7 persist $8 testkey1 ";
+	function test_pexpire() {
+		$actual   = $this->getInst()->pexpire("testkey1", 1234);
+		$expected = "*3\r\n$7\r\npexpire\r\n$8\r\ntestkey1\r\n$4\r\n1234\r\n";
+		$this->assertEquals($expected, $actual, "pexpire's converstion to Redis protocol failed.");
 	}
 
-	function do_pexpire($inst) {
-		$inst->pexpire("testkey1", 1234);
-		return "*3 $7 pexpire $8 testkey1 $4 1234 ";
+	function test_pexpireat() {
+		$actual   = $this->getInst()->pexpireat("testkey1", 1234);
+		$expected = "*3\r\n$9\r\npexpireat\r\n$8\r\ntestkey1\r\n$4\r\n1234\r\n";
+		$this->assertEquals($expected, $actual, "'s cpexpireatonverstion to Redis protocol failed.");
 	}
 
-	function do_pexpireat($inst) {
-		$inst->pexpireat("testkey1", 1234);
-		return "*3 $9 pexpireat $8 testkey1 $4 1234 ";
+	function test_pttl() {
+		$actual   = $this->getInst()->pttl("testkey1");
+		$expected = "*2\r\n$4\r\npttl\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "pttl's converstion to Redis protocol failed.");
 	}
 
-	function do_pttl($inst) {
-		$inst->pttl("testkey1");
-		return "*2 $4 pttl $8 testkey1 ";
+	function test_randomkey() {
+		$actual   = $this->getInst()->randomkey();
+		$expected = "*1\r\n$9\r\nrandomkey\r\n";
+		$this->assertEquals($expected, $actual, "'s crandomkeyonverstion to Redis protocol failed.");
 	}
 
-	function do_randomkey($inst) {
-		$inst->randomkey();
-		return "*1 $9 randomkey ";
+	function test_rename() {
+		$actual   = $this->getInst()->rename("testkey1", "testkey2");
+		$expected = "*3\r\n$6\r\nrename\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "rename's converstion to Redis protocol failed.");
 	}
 
-	function do_rename($inst) {
-		$inst->rename("testkey1", "testkey2");
-		return "*3 $6 rename $8 testkey1 $8 testkey2 ";
+	function test_renamenx() {
+		$actual   = $this->getInst()->renamenx("testkey1", "testkey2");
+		$expected = "*3\r\n$8\r\nrenamenx\r\n$8\r\ntestkey1\r\n$8\r\ntestkey2\r\n";
+		$this->assertEquals($expected, $actual, "renamenx's converstion to Redis protocol failed.");
 	}
 
-	function do_renamenx($inst) {
-		$inst->renamenx("testkey1", "testkey2");
-		return "*3 $8 renamenx $8 testkey1 $8 testkey2 ";
+	function test_restore() {
+		$actual   = $this->getInst()->restore("testkey1", "ttl", "serialValue");
+		$expected = "*5\r\n$7\r\nrestore\r\n$8\r\ntestkey1\r\n$3\r\nttl\r\n$11\r\nserialValue\r\n$7\r\nreplace\r\n";
+		$this->assertEquals($expected, $actual, "restore's converstion to Redis protocol failed.");
 	}
 
-	function do_restore($inst) {
-		$inst->restore("testkey1", "ttl", "serialValue");
-		return "*5 $7 restore $8 testkey1 $3 ttl $11 serialValue $7 replace ";
+	function test_ttl() {
+		$actual   = $this->getInst()->ttl("testkey1");
+		$expected = "*2\r\n$3\r\nttl\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "ttl's converstion to Redis protocol failed.");
 	}
 
-	function do_ttl($inst) {
-		$inst->ttl("testkey1");
-		return "*2 $3 ttl $8 testkey1 ";
+	function test_type() {
+		$actual   = $this->getInst()->type("testkey1");
+		$expected = "*2\r\n$4\r\ntype\r\n$8\r\ntestkey1\r\n";
+		$this->assertEquals($expected, $actual, "type's converstion to Redis protocol failed.");
 	}
 
-	function do_type($inst) {
-		$inst->type("testkey1");
-		return "*2 $4 type $8 testkey1 ";
-	}
-
-	function do_scan($inst) {
-		$inst->scan("testkey1", "p:*:p", 5);
-		return "*6 $4 scan $8 testkey1 $5 match $5 p:*:p $5 count $1 5 ";
+	function test_scan() {
+		$actual   = $this->getInst()->scan("testkey1", "p:*:p", 5);
+		$expected = "*6\r\n$4\r\nscan\r\n$8\r\ntestkey1\r\n$5\r\nmatch\r\n$5\r\np:*:p\r\n$5\r\ncount\r\n$1\r\n5\r\n";
+		$this->assertEquals($expected, $actual, "scan's converstion to Redis protocol failed.");
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_del_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->del([]);
+		$this->getInst()->del([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_objectRefcount_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->objectRefcount([]);
+		$this->getInst()->objectRefcount([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_objectEncoding_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->objectEncoding([]);
+		$this->getInst()->objectEncoding([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_objectIdletime_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->objectIdletime([]);
+		$this->getInst()->objectIdletime([]);
 	}
 
 	/**
 	 * @expectedException Redis\RedisException
 	 */
 	function test_sort_exception() {
-		$memory = fopen("php://memory", "rw+");
-		list($inst, $methods) = $this->getInst($memory);
-		$inst->sort("", "", "", "", [], "", "", "");
+		$this->getInst()->sort("", "", "", "", [], "", "", "");
 	}
 
 }
