@@ -1,6 +1,6 @@
 <?php
 
-return function(\Redis\RedisProtocol $redis){
+return function(\Redis\Redis $redis){
 
 	$label = "==== SSCAN =====";
 
@@ -8,7 +8,7 @@ return function(\Redis\RedisProtocol $redis){
 
 	$i = 1;
 	while(($i += 2) < 10000){
-		$redis->sadd("testkey", $i);
+		$redis->sadd("testkey", [$i]);
 	}
 
 	$cursor = 0;

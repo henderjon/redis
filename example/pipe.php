@@ -15,7 +15,7 @@ if(file_exists($conf)){
 	$config = parse_ini_file($conf);
 }
 
-$redis = (new \Redis\RedisProtocol)->connect($config["hostname"], $config["hostport"]);
+$redis = (new \Redis\Redis)->connect($config["hostname"], $config["hostport"]);
 
 // $redis->auth($config["password"]);
 // $redis->select($config["database"]);

@@ -1,14 +1,14 @@
 <?php
 
-return function(\Redis\RedisProtocol $redis){
+return function(\Redis\Redis $redis){
 
 	$label = "==== HMSET =====";
 
 	echo "\n\n{$label}\n\n";
 
-	$redis->hmset("hash:one", "key:one", "value:one");
-	$redis->hmset("hash:one", "key:two", "value:two");
-	$redis->hmset("hash:two", "key:two", "value:two");
+	$redis->hmset("hash:one", ["key:one", "value:one"]);
+	$redis->hmset("hash:one", ["key:two", "value:two"]);
+	$redis->hmset("hash:two", ["key:two", "value:two"]);
 
 	//NOT AN ASSOCIATIVE ARRAY
 	$redis->hmset("hash:three", [
